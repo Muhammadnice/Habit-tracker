@@ -222,6 +222,11 @@
         }
         th.task-col { background-color: var(--primary-color); z-index: 3; }
 
+        /* Layer active column completely above subsequent items when dropdown reveals */
+        .task-col.task-col-active {
+            z-index: 10 !important;
+        }
+
         /* Task cell with burger menu */
         .task-item-cell {
             display: flex;
@@ -404,6 +409,19 @@
             background: var(--input-bg);
         }
 
+        /* Language configuration selection controller */
+        .lang-dropdown-select {
+            padding: 6px 10px;
+            border-radius: 8px;
+            border: 1px solid var(--input-border);
+            background: var(--input-bg);
+            color: var(--text-color);
+            font-weight: 600;
+            font-size: 13px;
+            outline: none;
+            cursor: pointer;
+        }
+
         /* Dark mode toggle */
         .toggle-switch {
             position: relative;
@@ -455,7 +473,7 @@
            ========================================================================== */
         @media (max-width: 768px) {
             body {
-                padding: 10px; /* Maximize visible application viewports on tiny screens */
+                padding: 10px;
             }
 
             .auth-container {
@@ -469,7 +487,7 @@
             }
 
             header {
-                flex-direction: column; /* Stacks header components cleanly on vertical mobile orientation */
+                flex-direction: column;
                 align-items: flex-start;
                 gap: 12px;
             }
@@ -495,7 +513,7 @@
             }
 
             .add-task-box {
-                flex-direction: column; /* Stack the add task row items so input text is fully readable */
+                flex-direction: column;
                 gap: 8px;
             }
 
@@ -504,18 +522,16 @@
                 padding: 12px;
             }
 
-            /* Optimization of table layout metrics for touch gestures */
             th, td {
                 padding: 8px 4px; 
-                font-size: 11px; /* Saves immense real-estate horizontally when rendering 31 numbers */
+                font-size: 11px;
             }
 
             .task-col {
-                min-width: 150px; /* Slimmer frozen row allows a wider view of checkboxes simultaneously */
+                min-width: 150px;
                 padding-left: 6px;
             }
 
-            /* ACCESSIBLE TOUCH TARGET HIGHLIGHTS (Prevents fat-finger misclicks) */
             .checkbox-container {
                 width: 22px; 
                 height: 22px;
@@ -544,7 +560,6 @@
                 height: 15px;
             }
 
-            /* Adjust contextual menus to avoid overflow clipping */
             .task-menu {
                 right: auto;
                 left: 0;
@@ -578,7 +593,7 @@
         <div class="controls-group">
             <span id="user-display" class="user-pill"></span>
             <div class="month-chip">
-                <label for="month-select">Period:</label>
+                <label for="month-select" id="lbl-period">Period:</label>
                 <input type="month" id="month-select">
             </div>
             <button class="icon-btn" id="theme-toggle-btn" onclick="toggleDarkMode()" title="Toggle dark/light mode">
@@ -588,7 +603,7 @@
             <button class="icon-btn" onclick="openSettings()" title="Settings">
                 <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
             </button>
-            <button class="logout-btn" onclick="handleLogout()">Logout</button>
+            <button class="logout-btn" id="btn-logout" onclick="handleLogout()">Logout</button>
         </div>
     </header>
 
@@ -609,19 +624,31 @@
     </div>
 
     <div class="chart-section">
-        <h3>Daily Completion Performance (%)</h3>
+        <h3 id="chart-section-title">Daily Completion Performance (%)</h3>
         <canvas id="completionChart" height="100"></canvas>
     </div>
 </div>
 
 <div class="settings-overlay" id="settings-overlay" onclick="handleOverlayClick(event)">
     <div class="settings-panel">
-        <h2>⚙️ Appearance Settings</h2>
+        <h2 id="settings-title">⚙️ Appearance Settings</h2>
 
         <div class="settings-row">
             <div>
-                <div style="font-size:14px;font-weight:600;color:var(--text-color)">Dark Mode</div>
-                <div class="desc">Switch between light and dark theme</div>
+                <div style="font-size:14px;font-weight:600;color:var(--text-color)" id="lbl-lang">Language</div>
+                <div class="desc" id="lbl-lang-desc">Choose interface language</div>
+            </div>
+            <select id="lang-select" class="lang-dropdown-select" onchange="changeLanguage(this.value)">
+                <option value="en">English</option>
+                <option value="ru">Русский</option>
+                <option value="uz">Oʻzbekcha</option>
+            </select>
+        </div>
+
+        <div class="settings-row">
+            <div>
+                <div style="font-size:14px;font-weight:600;color:var(--text-color)" id="lbl-darkmode">Dark Mode</div>
+                <div class="desc" id="lbl-darkmode-desc">Switch between light and dark theme</div>
             </div>
             <label class="toggle-switch">
                 <input type="checkbox" id="dark-mode-toggle" onchange="toggleDarkModeFromSettings(this)">
@@ -630,7 +657,7 @@
         </div>
 
         <div style="margin-bottom:16px">
-            <div style="font-size:14px;font-weight:600;color:var(--text-color);margin-bottom:12px">Theme Color</div>
+            <div style="font-size:14px;font-weight:600;color:var(--text-color);margin-bottom:12px" id="lbl-theme-color">Theme Color</div>
             <div class="color-swatch-group" id="swatch-group">
                 <div class="color-swatch" style="background:#7b2cbf" data-color="#7b2cbf" onclick="applyColor('#7b2cbf')"></div>
                 <div class="color-swatch" style="background:#2563eb" data-color="#2563eb" onclick="applyColor('#2563eb')"></div>
@@ -642,13 +669,13 @@
                 <div class="color-swatch" style="background:#1d4ed8" data-color="#1d4ed8" onclick="applyColor('#1d4ed8')"></div>
             </div>
             <div class="custom-color-row">
-                <label>Custom:</label>
+                <label id="lbl-custom-color">Custom:</label>
                 <input type="color" id="color-picker" value="#7b2cbf" oninput="applyColor(this.value)">
                 <span style="font-size:13px;color:var(--text-muted)" id="color-hex-label">#7b2cbf</span>
             </div>
         </div>
 
-        <button class="settings-close-btn" onclick="closeSettings()">Done</button>
+        <button class="settings-close-btn" id="btn-settings-done" onclick="closeSettings()">Done</button>
     </div>
 </div>
 
@@ -659,11 +686,108 @@
     let authMode = 'login';
     let token = localStorage.getItem('auth_token');
     let activeMenu = null;
+    let currentLang = localStorage.getItem('tracker_lang') || 'en';
 
     const PRESET_COLORS = ['#7b2cbf','#2563eb','#0d9488','#db2777','#ea580c','#16a34a','#dc2626','#1d4ed8'];
 
+    // Multilingual dictionary configuration asset matrix
+    const translations = {
+        en: {
+            title: "Habit & Task Tracker",
+            period: "Period:",
+            addTaskBtn: "+ Add Task",
+            addTaskPlaceholder: "Enter new habit/task (e.g., Read 30 pages, Memorize Quran)...",
+            dailyHabits: "Daily Habits",
+            daysDone: "Days Done",
+            completeForDay: "COMPLETE FOR THE DAY",
+            percentComplete: "PERCENT COMPLETE",
+            best: "BEST",
+            chartTitle: "Daily Completion Performance (%)",
+            chartLabel: "Completion rate (%)",
+            chartXAxis: "Days of Month",
+            settingsTitle: "⚙️ Appearance Settings",
+            darkMode: "Dark Mode",
+            darkModeDesc: "Switch between light and dark theme",
+            themeColor: "Theme Color",
+            custom: "Custom:",
+            done: "Done",
+            langLabel: "Language",
+            langDesc: "Choose interface language",
+            logout: "Logout",
+            noEntries: "No active entries. Add one above!",
+            confirmDelete: "Remove \"{task}\"?",
+            duplicateTask: "A task with that name already exists.",
+            editOpt: "Edit",
+            deleteOpt: "Delete"
+        },
+        ru: {
+            title: "Трекер привычек и задач",
+            period: "Период:",
+            addTaskBtn: "+ Добавить задачу",
+            addTaskPlaceholder: "Введите привычку/задачу (например, Читать 30 страниц)...",
+            dailyHabits: "Привычки",
+            daysDone: "Выполнено",
+            completeForDay: "ВЫПОЛНЕНО ЗА ДЕНЬ",
+            percentComplete: "ПРОЦЕНТ ВЫПОЛНЕНИЯ",
+            best: "ЛУЧШИЙ КУРС",
+            chartTitle: "Ежедневная статистика выполнения (%)",
+            chartLabel: "Процент выполнения (%)",
+            chartXAxis: "Дни месяца",
+            settingsTitle: "⚙️ Настройки внешнего вида",
+            darkMode: "Темная тема",
+            darkModeDesc: "Переключение между светлой и темной темой",
+            themeColor: "Цвет интерфейса",
+            custom: "Свой цвет:",
+            done: "Готово",
+            langLabel: "Язык",
+            langDesc: "Выберите язык интерфейса",
+            logout: "Выйти",
+            noEntries: "Нет активных записей. Добавьте выше!",
+            confirmDelete: "Удалить \"{task}\"?",
+            duplicateTask: "Задача с таким названием уже существует.",
+            editOpt: "Редактировать",
+            deleteOpt: "Удалить"
+        },
+        uz: {
+            title: "Odatlar va vazifalar trekeri",
+            period: "Davr:",
+            addTaskBtn: "+ Qo'shish",
+            addTaskPlaceholder: "Yangi odat/vazifa kiriting (masalan, 30 sahifa o'qish)...",
+            dailyHabits: "Kundalik odatlar",
+            daysDone: "Bajarilgan kunlar",
+            completeForDay: "KUNLIK BAJARILGANLAR",
+            percentComplete: "BAJARILISH FOIZI",
+            best: "ENG YAXSHI",
+            chartTitle: "Kunlik bajarilish ko'rsatkichi (%)",
+            chartLabel: "Bajarilish foizi (%)",
+            chartXAxis: "Oy kunlari",
+            settingsTitle: "⚙️ Tashqi ko'rinish sozlamalari",
+            darkMode: "Tungi rejim",
+            darkModeDesc: "Yorug' va qorong'u mavzuni almashtirish",
+            themeColor: "Mavzu rangi",
+            custom: "Boshqa rang:",
+            done: "Tayyor",
+            langLabel: "Til",
+            langDesc: "Interfeys tilini tanlang",
+            logout: "Chiqish",
+            noEntries: "Faol yozuvlar yo'q. Yuqoridan qo'shing!",
+            confirmDelete: "\"{task}\" olib tashlansinmi?",
+            duplicateTask: "Bunday nomli vazifa allaqachon mavjud.",
+            editOpt: "Tahrirlash",
+            deleteOpt: "O'chirish"
+        }
+    };
+
+    const localDayNames = {
+        en: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+        ru: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+        uz: ['Yak', 'Dush', 'Sesh', 'Chor', 'Pay', 'Jum', 'Shan']
+    };
+
     document.addEventListener('DOMContentLoaded', () => {
         setupTheme();
+        document.getElementById('lang-select').value = currentLang;
+        
         const savedDark = localStorage.getItem('tracker_dark') === 'true';
         if (savedDark) {
             document.documentElement.setAttribute('data-theme', 'dark');
@@ -677,10 +801,42 @@
         document.addEventListener('click', (e) => {
             if (activeMenu && !activeMenu.contains(e.target) && !e.target.closest('.burger-btn')) {
                 activeMenu.classList.remove('open');
+                if (activeMenu.closest('.task-col')) {
+                    activeMenu.closest('.task-col').classList.remove('task-col-active');
+                }
                 activeMenu = null;
             }
         });
     });
+
+    function applyTranslations() {
+        const lang = currentLang;
+        const dict = translations[lang];
+
+        document.getElementById('lbl-period').innerText = dict.period;
+        document.getElementById('btn-logout').innerText = dict.logout;
+        document.getElementById('new-task-input').placeholder = dict.addTaskPlaceholder;
+        document.getElementById('add-task-btn').innerText = dict.addTaskBtn;
+        document.getElementById('chart-section-title').innerText = dict.chartTitle;
+        
+        document.getElementById('settings-title').innerText = dict.settingsTitle;
+        document.getElementById('lbl-lang').innerText = dict.langLabel;
+        document.getElementById('lbl-lang-desc').innerText = dict.langDesc;
+        document.getElementById('lbl-darkmode').innerText = dict.darkMode;
+        document.getElementById('lbl-darkmode-desc').innerText = dict.darkModeDesc;
+        document.getElementById('lbl-theme-color').innerText = dict.themeColor;
+        document.getElementById('lbl-custom-color').innerText = dict.custom;
+        document.getElementById('btn-settings-done').innerText = dict.done;
+    }
+
+    function changeLanguage(lang) {
+        currentLang = lang;
+        localStorage.setItem('tracker_lang', lang);
+        applyTranslations();
+        if (token) {
+            initTracker();
+        }
+    }
 
     function setupTheme() {
         const savedColor = localStorage.getItem('tracker_theme') || '#7b2cbf';
@@ -802,6 +958,7 @@
         const today = new Date();
         document.getElementById('month-select').value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
         currentPeriod = document.getElementById('month-select').value;
+        applyTranslations();
         fetchTrackerData();
     }
 
@@ -835,23 +992,23 @@
     }
 
     function renderHeaders(days, year, month) {
-        const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-        let html = `<th class="task-col">Daily Habits</th>`;
+        const dayNames = localDayNames[currentLang] || localDayNames['en'];
+        let html = `<th class="task-col">${translations[currentLang].dailyHabits}</th>`;
         for (let i = 1; i <= days; i++) {
             const dayName = dayNames[new Date(year, month - 1, i).getDay()];
             html += `<th>${dayName}<br>${i}</th>`;
         }
-        html += `<th class="days-complete-col">Days Done</th>`;
+        html += `<th class="days-complete-col">${translations[currentLang].daysDone}</th>`;
         document.getElementById('header-days-row').innerHTML = html;
-        const monthLabel = new Date(year, month - 1).toLocaleString('default', { month: 'long' }).toUpperCase();
-        document.getElementById('tracker-title').innerText = `${monthLabel} ${year} — TRACKER`;
+        const monthLabel = new Date(year, month - 1).toLocaleString(currentLang, { month: 'long' }).toUpperCase();
+        document.getElementById('tracker-title').innerText = `${monthLabel} ${year} — ${translations[currentLang].title.toUpperCase()}`;
     }
 
     function renderRows(daysCount) {
         const tasksObj = habitData[currentPeriod].tasks;
         let html = '';
         if (Object.keys(tasksObj).length === 0) {
-            html = `<tr><td colspan="${daysCount + 2}" style="padding:22px; color:var(--text-muted); font-size:14px;">No active entries. Add one above!</td></tr>`;
+            html = `<tr><td colspan="${daysCount + 2}" style="padding:22px; color:var(--text-muted); font-size:14px;">${translations[currentLang].noEntries}</td></tr>`;
             document.getElementById('tracker-body').innerHTML = html;
             return;
         }
@@ -879,11 +1036,11 @@
                       <div class="task-menu" id="menu-${safeId}">
                         <div class="task-menu-item" onclick="startEdit('${escapedTaskNameForJs}','${safeId}')">
                           <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                          Edit
+                          ${translations[currentLang].editOpt}
                         </div>
                         <div class="task-menu-item danger" onclick="deleteTask('${escapedTaskNameForJs}')">
                           <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-                          Delete
+                          ${translations[currentLang].deleteOpt}
                         </div>
                       </div>
                     </div>
@@ -901,15 +1058,33 @@
     function toggleTaskMenu(e, menuId) {
         e.stopPropagation();
         const menu = document.getElementById(menuId);
+        const parentCol = menu.closest('.task-col');
+        
         if (activeMenu && activeMenu !== menu) {
             activeMenu.classList.remove('open');
+            if (activeMenu.closest('.task-col')) {
+                activeMenu.closest('.task-col').classList.remove('task-col-active');
+            }
         }
+        
         menu.classList.toggle('open');
-        activeMenu = menu.classList.contains('open') ? menu : null;
+        if (menu.classList.contains('open')) {
+            parentCol.classList.add('task-col-active');
+            activeMenu = menu;
+        } else {
+            parentCol.classList.remove('task-col-active');
+            activeMenu = null;
+        }
     }
 
     function startEdit(taskName, safeId) {
-        if (activeMenu) { activeMenu.classList.remove('open'); activeMenu = null; }
+        if (activeMenu) {
+            activeMenu.classList.remove('open');
+            if (activeMenu.closest('.task-col')) {
+                activeMenu.closest('.task-col').classList.remove('task-col-active');
+            }
+            activeMenu = null;
+        }
         const nameSpan = document.getElementById(`taskname-${safeId}`);
         if (!nameSpan) return;
         const original = nameSpan.innerText;
@@ -940,7 +1115,7 @@
             return;
         }
         if (habitData[currentPeriod].tasks[newName]) {
-            alert('A task with that name already exists.');
+            alert(translations[currentLang].duplicateTask);
             return;
         }
         habitData[currentPeriod].tasks[newName] = habitData[currentPeriod].tasks[oldName];
@@ -954,7 +1129,7 @@
         if (!taskName) return;
         const [year, month] = currentPeriod.split('-');
         const daysCount = new Date(year, month, 0).getDate();
-        if (habitData[currentPeriod].tasks[taskName]) return alert("Habit entry already matches context.");
+        if (habitData[currentPeriod].tasks[taskName]) return alert(translations[currentLang].duplicateTask);
         habitData[currentPeriod].tasks[taskName] = Array(daysCount).fill(false);
         document.getElementById('new-task-input').value = '';
         initTracker();
@@ -962,8 +1137,15 @@
     }
 
     async function deleteTask(taskName) {
-        if (confirm(`Remove "${taskName}"?`)) {
-            if (activeMenu) { activeMenu.classList.remove('open'); activeMenu = null; }
+        const msg = translations[currentLang].confirmDelete.replace('{task}', taskName);
+        if (confirm(msg)) {
+            if (activeMenu) {
+                activeMenu.classList.remove('open');
+                if (activeMenu.closest('.task-col')) {
+                    activeMenu.closest('.task-col').classList.remove('task-col-active');
+                }
+                activeMenu = null;
+            }
             delete habitData[currentPeriod].tasks[taskName];
             initTracker();
             await syncToServer();
@@ -993,8 +1175,8 @@
         const tasksObj = habitData[currentPeriod].tasks;
         const totalTasks = Object.keys(tasksObj).length;
 
-        let totalCompletedHtml = `<td class="task-col">COMPLETE FOR THE DAY</td>`;
-        let percentCompletedHtml = `<td class="task-col">PERCENT COMPLETE</td>`;
+        let totalCompletedHtml = `<td class="task-col">${translations[currentLang].completeForDay}</td>`;
+        let percentCompletedHtml = `<td class="task-col">${translations[currentLang].percentComplete}</td>`;
         let dailyPercentages = [], labels = [];
 
         for (let d = 0; d < daysCount; d++) {
@@ -1012,7 +1194,7 @@
             const c = checkedArray.filter(Boolean).length;
             if (c > maxTasksCompleted) maxTasksCompleted = c;
         }
-        totalCompletedHtml += `<td class="days-complete-col">BEST</td>`;
+        totalCompletedHtml += `<td class="days-complete-col">${translations[currentLang].best}</td>`;
         percentCompletedHtml += `<td class="days-complete-col">${maxTasksCompleted}</td>`;
         document.getElementById('total-completed-row').innerHTML = totalCompletedHtml;
         document.getElementById('percent-completed-row').innerHTML = percentCompletedHtml;
@@ -1024,9 +1206,11 @@
         const themeColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
         if (chartInstance) {
             chartInstance.data.labels = labels;
+            chartInstance.data.datasets[0].label = translations[currentLang].chartLabel;
             chartInstance.data.datasets[0].data = dataPoints;
             chartInstance.data.datasets[0].borderColor = themeColor;
             chartInstance.data.datasets[0].backgroundColor = themeColor + '22';
+            chartInstance.options.scales.x.title.text = translations[currentLang].chartXAxis;
             chartInstance.update();
         } else {
             chartInstance = new Chart(ctx, {
@@ -1034,7 +1218,7 @@
                 data: {
                     labels,
                     datasets: [{
-                        label: 'Completion rate (%)',
+                        label: translations[currentLang].chartLabel,
                         data: dataPoints,
                         borderColor: themeColor,
                         backgroundColor: themeColor + '22',
@@ -1049,7 +1233,7 @@
                     responsive: true,
                     scales: {
                         y: { min: 0, max: 100, ticks: { callback: v => v + '%', color: '#888' }, grid: { color: 'rgba(128,128,128,0.1)' } },
-                        x: { title: { display: true, text: 'Days of Month', color: '#888' }, ticks: { color: '#888' }, grid: { color: 'rgba(128,128,128,0.1)' } }
+                        x: { title: { display: true, text: translations[currentLang].chartXAxis, color: '#888' }, ticks: { color: '#888' }, grid: { color: 'rgba(128,128,128,0.1)' } }
                     },
                     plugins: { legend: { labels: { color: '#888' } } }
                 }
