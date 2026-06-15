@@ -11,7 +11,7 @@
             --primary-light: #e0aaff;
         }
 
-        [data-theme="light"] {
+        [data-theme=\"light\"] {
             --bg-color: #f4f2f8;
             --card-bg: #ffffff;
             --text-color: #1a1a2e;
@@ -27,890 +27,453 @@
             --overlay-bg: rgba(0,0,0,0.08);
             --menu-bg: #ffffff;
             --menu-shadow: 0 4px 24px rgba(123,44,191,0.13);
-            --settings-bg: rgba(255,255,255,0.98);
-            --mode-icon-color: #7b2cbf;
+            --settings-bg: rgba(255,255,255,0.8);
         }
 
-        [data-theme="dark"] {
-            --bg-color: #12101a;
-            --card-bg: #1e1b2e;
-            --text-color: #e8e4f8;
-            --text-muted: #9990bb;
-            --border-color: #2e2a45;
+        [data-theme=\"dark\"] {
+            --bg-color: #0b0914;
+            --card-bg: #161224;
+            --text-color: #f3f0fa;
+            --text-muted: #a39cb5;
+            --border-color: #2c2547;
             --table-header-text: #ffffff;
-            --row-alt: #1a1728;
-            --summary-bg: #1a1728;
-            --input-bg: #16132a;
-            --input-border: #2e2a45;
-            --chip-bg: #2a2545;
-            --chip-hover: #332e55;
-            --overlay-bg: rgba(0,0,0,0.55);
-            --menu-bg: #231f38;
+            --row-alt: #1d1830;
+            --summary-bg: #241c3f;
+            --input-bg: #1f1a33;
+            --input-border: #3b325c;
+            --chip-bg: #241c3f;
+            --chip-hover: #322757;
+            --overlay-bg: rgba(0,0,0,0.4);
+            --menu-bg: #1c172e;
             --menu-shadow: 0 4px 24px rgba(0,0,0,0.5);
-            --settings-bg: rgba(30,27,46,0.98);
-            --mode-icon-color: #c89cff;
+            --settings-bg: rgba(22,18,36,0.8);
         }
 
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: background-color 0.3s, border-color 0.3s, color 0.3s; }
+        body { background-color: var(--bg-color); color: var(--text-color); padding: 20px; display: flex; justify-content: center; min-height: 100vh; }
+        .app-container { width: 100%; max-width: 1400px; display: flex; flex-direction: column; gap: 20px; }
+        
+        /* Auth Screen Card layout */
+        .auth-card { background: var(--card-bg); border-radius: 16px; padding: 30px; max-width: 450px; width: 100%; margin: 80px auto; border: 1px solid var(--border-color); box-shadow: var(--menu-shadow); }
+        .auth-tabs { display: flex; border-bottom: 2px solid var(--border-color); margin-bottom: 25px; }
+        .auth-tab { flex: 1; text-align: center; padding: 12px; font-weight: 600; color: var(--text-muted); cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; }
+        .auth-tab.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
+        .form-group { margin-bottom: 18px; display: flex; flex-direction: column; gap: 8px; }
+        .form-group label { font-size: 0.9rem; font-weight: 600; color: var(--text-color); }
+        .form-group input { padding: 12px; border-radius: 8px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); font-size: 1rem; outline: none; }
+        .form-group input:focus { border-color: var(--primary-color); }
+        .auth-btn { background: var(--primary-color); color: white; border: none; padding: 14px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; width: 100%; margin-top: 10px; }
+        .auth-btn:hover { opacity: 0.9; }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
+        /* Main Workspace layout */
+        .header { display: flex; justify-content: space-between; align-items: center; background: var(--card-bg); padding: 15px 25px; border-radius: 12px; border: 1px solid var(--border-color); }
+        .user-profile { display: flex; align-items: center; gap: 15px; }
+        .logout-btn { background: transparent; border: 1px solid var(--primary-color); color: var(--primary-color); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .logout-btn:hover { background: var(--primary-color); color: white; }
+        
+        .main-layout { display: grid; grid-template-columns: 1fr; gap: 20px; }
+        @media (min-width: 992px) { .main-layout { grid-template-columns: 320px 1fr; } }
+        
+        .panel { background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color); padding: 20px; display: flex; flex-direction: column; gap: 20px; }
+        .input-row { display: flex; gap: 10px; }
+        .input-row input { flex: 1; padding: 10px; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; }
+        .btn-add { background: var(--primary-color); color: white; border: none; padding: 0 15px; border-radius: 6px; font-weight: 600; cursor: pointer; }
+        
+        .habit-list { display: flex; flex-direction: column; gap: 8px; }
+        .habit-chip { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: var(--chip-bg); border-radius: 8px; font-weight: 500; font-size: 0.95rem; position: relative; }
+        .habit-chip:hover { background: var(--chip-hover); }
+        
+        /* Fixed Dropdown Menu implementation */
+        .burger-menu-btn { background: transparent; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-muted); padding: 2px 6px; border-radius: 4px; }
+        .burger-menu-btn:hover { color: var(--text-color); background: rgba(128,128,128,0.1); }
+        .dropdown-menu { display: none; position: absolute; right: 10px; top: 35px; background: var(--menu-bg); border: 1px solid var(--border-color); border-radius: 6px; box-shadow: var(--menu-shadow); z-index: 100; min-width: 100px; overflow: hidden; }
+        .dropdown-menu.show { display: block; }
+        .dropdown-item { padding: 8px 12px; font-size: 0.85rem; cursor: pointer; text-align: left; color: var(--text-color); display: block; width: 100%; border: none; background: transparent; }
+        .dropdown-item:hover { background: var(--primary-color); color: white; }
 
-        /* Auth Screen */
-        .auth-container {
-            max-width: 400px;
-            margin: 100px auto;
-            background: var(--card-bg);
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 4px 32px rgba(123,44,191,0.10);
-            text-align: center;
-            border: 1px solid var(--border-color);
-        }
-
-        .auth-tabs { display: flex; margin-bottom: 20px; border-bottom: 2px solid var(--border-color); }
-        .auth-tab { flex: 1; padding: 10px; cursor: pointer; font-weight: bold; color: var(--text-muted); transition: color 0.2s; }
-        .auth-tab.active { color: var(--primary-color); border-bottom: 2px solid var(--primary-color); margin-bottom: -2px; }
-
-        .auth-form input {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 1px solid var(--input-border);
-            border-radius: 8px;
-            background: var(--input-bg);
-            color: var(--text-color);
-            font-size: 15px;
-        }
-
-        .auth-form button {
-            width: 100%;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 13px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 16px;
-            margin-top: 10px;
-            transition: opacity 0.2s;
-        }
-        .auth-form button:hover { opacity: 0.88; }
-
-        /* Dashboard */
-        .dashboard {
-            display: none;
-            max-width: 1400px;
-            margin: 0 auto;
-            background: var(--card-bg);
-            padding: 28px;
-            border-radius: 16px;
-            box-shadow: 0 4px 32px rgba(0,0,0,0.07);
-            border: 1px solid var(--border-color);
-        }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 18px;
-            margin-bottom: 22px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        h1 { margin: 0; font-size: 22px; color: var(--primary-color); font-weight: 700; letter-spacing: -0.3px; }
-
-        .controls-group { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
-
-        /* Month picker chip */
-        .month-chip {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: var(--chip-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 8px 14px;
-        }
-
-        .month-chip label { font-size: 13px; font-weight: 600; color: var(--text-muted); white-space: nowrap; }
-
-        input[type="month"] {
-            border: none;
-            background: transparent;
-            color: var(--text-color);
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            outline: none;
-        }
-
-        /* Icon Buttons */
-        .icon-btn {
-            width: 38px;
-            height: 38px;
-            border-radius: 10px;
-            border: 1px solid var(--border-color);
-            background: var(--chip-bg);
-            color: var(--text-color);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            transition: background 0.18s, border-color 0.18s;
-            position: relative;
-            flex-shrink: 0;
-        }
-        .icon-btn:hover { background: var(--chip-hover); border-color: var(--primary-color); }
-        .icon-btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-
-        /* User display */
-        .user-pill {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: var(--chip-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 7px 14px;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .logout-btn {
-            background-color: transparent;
-            color: #e05c5c;
-            border: 1px solid #e05c5c;
-            padding: 7px 14px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 13px;
-            transition: background 0.18s;
-        }
-        .logout-btn:hover { background: rgba(224,92,92,0.10); }
-
-        /* Table */
-        .tracker-wrapper { overflow-x: auto; margin-bottom: 28px; border: 1px solid var(--border-color); border-radius: 12px; }
-        table { width: 100%; border-collapse: collapse; text-align: center; background: var(--card-bg); }
-        th, td { border: 1px solid var(--border-color); padding: 7px 5px; font-size: 12px; color: var(--text-color); }
-        th { background-color: var(--primary-color); color: var(--table-header-text); font-weight: 600; }
-
-        tbody tr:nth-child(even) { background-color: var(--row-alt); }
-        tbody tr:hover { background: var(--chip-hover); }
-
-        .task-col {
-            text-align: left;
-            min-width: 230px;
-            font-weight: 600;
-            padding-left: 10px;
-            background: var(--card-bg);
-            position: sticky;
-            left: 0;
-            z-index: 2;
-            box-shadow: 2px 0 8px rgba(0,0,0,0.06);
-        }
-        th.task-col { background-color: var(--primary-color); z-index: 3; }
-
-        /* Task cell with burger menu */
-        .task-item-cell {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 6px;
-        }
-        .task-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
-
-        /* Burger button */
-        .burger-btn {
-            width: 26px;
-            height: 26px;
-            border-radius: 7px;
-            border: 1px solid var(--border-color);
-            background: var(--chip-bg);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            transition: background 0.15s, border-color 0.15s;
-            position: relative;
-        }
-        .burger-btn:hover { background: var(--chip-hover); border-color: var(--primary-color); }
-        .burger-btn svg { width: 13px; height: 13px; stroke: var(--text-muted); fill: none; stroke-width: 2.2; stroke-linecap: round; }
-        .burger-btn:hover svg { stroke: var(--primary-color); }
-
-        /* Task dropdown menu */
-        .task-menu {
-            position: absolute;
-            right: 0;
-            top: calc(100% + 4px);
-            background: var(--menu-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            box-shadow: var(--menu-shadow);
-            z-index: 999;
-            min-width: 130px;
-            overflow: hidden;
-            display: none;
-        }
-        .task-menu.open { display: block; }
-        .task-menu-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 9px 14px;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            color: var(--text-color);
-            transition: background 0.14s;
-            white-space: nowrap;
-        }
-        .task-menu-item:hover { background: var(--chip-hover); }
-        .task-menu-item svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
-        .task-menu-item.danger { color: #e05c5c; }
-        .task-menu-item.danger:hover { background: rgba(224,92,92,0.09); }
-        .task-menu-item + .task-menu-item { border-top: 1px solid var(--border-color); }
-
-        /* Inline edit row */
-        .task-edit-input {
-            flex: 1;
-            border: 1px solid var(--primary-color);
-            border-radius: 6px;
-            background: var(--input-bg);
-            color: var(--text-color);
-            font-size: 13px;
-            padding: 3px 7px;
-            font-weight: 600;
-            outline: none;
-            min-width: 0;
-        }
-
-        /* Checkbox */
-        .checkbox-container { display: inline-block; position: relative; cursor: pointer; width: 18px; height: 18px; }
-        .checkbox-container input { position: absolute; opacity: 0; cursor: pointer; height: 0; width: 0; }
-        .checkmark { position: absolute; top: 0; left: 0; height: 18px; width: 18px; background-color: var(--chip-bg); border-radius: 5px; border: 1.5px solid var(--input-border); transition: background-color 0.18s; }
-        .checkbox-container:hover input ~ .checkmark { border-color: var(--primary-color); }
-        .checkbox-container input:checked ~ .checkmark { background-color: var(--primary-color); border-color: var(--primary-color); }
-        .checkmark:after { content: ""; position: absolute; display: none; left: 5px; top: 2px; width: 5px; height: 9px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg); }
-        .checkbox-container input:checked ~ .checkmark:after { display: block; }
-
-        /* Add task row */
-        .add-task-box { display: flex; gap: 10px; margin-bottom: 20px; }
-        .add-task-box input[type="text"] {
-            flex: 1;
-            padding: 10px 14px;
-            border: 1.5px solid var(--input-border);
-            border-radius: 10px;
-            font-size: 14px;
-            background: var(--input-bg);
-            color: var(--text-color);
-            transition: border-color 0.18s;
-        }
-        .add-task-box input[type="text"]:focus { outline: none; border-color: var(--primary-color); }
-        .add-task-box input[type="text"]::placeholder { color: var(--text-muted); }
-        .add-task-box button {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 10px 22px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 14px;
-            transition: opacity 0.18s;
-            white-space: nowrap;
-        }
-        .add-task-box button:hover { opacity: 0.88; }
-
-        /* Summary rows */
-        .summary-row { background-color: var(--summary-bg) !important; font-weight: bold; }
-        .summary-row td { color: var(--text-color); font-size: 11px; }
-
-        .days-complete-col { font-weight: bold; background: var(--chip-bg); min-width: 80px; color: var(--text-color); }
-
-        /* Chart section */
-        .chart-section {
-            margin-top: 24px;
-            padding: 20px;
-            background: var(--chip-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-        }
-        .chart-section h3 { margin: 0 0 14px; font-size: 15px; font-weight: 600; color: var(--text-color); }
-
-        /* Settings panel */
-        .settings-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: var(--overlay-bg);
-            z-index: 1000;
-            backdrop-filter: blur(2px);
-        }
-        .settings-overlay.open { display: flex; align-items: center; justify-content: center; }
-        .settings-panel {
-            background: var(--settings-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 18px;
-            padding: 28px 32px;
-            min-width: 320px;
-            box-shadow: 0 8px 48px rgba(0,0,0,0.18);
-        }
-        .settings-panel h2 { margin: 0 0 22px; font-size: 17px; font-weight: 700; color: var(--text-color); }
-        .settings-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            margin-bottom: 20px;
-        }
-        .settings-row label { font-size: 14px; font-weight: 600; color: var(--text-color); }
-        .settings-row .desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-
-        /* Color swatches */
-        .color-swatch-group { display: flex; gap: 8px; flex-wrap: wrap; }
-        .color-swatch {
-            width: 30px;
-            height: 30px;
-            border-radius: 8px;
-            border: 2.5px solid transparent;
-            cursor: pointer;
-            transition: transform 0.15s, border-color 0.15s;
-        }
-        .color-swatch:hover { transform: scale(1.12); }
-        .color-swatch.active { border-color: var(--text-color); }
-
-        .custom-color-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
-        .custom-color-row label { font-size: 13px; color: var(--text-muted); }
-        input[type="color"] {
-            width: 38px;
-            height: 32px;
-            border: 1px solid var(--border-color);
-            border-radius: 7px;
-            padding: 2px;
-            cursor: pointer;
-            background: var(--input-bg);
-        }
-
-        /* Dark mode toggle */
-        .toggle-switch {
-            position: relative;
-            width: 44px;
-            height: 24px;
-            flex-shrink: 0;
-        }
-        .toggle-switch input { opacity: 0; width: 0; height: 0; }
-        .toggle-slider {
-            position: absolute;
-            inset: 0;
-            background: var(--input-border);
-            border-radius: 999px;
-            cursor: pointer;
-            transition: background 0.22s;
-        }
-        .toggle-slider:before {
-            content: '';
-            position: absolute;
-            left: 3px;
-            top: 3px;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: white;
-            transition: transform 0.22s;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.18);
-        }
-        .toggle-switch input:checked + .toggle-slider { background: var(--primary-color); }
-        .toggle-switch input:checked + .toggle-slider:before { transform: translateX(20px); }
-
-        .settings-close-btn {
-            width: 100%;
-            margin-top: 10px;
-            padding: 11px;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 15px;
-            cursor: pointer;
-            transition: opacity 0.18s;
-        }
-        .settings-close-btn:hover { opacity: 0.88; }
+        /* Metrics Table view Grid system */
+        .table-container { overflow-x: auto; background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color); }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem; }
+        th, td { padding: 10px 12px; border-bottom: 1px solid var(--border-color); white-space: nowrap; }
+        th { background: var(--primary-color); color: var(--table-header-text); font-weight: 600; position: sticky; top: 0; }
+        tr:nth-child(even) { background-color: var(--row-alt); }
+        
+        /* Direct responsiveness fixing for trackers */
+        .cell-checkbox { width: 22px; height: 22px; accent-color: var(--primary-color); cursor: pointer; transform: scale(1.1); display: block; margin: 0 auto; }
+        .summary-cell { background: var(--summary-bg); font-weight: 700; color: var(--primary-color); text-align: center; }
+        
+        .theme-toggle { background: transparent; border: 1px solid var(--border-color); padding: 8px; border-radius: 50%; cursor: pointer; font-size: 1.1rem; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
 
-<div id="auth-view" class="auth-container">
-    <div class="auth-tabs">
-        <div id="tab-login" class="auth-tab active" onclick="switchAuthTab('login')">Login</div>
-        <div id="tab-register" class="auth-tab" onclick="switchAuthTab('register')">Register</div>
-    </div>
-    <div class="auth-form">
-        <h3 id="auth-title" style="margin-bottom:20px; color:var(--primary-color);">Account Access</h3>
-        <input type="text" id="auth-username" placeholder="Username">
-        <input type="password" id="auth-password" placeholder="Password">
-        <button id="auth-submit-btn" onclick="handleAuthSubmit()">Log In</button>
-    </div>
-</div>
-
-<div id="app-view" class="dashboard">
-    <header>
-        <h1 id="tracker-title">Habit & Task Tracker</h1>
-        <div class="controls-group">
-            <span id="user-display" class="user-pill"></span>
-            <div class="month-chip">
-                <label for="month-select">Period:</label>
-                <input type="month" id="month-select">
-            </div>
-            <!-- Dark mode toggle -->
-            <button class="icon-btn" id="theme-toggle-btn" onclick="toggleDarkMode()" title="Toggle dark/light mode">
-                <svg id="theme-icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
-                <svg id="theme-icon-sun" viewBox="0 0 24 24" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-            </button>
-            <!-- Settings gear -->
-            <button class="icon-btn" onclick="openSettings()" title="Settings">
-                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-            </button>
-            <button class="logout-btn" onclick="handleLogout()">Logout</button>
+<div class="app-container">
+    <div id="auth-view" class="auth-card">
+        <div class="auth-tabs">
+            <div id="tab-login" class="auth-tab active" onclick="switchAuthTab('login')">Login</div>
+            <div id="tab-register" class="auth-tab" onclick="switchAuthTab('register')">Register</div>
         </div>
-    </header>
-
-    <div class="add-task-box">
-        <input type="text" id="new-task-input" placeholder="Enter new habit/task (e.g., Read 30 pages, Memorize Quran)...">
-        <button id="add-task-btn" onclick="addTask()">+ Add Task</button>
-    </div>
-
-    <div class="tracker-wrapper">
-        <table id="tracker-table">
-            <thead><tr id="header-days-row"></tr></thead>
-            <tbody id="tracker-body"></tbody>
-            <tfoot>
-                <tr id="total-completed-row" class="summary-row"></tr>
-                <tr id="percent-completed-row" class="summary-row"></tr>
-            </tfoot>
-        </table>
-    </div>
-
-    <div class="chart-section">
-        <h3>Daily Completion Performance (%)</h3>
-        <canvas id="completionChart" height="100"></canvas>
-    </div>
-</div>
-
-<!-- Settings Panel -->
-<div class="settings-overlay" id="settings-overlay" onclick="handleOverlayClick(event)">
-    <div class="settings-panel">
-        <h2>⚙️ Appearance Settings</h2>
-
-        <div class="settings-row">
-            <div>
-                <div style="font-size:14px;font-weight:600;color:var(--text-color)">Dark Mode</div>
-                <div class="desc">Switch between light and dark theme</div>
-            </div>
-            <label class="toggle-switch">
-                <input type="checkbox" id="dark-mode-toggle" onchange="toggleDarkModeFromSettings(this)">
-                <span class="toggle-slider"></span>
-            </label>
+        <h3 id="auth-title" style="text-align: center; margin-bottom: 20px; color: var(--primary-color);">Account Access</h3>
+        <div class="form-group">
+            <label>Username</label>
+            <input type="text" id="auth-username" placeholder="Enter username">
         </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="auth-password" placeholder="Enter password">
+        </div>
+        <button class="auth-btn" onclick="handleAuthSubmit()">Submit</button>
+    </div>
 
-        <div style="margin-bottom:16px">
-            <div style="font-size:14px;font-weight:600;color:var(--text-color);margin-bottom:12px">Theme Color</div>
-            <div class="color-swatch-group" id="swatch-group">
-                <div class="color-swatch" style="background:#7b2cbf" data-color="#7b2cbf" onclick="applyColor('#7b2cbf')"></div>
-                <div class="color-swatch" style="background:#2563eb" data-color="#2563eb" onclick="applyColor('#2563eb')"></div>
-                <div class="color-swatch" style="background:#0d9488" data-color="#0d9488" onclick="applyColor('#0d9488')"></div>
-                <div class="color-swatch" style="background:#db2777" data-color="#db2777" onclick="applyColor('#db2777')"></div>
-                <div class="color-swatch" style="background:#ea580c" data-color="#ea580c" onclick="applyColor('#ea580c')"></div>
-                <div class="color-swatch" style="background:#16a34a" data-color="#16a34a" onclick="applyColor('#16a34a')"></div>
-                <div class="color-swatch" style="background:#dc2626" data-color="#dc2626" onclick="applyColor('#dc2626')"></div>
-                <div class="color-swatch" style="background:#1d4ed8" data-color="#1d4ed8" onclick="applyColor('#1d4ed8')"></div>
+    <div id="app-view" style="display: none;" class="app-container">
+        <div class="header">
+            <div class="user-profile">
+                <h2>Dynamic Habit Matrix</h2>
+                <span id="welcome-banner" style="color: var(--text-muted); font-weight: 500;"></span>
             </div>
-            <div class="custom-color-row">
-                <label>Custom:</label>
-                <input type="color" id="color-picker" value="#7b2cbf" oninput="applyColor(this.value)">
-                <span style="font-size:13px;color:var(--text-muted)" id="color-hex-label">#7b2cbf</span>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+                <button class="logout-btn" onclick="handleLogout()">Logout</button>
             </div>
         </div>
 
-        <button class="settings-close-btn" onclick="closeSettings()">Done</button>
+        <div class="main-layout">
+            <div class="panel">
+                <div>
+                    <h3 style="margin-bottom: 12px;">Add New Metric</h3>
+                    <div class="input-row">
+                        <input type="text" id="new-habit-name" placeholder="E.g., Reading Books">
+                        <button class="btn-add" onclick="handleAddHabit()">Add</button>
+                    </div>
+                </div>
+                <div>
+                    <h3 style="margin-bottom: 12px;">Active Trackers</h3>
+                    <div id="habit-list-target" class="habit-list"></div>
+                </div>
+                <div>
+                    <canvas id="analyticsChart" style="max-height: 220px;"></canvas>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table id="matrix-table">
+                    <thead>
+                        <tr id="thead-row"></tr>
+                    </thead>
+                    <tbody id="tbody-rows"></tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 
 <script>
-    let currentPeriod = "";
-    let habitData = {};
-    let chartInstance = null;
     let authMode = 'login';
-    let token = localStorage.getItem('auth_token');
-    let activeMenu = null;
+    let token = localStorage.getItem('auth_token') || '';
+    let habits = [];
+    let trackerData = {}; // Format: { "HabitName": { "day_1": true, "day_5": false } }
+    let chartInstance = null;
 
-    const PRESET_COLORS = ['#7b2cbf','#2563eb','#0d9488','#db2777','#ea580c','#16a34a','#dc2626','#1d4ed8'];
-
-    document.addEventListener('DOMContentLoaded', () => {
-        setupTheme();
-        const savedDark = localStorage.getItem('tracker_dark') === 'true';
-        if (savedDark) {
-            document.documentElement.setAttribute('data-theme', 'dark');
-            document.getElementById('dark-mode-toggle').checked = true;
-            document.getElementById('theme-icon-moon').style.display = 'none';
-            document.getElementById('theme-icon-sun').style.display = 'block';
+    // Bootstrapping verification check
+    window.addEventListener('DOMContentLoaded', () => {
+        if(token) {
+            showDashboard();
+        } else {
+            document.getElementById('auth-view').style.display = 'block';
+            document.getElementById('app-view').style.display = 'none';
         }
-        if (token) showDashboard();
-        else showAuth();
-
-        document.addEventListener('click', (e) => {
-            if (activeMenu && !activeMenu.contains(e.target) && !e.target.closest('.burger-btn')) {
-                activeMenu.classList.remove('open');
-                activeMenu = null;
-            }
-        });
-    });
-
-    function setupTheme() {
-        const savedColor = localStorage.getItem('tracker_theme') || '#7b2cbf';
-        document.documentElement.style.setProperty('--primary-color', savedColor);
-        document.getElementById('color-picker').value = savedColor;
-        document.getElementById('color-hex-label').textContent = savedColor;
-        updateSwatchActive(savedColor);
-    }
-
-    function applyColor(color) {
-        document.documentElement.style.setProperty('--primary-color', color);
-        localStorage.setItem('tracker_theme', color);
-        document.getElementById('color-picker').value = color;
-        document.getElementById('color-hex-label').textContent = color;
-        updateSwatchActive(color);
-        if (chartInstance) updateChartStyles();
-    }
-
-    function updateSwatchActive(color) {
-        document.querySelectorAll('.color-swatch').forEach(s => {
-            s.classList.toggle('active', s.dataset.color === color);
-        });
-    }
-
-    function toggleDarkMode() {
-        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-        const newDark = !isDark;
-        document.documentElement.setAttribute('data-theme', newDark ? 'dark' : 'light');
-        localStorage.setItem('tracker_dark', newDark);
-        document.getElementById('dark-mode-toggle').checked = newDark;
-        document.getElementById('theme-icon-moon').style.display = newDark ? 'none' : 'block';
-        document.getElementById('theme-icon-sun').style.display = newDark ? 'block' : 'none';
-        if (chartInstance) updateChartStyles();
-    }
-
-    function toggleDarkModeFromSettings(el) {
-        const newDark = el.checked;
-        document.documentElement.setAttribute('data-theme', newDark ? 'dark' : 'light');
-        localStorage.setItem('tracker_dark', newDark);
-        document.getElementById('theme-icon-moon').style.display = newDark ? 'none' : 'block';
-        document.getElementById('theme-icon-sun').style.display = newDark ? 'block' : 'none';
-        if (chartInstance) updateChartStyles();
-    }
-
-    function openSettings() {
-        document.getElementById('settings-overlay').classList.add('open');
-        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-        document.getElementById('dark-mode-toggle').checked = isDark;
-    }
-
-    function closeSettings() {
-        document.getElementById('settings-overlay').classList.remove('open');
-    }
-
-    function handleOverlayClick(e) {
-        if (e.target === document.getElementById('settings-overlay')) closeSettings();
-    }
-
-    document.getElementById('month-select').addEventListener('change', (e) => {
-        currentPeriod = e.target.value;
-        initTracker();
-    });
-
-    document.getElementById('new-task-input').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') addTask();
+        setupGlobalClickListeners();
     });
 
     function switchAuthTab(mode) {
         authMode = mode;
         document.getElementById('tab-login').classList.toggle('active', mode === 'login');
         document.getElementById('tab-register').classList.toggle('active', mode === 'register');
-        document.getElementById('auth-submit-btn').innerText = mode === 'login' ? 'Log In' : 'Create Account';
+        document.getElementById('auth-title').innerText = mode === 'login' ? 'Account Login' : 'Create Account';
     }
 
     async function handleAuthSubmit() {
         const username = document.getElementById('auth-username').value.trim();
         const password = document.getElementById('auth-password').value;
-        if (!username || !password) return alert('Please enter both parameters.');
+
+        if(!username || !password) return alert('Please complete all form credentials.');
+
         const endpoint = authMode === 'login' ? '/api/auth/login' : '/api/auth/register';
+        
         try {
             const res = await fetch(endpoint, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password })
             });
+            
             const responseText = await res.text();
             let data;
-            try { data = JSON.parse(responseText); }
-            catch(e) { throw new Error(`Server Error (${res.status}): Make sure your database URI is attached properly.`); }
-            if (!res.ok) throw new Error(data.error || 'Authentication Failed');
-            if (authMode === 'login') {
+            try {
+                data = JSON.parse(responseText);
+            } catch(e) {
+                throw new Error(`Server processing fault (${res.status}). Verify cloud variables config.`);
+            }
+
+            if(!res.ok) throw new Error(data.error || 'Operation execution failure.');
+
+            if(authMode === 'login') {
                 localStorage.setItem('auth_token', data.token);
                 localStorage.setItem('auth_username', data.username);
                 token = data.token;
                 showDashboard();
             } else {
-                alert('Account Created! You can now log in.');
+                alert('Registration success! Moving to logging gateway.');
                 switchAuthTab('login');
             }
-        } catch(err) { alert(err.message); }
+        } catch(err) {
+            alert(err.message);
+        }
     }
 
     function handleLogout() {
-        localStorage.removeItem('auth_token');
-        localStorage.removeItem('auth_username');
-        token = null;
-        showAuth();
-    }
-
-    function showAuth() {
+        localStorage.clear();
+        token = '';
+        habits = [];
+        trackerData = {};
         document.getElementById('auth-view').style.display = 'block';
         document.getElementById('app-view').style.display = 'none';
     }
 
-    function showDashboard() {
+    async function showDashboard() {
         document.getElementById('auth-view').style.display = 'none';
-        document.getElementById('app-view').style.display = 'block';
-        document.getElementById('user-display').innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ${localStorage.getItem('auth_username')}`;
-        const today = new Date();
-        document.getElementById('month-select').value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
-        currentPeriod = document.getElementById('month-select').value;
-        fetchTrackerData();
+        document.getElementById('app-view').style.display = 'flex';
+        document.getElementById('welcome-banner').innerText = `@${localStorage.getItem('auth_username') || 'user'}`;
+        await syncFetchData();
     }
 
-    async function fetchTrackerData() {
+    async function syncFetchData() {
         try {
-            const res = await fetch('/api/tracker', { headers: { 'Authorization': `Bearer ${token}` } });
-            if (res.status === 401 || res.status === 403) return handleLogout();
-            const serverRes = await res.json();
-            habitData = serverRes.data || {};
-            initTracker();
-        } catch (e) { console.error("Network synchronization error", e); }
+            const res = await fetch('/api/tracker', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if(!res.ok) throw new Error('Could not pull cloud profile matrix data.');
+            const body = await res.json();
+            
+            trackerData = body.data || {};
+            habits = Object.keys(trackerData);
+            
+            renderWorkspaceMatrix();
+        } catch(err) {
+            console.error(err);
+            handleLogout();
+        }
     }
 
-    async function syncToServer() {
+    async function pushDataUpdate() {
         try {
             await fetch('/api/tracker', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                body: JSON.stringify({ data: habitData })
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ data: trackerData })
             });
-        } catch (e) { console.error("Autosave tracking failed", e); }
-    }
-
-    function initTracker() {
-        const [year, month] = currentPeriod.split('-');
-        const daysCount = new Date(year, month, 0).getDate();
-        if (!habitData[currentPeriod]) habitData[currentPeriod] = { tasks: {} };
-        renderHeaders(daysCount, year, month);
-        renderRows(daysCount);
-        updateCalculationsAndGraph();
-    }
-
-    function renderHeaders(days, year, month) {
-        const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-        let html = `<th class="task-col">Daily Habits</th>`;
-        for (let i = 1; i <= days; i++) {
-            const dayName = dayNames[new Date(year, month - 1, i).getDay()];
-            html += `<th>${dayName}<br>${i}</th>`;
+        } catch(e) {
+            console.error('Autosave sync delay:', e.message);
         }
-        html += `<th class="days-complete-col">Days Done</th>`;
-        document.getElementById('header-days-row').innerHTML = html;
-        const monthLabel = new Date(year, month - 1).toLocaleString('default', { month: 'long' }).toUpperCase();
-        document.getElementById('tracker-title').innerText = `${monthLabel} ${year} — TRACKER`;
     }
 
-    function renderRows(daysCount) {
-        const tasksObj = habitData[currentPeriod].tasks;
-        let html = '';
-        if (Object.keys(tasksObj).length === 0) {
-            html = `<tr><td colspan="${daysCount + 2}" style="padding:22px; color:var(--text-muted); font-size:14px;">No active entries. Add one above!</td></tr>`;
-            document.getElementById('tracker-body').innerHTML = html;
-            return;
+    function renderWorkspaceMatrix() {
+        const daysInMonth = 31; 
+        const thead = document.getElementById('thead-row');
+        const tbody = document.getElementById('tbody-rows');
+        
+        // Build table headers dynamically
+        let headHTML = `<th>Tracking Metric</th>`;
+        for(let d=1; d<=daysInMonth; d++) {
+            headHTML += `<th style="text-align:center; min-width:35px;">${d}</th>`;
         }
-        for (const [taskName, checkedArray] of Object.entries(tasksObj)) {
-            if (checkedArray.length !== daysCount) habitData[currentPeriod].tasks[taskName] = Array(daysCount).fill(false);
-            const currentChecked = habitData[currentPeriod].tasks[taskName];
-            const rowCount = currentChecked.filter(Boolean).length;
-            const safeId = taskName.replace(/[^a-zA-Z0-9]/g, '_');
-            html += `<tr>
-                <td class="task-col">
-                  <div class="task-item-cell">
-                    <span class="task-name" id="taskname-${safeId}">${taskName}</span>
-                    <div style="position:relative;flex-shrink:0">
-                      <button class="burger-btn" onclick="toggleTaskMenu(event,'menu-${safeId}')" title="Options">
-                        <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-                      </button>
-                      <div class="task-menu" id="menu-${safeId}">
-                        <div class="task-menu-item" onclick="startEdit('${taskName.replace(/'/g,"\\'")}','${safeId}')">
-                          <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                          Edit
-                        </div>
-                        <div class="task-menu-item danger" onclick="deleteTask('${taskName.replace(/'/g,"\\'")}')">
-                          <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-                          Delete
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+        headHTML += `<th style="text-align:center; background:#6b21a8;">Score</th>`;
+        thead.innerHTML = headHTML;
+
+        // Render table records alongside calculation layers
+        let bodyHTML = '';
+        habits.forEach((habit) => {
+            bodyHTML += `<tr>`;
+            bodyHTML += `<td style="font-weight:600; min-width:160px;">${escapeHtml(habit)}</td>`;
+            
+            let completeCount = 0;
+            for(let d=1; d<=daysInMonth; d++) {
+                const isChecked = trackerData[habit] && trackerData[habit][`day_${d}`] === true;
+                if(isChecked) completeCount++;
+                
+                bodyHTML += `
+                <td style="text-align:center;">
+                    <input type="checkbox" 
+                           class="cell-checkbox" 
+                           data-habit="${escapeHtml(habit)}" 
+                           data-day="${d}" 
+                           ${isChecked ? 'checked' : ''} 
+                           onclick="handleCheckboxToggle(this)">
                 </td>`;
-            for (let d = 0; d < daysCount; d++) {
-                const isChecked = currentChecked[d] ? 'checked' : '';
-                html += `<td><label class="checkbox-container"><input type="checkbox" ${isChecked} data-task="${taskName}" data-day="${d}" onchange="toggleCheckbox(this)"><span class="checkmark"></span></label></td>`;
             }
-            html += `<td class="days-complete-col" id="count-${safeId}">${rowCount}</td></tr>`;
+            
+            bodyHTML += `<td id="score-${cssSafeId(habit)}" class="summary-cell">${completeCount} / ${daysInMonth}</td>`;
+            bodyHTML += `</tr>`;
+        });
+        tbody.innerHTML = bodyHTML;
+
+        // Populate side control panels and chart modules
+        renderSidebarHabitList();
+        renderAnalyticsChart(daysInMonth);
+    }
+
+    function renderSidebarHabitList() {
+        const container = document.getElementById('habit-list-target');
+        container.innerHTML = '';
+        
+        habits.forEach((habit) => {
+            const chip = document.createElement('div');
+            chip.className = 'habit-chip';
+            chip.innerHTML = `
+                <span>${escapeHtml(habit)}</span>
+                <button class="burger-menu-btn">⋮</button>
+                <div class="dropdown-menu">
+                    <button class="dropdown-item" onclick="promptEditHabit('${escapeHtml(habit)}')">Rename</button>
+                    <button class="dropdown-item" style="color:#ef4444;" onclick="handleDeleteHabit('${escapeHtml(habit)}')">Delete</button>
+                </div>
+            `;
+            container.appendChild(chip);
+        });
+    }
+
+    // Fix Checkbox Lag with Optimistic UI Updating
+    function handleCheckboxToggle(checkbox) {
+        const habit = checkbox.getAttribute('data-habit');
+        const day = checkbox.getAttribute('data-day');
+        const isChecked = checkbox.checked;
+
+        // Update the state locally instantly
+        if (!trackerData[habit]) trackerData[habit] = {};
+        trackerData[habit][`day_${day}`] = isChecked;
+
+        // Instantly recalculate score without reloading table frame
+        let newCount = 0;
+        for (let d = 1; d <= 31; d++) {
+            if (trackerData[habit][`day_${d}`] === true) newCount++;
         }
-        document.getElementById('tracker-body').innerHTML = html;
+        document.getElementById(`score-${cssSafeId(habit)}`).innerText = `${newCount} / 31`;
+
+        // Update analytics chart in real-time
+        renderAnalyticsChart(31);
+
+        // Send network save silently in background
+        pushDataUpdate();
     }
 
-    function toggleTaskMenu(e, menuId) {
-        e.stopPropagation();
-        const menu = document.getElementById(menuId);
-        if (activeMenu && activeMenu !== menu) {
-            activeMenu.classList.remove('open');
-        }
-        menu.classList.toggle('open');
-        activeMenu = menu.classList.contains('open') ? menu : null;
-    }
+    function handleAddHabit() {
+        const input = document.getElementById('new-habit-name');
+        const name = input.value.trim();
+        if(!name) return;
 
-    function startEdit(taskName, safeId) {
-        if (activeMenu) { activeMenu.classList.remove('open'); activeMenu = null; }
-        const nameSpan = document.getElementById(`taskname-${safeId}`);
-        const original = nameSpan.innerText;
-        nameSpan.innerHTML = `<input class="task-edit-input" id="edit-input-${safeId}" value="${original}" onkeydown="handleEditKey(event,'${taskName.replace(/'/g,"\\'")}','${safeId}')">`;
-        const inp = document.getElementById(`edit-input-${safeId}`);
-        inp.focus();
-        inp.select();
-    }
-
-    function handleEditKey(e, oldName, safeId) {
-        if (e.key === 'Enter') commitEdit(oldName, safeId);
-        if (e.key === 'Escape') {
-            const nameSpan = document.getElementById(`taskname-${safeId}`);
-            nameSpan.innerText = oldName;
-        }
-    }
-
-    async function commitEdit(oldName, safeId) {
-        const inp = document.getElementById(`edit-input-${safeId}`);
-        const newName = inp ? inp.value.trim() : '';
-        if (!newName || newName === oldName) {
-            const nameSpan = document.getElementById(`taskname-${safeId}`);
-            if (nameSpan) nameSpan.innerText = oldName;
+        if(trackerData[name]) {
+            alert('A tracking profile metric with this designation already exists.');
             return;
         }
-        if (habitData[currentPeriod].tasks[newName]) {
-            alert('A task with that name already exists.');
+
+        trackerData[name] = {};
+        habits.push(name);
+        input.value = '';
+        
+        renderWorkspaceMatrix();
+        pushDataUpdate();
+    }
+
+    function promptEditHabit(oldName) {
+        const newName = prompt(`Change metric name for "${oldName}":`, oldName);
+        if(!newName || newName.trim() === oldName) return;
+        
+        const cleanNewName = newName.trim();
+        if(trackerData[cleanNewName]) {
+            alert('Destination moniker matches an existing configuration container.');
             return;
         }
-        habitData[currentPeriod].tasks[newName] = habitData[currentPeriod].tasks[oldName];
-        delete habitData[currentPeriod].tasks[oldName];
-        initTracker();
-        await syncToServer();
+
+        trackerData[cleanNewName] = trackerData[oldName];
+        delete trackerData[oldName];
+        
+        const idx = habits.indexOf(oldName);
+        if(idx !== -1) habits[idx] = cleanNewName;
+
+        renderWorkspaceMatrix();
+        pushDataUpdate();
     }
 
-    async function addTask() {
-        const taskName = document.getElementById('new-task-input').value.trim();
-        if (!taskName) return;
-        const [year, month] = currentPeriod.split('-');
-        const daysCount = new Date(year, month, 0).getDate();
-        if (habitData[currentPeriod].tasks[taskName]) return alert("Habit entry already matches context.");
-        habitData[currentPeriod].tasks[taskName] = Array(daysCount).fill(false);
-        document.getElementById('new-task-input').value = '';
-        initTracker();
-        await syncToServer();
+    function handleDeleteHabit(name) {
+        if(!confirm(`Permanently remove tracker column for "${name}"? Progress metrics will clear.`)) return;
+        
+        delete trackerData[name];
+        habits = habits.filter(h => h !== name);
+        
+        renderWorkspaceMatrix();
+        pushDataUpdate();
     }
 
-    async function deleteTask(taskName) {
-        if (confirm(`Remove "${taskName}"?`)) {
-            if (activeMenu) { activeMenu.classList.remove('open'); activeMenu = null; }
-            delete habitData[currentPeriod].tasks[taskName];
-            initTracker();
-            await syncToServer();
+    // Fixed Burger Dropdown Listeners
+    function setupGlobalClickListeners() {
+        document.addEventListener('click', (e) => {
+            // Close opened dropdown menus if clicked outside
+            if (!e.target.classList.contains('burger-menu-btn')) {
+                document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+                    menu.classList.remove('show');
+                });
+                return;
+            }
+
+            // Toggle target drop menu layer layout contextually
+            const parentChip = e.target.closest('.habit-chip');
+            const targetMenu = parentChip.querySelector('.dropdown-menu');
+            
+            document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+                if(menu !== targetMenu) menu.classList.remove('show');
+            });
+            
+            targetMenu.classList.toggle('show');
+        });
+    }
+
+    function renderAnalyticsChart(daysInMonth) {
+        const ctx = document.getElementById('analyticsChart').getContext('2d');
+        const dataPoints = [];
+        const labelPoints = [];
+
+        for(let d=1; d<=daysInMonth; d++) {
+            labelPoints.push(d);
+            let totalActiveTrackers = habits.length;
+            if(totalActiveTrackers === 0) {
+                dataPoints.push(0);
+                continue;
+            }
+
+            let completedOnDay = 0;
+            habits.forEach(h => {
+                if(trackerData[h] && trackerData[h][`day_${d}`] === true) completedOnDay++;
+            });
+
+            const dayPercentage = Math.round((completedOnDay / totalActiveTrackers) * 100);
+            dataPoints.push(dayPercentage);
         }
-    }
 
-    async function toggleCheckbox(element) {
-        const taskName = element.getAttribute('data-task');
-        const dayIdx = parseInt(element.getAttribute('data-day'));
-        habitData[currentPeriod].tasks[taskName][dayIdx] = element.checked;
-        const safeId = taskName.replace(/[^a-zA-Z0-9]/g, '_');
-        const countEl = document.getElementById(`count-${safeId}`);
-        if (countEl) countEl.innerText = habitData[currentPeriod].tasks[taskName].filter(Boolean).length;
-        updateCalculationsAndGraph();
-        await syncToServer();
-    }
+        const themeColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim() || '#7b2cbf';
 
-    function updateCalculationsAndGraph() {
-        const [year, month] = currentPeriod.split('-');
-        const daysCount = new Date(year, month, 0).getDate();
-        const tasksObj = habitData[currentPeriod].tasks;
-        const totalTasks = Object.keys(tasksObj).length;
-
-        let totalCompletedHtml = `<td class="task-col">COMPLETE FOR THE DAY</td>`;
-        let percentCompletedHtml = `<td class="task-col">PERCENT COMPLETE</td>`;
-        let dailyPercentages = [], labels = [];
-
-        for (let d = 0; d < daysCount; d++) {
-            labels.push(d + 1);
-            let dayCheckedCount = 0;
-            for (const [, checkedArray] of Object.entries(tasksObj)) { if (checkedArray[d]) dayCheckedCount++; }
-            let percentage = totalTasks > 0 ? Math.round((dayCheckedCount / totalTasks) * 100) : 0;
-            dailyPercentages.push(percentage);
-            totalCompletedHtml += `<td>${dayCheckedCount}</td>`;
-            percentCompletedHtml += `<td>${percentage}%</td>`;
-        }
-
-        let maxTasksCompleted = 0;
-        for (const [, checkedArray] of Object.entries(tasksObj)) {
-            const c = checkedArray.filter(Boolean).length;
-            if (c > maxTasksCompleted) maxTasksCompleted = c;
-        }
-        totalCompletedHtml += `<td class="days-complete-col">BEST</td>`;
-        percentCompletedHtml += `<td class="days-complete-col">${maxTasksCompleted}</td>`;
-        document.getElementById('total-completed-row').innerHTML = totalCompletedHtml;
-        document.getElementById('percent-completed-row').innerHTML = percentCompletedHtml;
-        renderGraph(labels, dailyPercentages);
-    }
-
-    function renderGraph(labels, dataPoints) {
-        const ctx = document.getElementById('completionChart').getContext('2d');
-        const themeColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
-        if (chartInstance) {
-            chartInstance.data.labels = labels;
+        if(chartInstance) {
             chartInstance.data.datasets[0].data = dataPoints;
             chartInstance.data.datasets[0].borderColor = themeColor;
             chartInstance.data.datasets[0].backgroundColor = themeColor + '22';
+            chartInstance.data.datasets[0].pointBackgroundColor = themeColor;
             chartInstance.update();
         } else {
             chartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels,
+                    labels: labelPoints,
                     datasets: [{
                         label: 'Completion rate (%)',
                         data: dataPoints,
@@ -935,14 +498,26 @@
         }
     }
 
-    function updateChartStyles() {
-        if (chartInstance) {
+    function toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', nextTheme);
+        document.querySelector('.theme-toggle').innerText = nextTheme === 'dark' ? '☀️' : '🌙';
+        if(chartInstance) {
             const themeColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
             chartInstance.data.datasets[0].borderColor = themeColor;
             chartInstance.data.datasets[0].backgroundColor = themeColor + '22';
             chartInstance.data.datasets[0].pointBackgroundColor = themeColor;
             chartInstance.update();
         }
+    }
+
+    // Protection helpers to safely format object strings and selectors
+    function escapeHtml(str) {
+        return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+    function cssSafeId(str) {
+        return str.replace(/[^a-zA-Z0-9]/g, '_');
     }
 </script>
 </body>
