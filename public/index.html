@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Monthly Habit Tracker</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #7b2cbf;
+            --secondary-color: #e0aaff;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #343a40;
+            --border-color: #dee2e6;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        /* Auth Screen Styling */
+        .auth-container {
+            max-width: 400px;
+            margin: 100px auto;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #868e96;
+        }
+
+        .auth-tab.active {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            margin-bottom: -2px;
+        }
+
+        .auth-form input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        .auth-form button {
+            width: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .auth-form button:hover { opacity: 0.9; }
+
+        /* Dashboard View Configuration */
+        .dashboard {
+            display: none;
+            max-width: 1400px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        h1 { margin: 0; font-size: 24px; color: var(--primary-color); }
+
+        .controls-group { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
+
+        .customizer-panel {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            background: #f1f3f5;
+            padding: 10px 15px;
+            border-radius: 8px;
+        }
+
+        .logout-btn {
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .logout-btn:hover { background-color: #fa5252; }
+
+        label { font-size: 14px; font-weight: 600; }
+        input[type="color"], input[type="month"] {
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 4px;
+            cursor: pointer;
+        }
+
+        .tracker-wrapper { overflow-x: auto; margin-bottom: 30px; border: 1px solid var(--border-color); border-radius: 8px; }
+        table { width: 100%; border-collapse: collapse; text-align: center; background: white; }
+        th, td { border: 1px solid var(--border-color); padding: 8px 6px; font-size: 13px; }
+        th { background-color: var(--primary-color); color: white; font-weight: 600; }
+
+        .task-col {
+            text-align: left; min-width: 220px; font-weight: 600; padding-left: 12px;
+            background: #fff; position: sticky; left: 0; z-index: 2; box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+        }
+        th.task-col { background-color: var(--primary-color); z-index: 3; }
+        .task-item-cell { display: flex; justify-content: space-between; align-items: center; }
+
+        .delete-btn { background: none; border: none; color: #ff6b6b; cursor: pointer; font-size: 16px; padding: 0 5px; font-weight: bold; }
+        .delete-btn:hover { color: #fa5252; }
+
+        /* Custom Checkbox/Rectangles */
+        .checkbox-container { display: inline-block; position: relative; cursor: pointer; width: 18px; height: 18px; }
+        .checkbox-container input { position: absolute; opacity: 0; cursor: pointer; height: 0; width: 0; }
+        .checkmark { position: absolute; top: 0; left: 0; height: 18px; width: 18px; background-color: #eee; border-radius: 4px; border: 1px solid #ced4da; transition: background-color 0.2s; }
+        .checkbox-container:hover input ~ .checkmark { background-color: #ccc; }
+        .checkbox-container input:checked ~ .checkmark { background-color: var(--primary-color); border-color: var(--primary-color); }
+        .checkmark:after { content: ""; position: absolute; display: none; left: 6px; top: 2px; width: 4px; height: 9px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+        .checkbox-container input:checked ~ .checkmark:after { display: block; }
+
+        .add-task-box { display: flex; gap: 10px; margin-bottom: 20px; }
+        .add-task-box input[type="text"] { flex: 1; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 14px; }
+        .add-task-box button { background-color: var(--primary-color); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .add-task-box button:hover { opacity: 0.9; }
+
+        .summary-row { background-color: #f1f3f5; font-weight: bold; }
+        .chart-section { margin-top: 30px; padding: 20px; background: #fff; border: 1px solid var(--border-color); border-radius: 8px; }
+        .days-complete-col { font-weight: bold; background: #f8f9fa; min-width: 80px; }
+    </style>
+</head>
+<body>
+
+<div id="auth-view" class="auth-container">
+    <div class="auth-tabs">
+        <div id="tab-login" class="auth-tab active" onclick="switchAuthTab('login')">Login</div>
+        <div id="tab-register" class="auth-tab" onclick="switchAuthTab('register')">Register</div>
+    </div>
+    <div class="auth-form">
+        <h3 id="auth-title" style="margin-bottom:20px; color:var(--primary-color);">Account Access</h3>
+        <input type="text" id="auth-username" placeholder="Username">
+        <input type="password" id="auth-password" placeholder="Password">
+        <button id="auth-submit-btn" onclick="handleAuthSubmit()">Log In</button>
+    </div>
+</div>
+
+<div id="app-view" class="dashboard">
+    <header>
+        <h1 id="tracker-title">Habit & Task Tracker</h1>
+        
+        <div class="controls-group">
+            <span id="user-display" style="font-weight:bold; color:#495057;"></span>
+            <div class="customizer-panel">
+                <div>
+                    <label for="month-select">Period: </label>
+                    <input type="month" id="month-select">
+                </div>
+                <div>
+                    <label for="color-picker">Theme Color: </label>
+                    <input type="color" id="color-picker" value="#7b2cbf">
+                </div>
+            </div>
+            <button class="logout-btn" onclick="handleLogout()">Logout</button>
+        </div>
+    </header>
+
+    <div class="add-task-box">
+        <input type="text" id="new-task-input" placeholder="Enter new habit/task (e.g., Read 30 pages, Memorize Quran)...">
+        <button id="add-task-btn" onclick="addTask()">Add Task</button>
+    </div>
+
+    <div class="tracker-wrapper">
+        <table id="tracker-table">
+            <thead>
+                <tr id="header-days-row"></tr>
+            </thead>
+            <tbody id="tracker-body"></tbody>
+            <tfoot>
+                <tr id="total-completed-row" class="summary-row"></tr>
+                <tr id="percent-completed-row" class="summary-row"></tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <div class="chart-section">
+        <h3>Daily Completion Performance (%)</h3>
+        <canvas id="completionChart" height="100"></canvas>
+    </div>
+</div>
+
+<script>
+    let currentPeriod = ""; 
+    let habitData = {}; 
+    let chartInstance = null;
+    let authMode = 'login';
+
+    // Global Token Control
+    let token = localStorage.getItem('auth_token');
+
+    document.addEventListener('DOMContentLoaded', () => {
+        setupTheme();
+        if (token) {
+            showDashboard();
+        } else {
+            showAuth();
+        }
+    });
+
+    function setupTheme() {
+        const savedColor = localStorage.getItem('tracker_theme') || '#7b2cbf';
+        document.getElementById('color-picker').value = savedColor;
+        document.documentElement.style.setProperty('--primary-color', savedColor);
+    }
+
+    document.getElementById('color-picker').addEventListener('input', (e) => {
+        const selectedColor = e.target.value;
+        document.documentElement.style.setProperty('--primary-color', selectedColor);
+        localStorage.setItem('tracker_theme', selectedColor);
+        if(chartInstance) updateChartStyles();
+    });
+
+    document.getElementById('month-select').addEventListener('change', (e) => {
+        currentPeriod = e.target.value;
+        initTracker();
+    });
+
+    document.getElementById('new-task-input').addEventListener('keypress', (e) => {
+        if(e.key === 'Enter') addTask();
+    });
+
+    // Auth UX Handling
+    function switchAuthTab(mode) {
+        authMode = mode;
+        document.getElementById('tab-login').classList.toggle('active', mode === 'login');
+        document.getElementById('tab-register').classList.toggle('active', mode === 'register');
+        document.getElementById('auth-submit-btn').innerText = mode === 'login' ? 'Log In' : 'Create Account';
+    }
+
+    async function handleAuthSubmit() {
+        const username = document.getElementById('auth-username').value.trim();
+        const password = document.getElementById('auth-password').value;
+
+        if(!username || !password) return alert('Please enter both parameters.');
+
+        const endpoint = authMode === 'login' ? '/api/auth/login' : '/api/auth/register';
+        
+        try {
+            const res = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+            const data = await res.json();
+
+            if(!res.ok) throw new Error(data.error || 'Authentication Failed');
+
+            if(authMode === 'login') {
+                localStorage.setItem('auth_token', data.token);
+                localStorage.setItem('auth_username', data.username);
+                token = data.token;
+                showDashboard();
+            } else {
+                alert('Account Created! You can now log in.');
+                switchAuthTab('login');
+            }
+        } catch(err) {
+            alert(err.message);
+        }
+    }
+
+    function handleLogout() {
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('auth_username');
+        token = null;
+        showAuth();
+    }
+
+    function showAuth() {
+        document.getElementById('auth-view').style.display = 'block';
+        document.getElementById('app-view').style.display = 'none';
+    }
+
+    function showDashboard() {
+        document.getElementById('auth-view').style.display = 'none';
+        document.getElementById('app-view').style.display = 'block';
+        document.getElementById('user-display').innerText = `👤 Hello, ${localStorage.getItem('auth_username')}`;
+        
+        const today = new Date();
+        document.getElementById('month-select').value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+        currentPeriod = document.getElementById('month-select').value;
+        
+        fetchTrackerData();
+    }
+
+    // Networking Synchronization
+    async function fetchTrackerData() {
+        try {
+            const res = await fetch('/api/tracker', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if(res.status === 401 || res.status === 403) return handleLogout();
+            
+            const serverRes = await res.json();
+            habitData = serverRes.data || {};
+            initTracker();
+        } catch (e) {
+            console.error("Network synchronization error", e);
+        }
+    }
+
+    async function syncToServer() {
+        try {
+            await fetch('/api/tracker', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ data: habitData })
+            });
+        } catch (e) {
+            console.error("Autosave tracking failed", e);
+        }
+    }
+
+    // Core System Engines
+    function initTracker() {
+        const [year, month] = currentPeriod.split('-');
+        const daysCount = new Date(year, month, 0).getDate();
+        
+        if (!habitData[currentPeriod]) {
+            habitData[currentPeriod] = { tasks: {} };
+        }
+
+        renderHeaders(daysCount, year, month);
+        renderRows(daysCount);
+        updateCalculationsAndGraph();
+    }
+
+    function renderHeaders(days, year, month) {
+        const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        let html = `<th class="task-col">Daily Habits</th>`;
+        
+        for(let i = 1; i <= days; i++) {
+            const dayName = dayNames[new Date(year, month - 1, i).getDay()];
+            html += `<th>${dayName}<br>${i}</th>`;
+        }
+        html += `<th class="days-complete-col">Days Complete</th>`;
+        document.getElementById('header-days-row').innerHTML = html;
+        
+        const monthLabel = new Date(year, month - 1).toLocaleString('default', { month: 'long' }).toUpperCase();
+        document.getElementById('tracker-title').innerText = `${monthLabel} ${year} - TRACKER`;
+    }
+
+    function renderRows(daysCount) {
+        const tasksObj = habitData[currentPeriod].tasks;
+        let html = '';
+
+        if (Object.keys(tasksObj).length === 0) {
+            html = `<tr><td colspan="${daysCount + 2}" style="padding:20px; color:#868e96;">No active entries. Add one below!</td></tr>`;
+            document.getElementById('tracker-body').innerHTML = html;
+            return;
+        }
+
+        for (const [taskName, checkedArray] of Object.entries(tasksObj)) {
+            if (checkedArray.length !== daysCount) {
+                habitData[currentPeriod].tasks[taskName] = Array(daysCount).fill(false);
+            }
+            
+            const currentCheckedArray = habitData[currentPeriod].tasks[taskName];
+            let rowCompletedCount = currentCheckedArray.filter(Boolean).length;
+
+            html += `<tr>
+                <td class="task-col">
+                    <div class="task-item-cell">
+                        <span>${taskName}</span>
+                        <button class="delete-btn" onclick="deleteTask('${taskName.replace(/'/g, "\\'")}')">×</button>
+                    </div>
+                </td>`;
+            
+            for (let d = 0; d < daysCount; d++) {
+                const isChecked = currentCheckedArray[d] ? 'checked' : '';
+                html += `<td>
+                    <label class="checkbox-container">
+                        <input type="checkbox" ${isChecked} data-task="${taskName}" data-day="${d}" onchange="toggleCheckbox(this)">
+                        <span class="checkmark"></span>
+                    </label>
+                </td>`;
+            }
+            html += `<td class="days-complete-col" id="count-${taskName}">${rowCompletedCount}</td></tr>`;
+        }
+        document.getElementById('tracker-body').innerHTML = html;
+    }
+
+    async function addTask() {
+        const taskName = document.getElementById('new-task-input').value.trim();
+        if (!taskName) return;
+
+        const [year, month] = currentPeriod.split('-');
+        const daysCount = new Date(year, month, 0).getDate();
+
+        if (habitData[currentPeriod].tasks[taskName]) return alert("Habit entry already matches context.");
+
+        habitData[currentPeriod].tasks[taskName] = Array(daysCount).fill(false);
+        document.getElementById('new-task-input').value = '';
+        
+        initTracker();
+        await syncToServer();
+    }
+
+    async function deleteTask(taskName) {
+        if(confirm(`Remove "${taskName}"?`)) {
+            delete habitData[currentPeriod].tasks[taskName];
+            initTracker();
+            await syncToServer();
+        }
+    }
+
+    async function toggleCheckbox(element) {
+        const taskName = element.getAttribute('data-task');
+        const dayIdx = parseInt(element.getAttribute('data-day'));
+        
+        habitData[currentPeriod].tasks[taskName][dayIdx] = element.checked;
+        document.getElementById(`count-${taskName}`).innerText = habitData[currentPeriod].tasks[taskName].filter(Boolean).length;
+
+        updateCalculationsAndGraph();
+        await syncToServer();
+    }
+
+    function updateCalculationsAndGraph() {
+        const [year, month] = currentPeriod.split('-');
+        const daysCount = new Date(year, month, 0).getDate();
+        const tasksObj = habitData[currentPeriod].tasks;
+        const totalTasks = Object.keys(tasksObj).length;
+
+        let totalCompletedHtml = `<td class="task-col">COMPLETE FOR THE DAY</td>`;
+        let percentCompletedHtml = `<td class="task-col">PERCENT COMPLETE</td>`;
+
+        let dailyPercentages = [];
+        let labels = [];
+
+        for(let d = 0; d < daysCount; d++) {
+            labels.push(d + 1);
+            let dayCheckedCount = 0;
+            for (const [taskName, checkedArray] of Object.entries(tasksObj)) {
+                if(checkedArray[d]) dayCheckedCount++;
+            }
+            let percentage = totalTasks > 0 ? Math.round((dayCheckedCount / totalTasks) * 100) : 0;
+            dailyPercentages.push(percentage);
+
+            totalCompletedHtml += `<td>${dayCheckedCount}</td>`;
+            percentCompletedHtml += `<td>${percentage}%</td>`;
+        }
+
+        let maxTasksCompleted = 0;
+        for (const [taskName, checkedArray] of Object.entries(tasksObj)) {
+            let rowCompletedCount = checkedArray.filter(Boolean).length;
+            if(rowCompletedCount > maxTasksCompleted) maxTasksCompleted = rowCompletedCount;
+        }
+        totalCompletedHtml += `<td class="days-complete-col">BEST</td>`;
+        percentCompletedHtml += `<td class="days-complete-col">${maxTasksCompleted}</td>`;
+
+        document.getElementById('total-completed-row').innerHTML = totalCompletedHtml;
+        document.getElementById('percent-completed-row').innerHTML = percentCompletedHtml;
+
+        renderGraph(labels, dailyPercentages);
+    }
+
+    function renderGraph(labels, dataPoints) {
+        const ctx = document.getElementById('completionChart').getContext('2d');
+        const themeColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
+
+        if (chartInstance) {
+            chartInstance.data.labels = labels;
+            chartInstance.data.datasets[0].data = dataPoints;
+            chartInstance.data.datasets[0].borderColor = themeColor;
+            chartInstance.data.datasets[0].backgroundColor = themeColor + '20';
+            chartInstance.update();
+        } else {
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Completion rate (%)',
+                        data: dataPoints,
+                        borderColor: themeColor,
+                        backgroundColor: themeColor + '20',
+                        borderWidth: 2,
+                        tension: 0.1,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { min: 0, max: 100, ticks: { callback: value => value + '%' } },
+                        x: { title: { display: true, text: 'Days of Month' } }
+                    }
+                }
+            });
+        }
+    }
+
+    function updateChartStyles() {
+        if(chartInstance) {
+            const themeColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
+            chartInstance.data.datasets[0].borderColor = themeColor;
+            chartInstance.data.datasets[0].backgroundColor = themeColor + '20';
+            chartInstance.update();
+        }
+    }
+</script>
+</body>
+</html>
