@@ -274,37 +274,46 @@
         document.getElementById('auth-submit-btn').innerText = mode === 'login' ? 'Log In' : 'Create Account';
     }
 
-    async function handleAuthSubmit() {
-        const username = document.getElementById('auth-username').value.trim();
-        const password = document.getElementById('auth-password').value;
+   async function handleAuthSubmit() {
+    const username = document.getElementById('auth-username').value.trim();
+    const password = document.getElementById('auth-password').value;
 
-        if(!username || !password) return alert('Please enter both parameters.');
+    if(!username || !password) return alert('Please enter both parameters.');
 
-        const endpoint = authMode === 'login' ? '/api/auth/login' : '/api/auth/register';
+    const endpoint = authMode === 'login' ? '/api/auth/login' : '/api/auth/register';
+    
+    try {
+        const res = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
         
+        // Smart Error Interception Layer
+        const responseText = await res.text();
+        let data;
         try {
-            const res = await fetch(endpoint, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password })
-            });
-            const data = await res.json();
-
-            if(!res.ok) throw new Error(data.error || 'Authentication Failed');
-
-            if(authMode === 'login') {
-                localStorage.setItem('auth_token', data.token);
-                localStorage.setItem('auth_username', data.username);
-                token = data.token;
-                showDashboard();
-            } else {
-                alert('Account Created! You can now log in.');
-                switchAuthTab('login');
-            }
-        } catch(err) {
-            alert(err.message);
+            data = JSON.parse(responseText);
+        } catch(e) {
+            // If it's not JSON, it means Render or Express returned a direct status code error
+            throw new Error(`Server Error (${res.status}): Make sure your database URI is attached properly.`);
         }
+
+        if(!res.ok) throw new Error(data.error || 'Authentication Failed');
+
+        if(authMode === 'login') {
+            localStorage.setItem('auth_token', data.token);
+            localStorage.setItem('auth_username', data.username);
+            token = data.token;
+            showDashboard();
+        } else {
+            alert('Account Created! You can now log in.');
+            switchAuthTab('login');
+        }
+    } catch(err) {
+        alert(err.message);
     }
+}
 
     function handleLogout() {
         localStorage.removeItem('auth_token');
