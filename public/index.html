@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,12 +8,50 @@
     <style>
         :root {
             --primary-color: #7b2cbf;
-            --secondary-color: #e0aaff;
-            --bg-color: #f8f9fa;
-            --card-bg: #ffffff;
-            --text-color: #343a40;
-            --border-color: #dee2e6;
+            --primary-light: #e0aaff;
         }
+
+        [data-theme="light"] {
+            --bg-color: #f4f2f8;
+            --card-bg: #ffffff;
+            --text-color: #1a1a2e;
+            --text-muted: #6c757d;
+            --border-color: #e2dff0;
+            --table-header-text: #ffffff;
+            --row-alt: #faf9fd;
+            --summary-bg: #f0ecfa;
+            --input-bg: #ffffff;
+            --input-border: #d0cce8;
+            --chip-bg: #f0ecfa;
+            --chip-hover: #e5dff5;
+            --overlay-bg: rgba(0,0,0,0.08);
+            --menu-bg: #ffffff;
+            --menu-shadow: 0 4px 24px rgba(123,44,191,0.13);
+            --settings-bg: rgba(255,255,255,0.98);
+            --mode-icon-color: #7b2cbf;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #12101a;
+            --card-bg: #1e1b2e;
+            --text-color: #e8e4f8;
+            --text-muted: #9990bb;
+            --border-color: #2e2a45;
+            --table-header-text: #ffffff;
+            --row-alt: #1a1728;
+            --summary-bg: #1a1728;
+            --input-bg: #16132a;
+            --input-border: #2e2a45;
+            --chip-bg: #2a2545;
+            --chip-hover: #332e55;
+            --overlay-bg: rgba(0,0,0,0.55);
+            --menu-bg: #231f38;
+            --menu-shadow: 0 4px 24px rgba(0,0,0,0.5);
+            --settings-bg: rgba(30,27,46,0.98);
+            --mode-icon-color: #c89cff;
+        }
+
+        * { box-sizing: border-box; }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -21,47 +59,34 @@
             color: var(--text-color);
             margin: 0;
             padding: 20px;
-            transition: all 0.3s ease;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* Auth Screen Styling */
+        /* Auth Screen */
         .auth-container {
             max-width: 400px;
             margin: 100px auto;
             background: var(--card-bg);
             padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border-radius: 16px;
+            box-shadow: 0 4px 32px rgba(123,44,191,0.10);
             text-align: center;
+            border: 1px solid var(--border-color);
         }
 
-        .auth-tabs {
-            display: flex;
-            margin-bottom: 20px;
-            border-bottom: 2px solid var(--border-color);
-        }
-
-        .auth-tab {
-            flex: 1;
-            padding: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            color: #868e96;
-        }
-
-        .auth-tab.active {
-            color: var(--primary-color);
-            border-bottom: 2px solid var(--primary-color);
-            margin-bottom: -2px;
-        }
+        .auth-tabs { display: flex; margin-bottom: 20px; border-bottom: 2px solid var(--border-color); }
+        .auth-tab { flex: 1; padding: 10px; cursor: pointer; font-weight: bold; color: var(--text-muted); transition: color 0.2s; }
+        .auth-tab.active { color: var(--primary-color); border-bottom: 2px solid var(--primary-color); margin-bottom: -2px; }
 
         .auth-form input {
             width: 100%;
             padding: 12px;
             margin: 10px 0;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            box-sizing: border-box;
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+            background: var(--input-bg);
+            color: var(--text-color);
+            font-size: 15px;
         }
 
         .auth-form button {
@@ -69,102 +94,361 @@
             background-color: var(--primary-color);
             color: white;
             border: none;
-            padding: 12px;
-            border-radius: 6px;
+            padding: 13px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
             font-size: 16px;
             margin-top: 10px;
+            transition: opacity 0.2s;
         }
+        .auth-form button:hover { opacity: 0.88; }
 
-        .auth-form button:hover { opacity: 0.9; }
-
-        /* Dashboard View Configuration */
+        /* Dashboard */
         .dashboard {
             display: none;
             max-width: 1400px;
             margin: 0 auto;
             background: var(--card-bg);
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            padding: 28px;
+            border-radius: 16px;
+            box-shadow: 0 4px 32px rgba(0,0,0,0.07);
+            border: 1px solid var(--border-color);
         }
 
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 20px;
-            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 18px;
+            margin-bottom: 22px;
             flex-wrap: wrap;
             gap: 15px;
         }
 
-        h1 { margin: 0; font-size: 24px; color: var(--primary-color); }
+        h1 { margin: 0; font-size: 22px; color: var(--primary-color); font-weight: 700; letter-spacing: -0.3px; }
 
-        .controls-group { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
+        .controls-group { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
 
-        .customizer-panel {
+        /* Month picker chip */
+        .month-chip {
             display: flex;
-            gap: 15px;
             align-items: center;
-            background: #f1f3f5;
-            padding: 10px 15px;
-            border-radius: 8px;
+            gap: 8px;
+            background: var(--chip-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 8px 14px;
+        }
+
+        .month-chip label { font-size: 13px; font-weight: 600; color: var(--text-muted); white-space: nowrap; }
+
+        input[type="month"] {
+            border: none;
+            background: transparent;
+            color: var(--text-color);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+        }
+
+        /* Icon Buttons */
+        .icon-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background: var(--chip-bg);
+            color: var(--text-color);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: background 0.18s, border-color 0.18s;
+            position: relative;
+            flex-shrink: 0;
+        }
+        .icon-btn:hover { background: var(--chip-hover); border-color: var(--primary-color); }
+        .icon-btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+        /* User display */
+        .user-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--chip-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 7px 14px;
+            font-size: 14px;
+            font-weight: 600;
         }
 
         .logout-btn {
-            background-color: #ff6b6b;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 6px;
+            background-color: transparent;
+            color: #e05c5c;
+            border: 1px solid #e05c5c;
+            padding: 7px 14px;
+            border-radius: 10px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 600;
+            font-size: 13px;
+            transition: background 0.18s;
         }
-        .logout-btn:hover { background-color: #fa5252; }
+        .logout-btn:hover { background: rgba(224,92,92,0.10); }
 
-        label { font-size: 14px; font-weight: 600; }
-        input[type="color"], input[type="month"] {
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            padding: 4px;
-            cursor: pointer;
-        }
+        /* Table */
+        .tracker-wrapper { overflow-x: auto; margin-bottom: 28px; border: 1px solid var(--border-color); border-radius: 12px; }
+        table { width: 100%; border-collapse: collapse; text-align: center; background: var(--card-bg); }
+        th, td { border: 1px solid var(--border-color); padding: 7px 5px; font-size: 12px; color: var(--text-color); }
+        th { background-color: var(--primary-color); color: var(--table-header-text); font-weight: 600; }
 
-        .tracker-wrapper { overflow-x: auto; margin-bottom: 30px; border: 1px solid var(--border-color); border-radius: 8px; }
-        table { width: 100%; border-collapse: collapse; text-align: center; background: white; }
-        th, td { border: 1px solid var(--border-color); padding: 8px 6px; font-size: 13px; }
-        th { background-color: var(--primary-color); color: white; font-weight: 600; }
+        tbody tr:nth-child(even) { background-color: var(--row-alt); }
+        tbody tr:hover { background: var(--chip-hover); }
 
         .task-col {
-            text-align: left; min-width: 220px; font-weight: 600; padding-left: 12px;
-            background: #fff; position: sticky; left: 0; z-index: 2; box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+            text-align: left;
+            min-width: 230px;
+            font-weight: 600;
+            padding-left: 10px;
+            background: var(--card-bg);
+            position: sticky;
+            left: 0;
+            z-index: 2;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.06);
         }
         th.task-col { background-color: var(--primary-color); z-index: 3; }
-        .task-item-cell { display: flex; justify-content: space-between; align-items: center; }
 
-        .delete-btn { background: none; border: none; color: #ff6b6b; cursor: pointer; font-size: 16px; padding: 0 5px; font-weight: bold; }
-        .delete-btn:hover { color: #fa5252; }
+        /* Task cell with burger menu */
+        .task-item-cell {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 6px;
+        }
+        .task-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
 
-        /* Custom Checkbox/Rectangles */
+        /* Burger button */
+        .burger-btn {
+            width: 26px;
+            height: 26px;
+            border-radius: 7px;
+            border: 1px solid var(--border-color);
+            background: var(--chip-bg);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: background 0.15s, border-color 0.15s;
+            position: relative;
+        }
+        .burger-btn:hover { background: var(--chip-hover); border-color: var(--primary-color); }
+        .burger-btn svg { width: 13px; height: 13px; stroke: var(--text-muted); fill: none; stroke-width: 2.2; stroke-linecap: round; }
+        .burger-btn:hover svg { stroke: var(--primary-color); }
+
+        /* Task dropdown menu */
+        .task-menu {
+            position: absolute;
+            right: 0;
+            top: calc(100% + 4px);
+            background: var(--menu-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            box-shadow: var(--menu-shadow);
+            z-index: 999;
+            min-width: 130px;
+            overflow: hidden;
+            display: none;
+        }
+        .task-menu.open { display: block; }
+        .task-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 14px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            color: var(--text-color);
+            transition: background 0.14s;
+            white-space: nowrap;
+        }
+        .task-menu-item:hover { background: var(--chip-hover); }
+        .task-menu-item svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+        .task-menu-item.danger { color: #e05c5c; }
+        .task-menu-item.danger:hover { background: rgba(224,92,92,0.09); }
+        .task-menu-item + .task-menu-item { border-top: 1px solid var(--border-color); }
+
+        /* Inline edit row */
+        .task-edit-input {
+            flex: 1;
+            border: 1px solid var(--primary-color);
+            border-radius: 6px;
+            background: var(--input-bg);
+            color: var(--text-color);
+            font-size: 13px;
+            padding: 3px 7px;
+            font-weight: 600;
+            outline: none;
+            min-width: 0;
+        }
+
+        /* Checkbox */
         .checkbox-container { display: inline-block; position: relative; cursor: pointer; width: 18px; height: 18px; }
         .checkbox-container input { position: absolute; opacity: 0; cursor: pointer; height: 0; width: 0; }
-        .checkmark { position: absolute; top: 0; left: 0; height: 18px; width: 18px; background-color: #eee; border-radius: 4px; border: 1px solid #ced4da; transition: background-color 0.2s; }
-        .checkbox-container:hover input ~ .checkmark { background-color: #ccc; }
+        .checkmark { position: absolute; top: 0; left: 0; height: 18px; width: 18px; background-color: var(--chip-bg); border-radius: 5px; border: 1.5px solid var(--input-border); transition: background-color 0.18s; }
+        .checkbox-container:hover input ~ .checkmark { border-color: var(--primary-color); }
         .checkbox-container input:checked ~ .checkmark { background-color: var(--primary-color); border-color: var(--primary-color); }
-        .checkmark:after { content: ""; position: absolute; display: none; left: 6px; top: 2px; width: 4px; height: 9px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+        .checkmark:after { content: ""; position: absolute; display: none; left: 5px; top: 2px; width: 5px; height: 9px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg); }
         .checkbox-container input:checked ~ .checkmark:after { display: block; }
 
+        /* Add task row */
         .add-task-box { display: flex; gap: 10px; margin-bottom: 20px; }
-        .add-task-box input[type="text"] { flex: 1; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 14px; }
-        .add-task-box button { background-color: var(--primary-color); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        .add-task-box button:hover { opacity: 0.9; }
+        .add-task-box input[type="text"] {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1.5px solid var(--input-border);
+            border-radius: 10px;
+            font-size: 14px;
+            background: var(--input-bg);
+            color: var(--text-color);
+            transition: border-color 0.18s;
+        }
+        .add-task-box input[type="text"]:focus { outline: none; border-color: var(--primary-color); }
+        .add-task-box input[type="text"]::placeholder { color: var(--text-muted); }
+        .add-task-box button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 14px;
+            transition: opacity 0.18s;
+            white-space: nowrap;
+        }
+        .add-task-box button:hover { opacity: 0.88; }
 
-        .summary-row { background-color: #f1f3f5; font-weight: bold; }
-        .chart-section { margin-top: 30px; padding: 20px; background: #fff; border: 1px solid var(--border-color); border-radius: 8px; }
-        .days-complete-col { font-weight: bold; background: #f8f9fa; min-width: 80px; }
+        /* Summary rows */
+        .summary-row { background-color: var(--summary-bg) !important; font-weight: bold; }
+        .summary-row td { color: var(--text-color); font-size: 11px; }
+
+        .days-complete-col { font-weight: bold; background: var(--chip-bg); min-width: 80px; color: var(--text-color); }
+
+        /* Chart section */
+        .chart-section {
+            margin-top: 24px;
+            padding: 20px;
+            background: var(--chip-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+        }
+        .chart-section h3 { margin: 0 0 14px; font-size: 15px; font-weight: 600; color: var(--text-color); }
+
+        /* Settings panel */
+        .settings-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: var(--overlay-bg);
+            z-index: 1000;
+            backdrop-filter: blur(2px);
+        }
+        .settings-overlay.open { display: flex; align-items: center; justify-content: center; }
+        .settings-panel {
+            background: var(--settings-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 28px 32px;
+            min-width: 320px;
+            box-shadow: 0 8px 48px rgba(0,0,0,0.18);
+        }
+        .settings-panel h2 { margin: 0 0 22px; font-size: 17px; font-weight: 700; color: var(--text-color); }
+        .settings-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .settings-row label { font-size: 14px; font-weight: 600; color: var(--text-color); }
+        .settings-row .desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+        /* Color swatches */
+        .color-swatch-group { display: flex; gap: 8px; flex-wrap: wrap; }
+        .color-swatch {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            border: 2.5px solid transparent;
+            cursor: pointer;
+            transition: transform 0.15s, border-color 0.15s;
+        }
+        .color-swatch:hover { transform: scale(1.12); }
+        .color-swatch.active { border-color: var(--text-color); }
+
+        .custom-color-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+        .custom-color-row label { font-size: 13px; color: var(--text-muted); }
+        input[type="color"] {
+            width: 38px;
+            height: 32px;
+            border: 1px solid var(--border-color);
+            border-radius: 7px;
+            padding: 2px;
+            cursor: pointer;
+            background: var(--input-bg);
+        }
+
+        /* Dark mode toggle */
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider {
+            position: absolute;
+            inset: 0;
+            background: var(--input-border);
+            border-radius: 999px;
+            cursor: pointer;
+            transition: background 0.22s;
+        }
+        .toggle-slider:before {
+            content: '';
+            position: absolute;
+            left: 3px;
+            top: 3px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: white;
+            transition: transform 0.22s;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+        }
+        .toggle-switch input:checked + .toggle-slider { background: var(--primary-color); }
+        .toggle-switch input:checked + .toggle-slider:before { transform: translateX(20px); }
+
+        .settings-close-btn {
+            width: 100%;
+            margin-top: 10px;
+            padding: 11px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: opacity 0.18s;
+        }
+        .settings-close-btn:hover { opacity: 0.88; }
     </style>
 </head>
 <body>
@@ -185,33 +469,33 @@
 <div id="app-view" class="dashboard">
     <header>
         <h1 id="tracker-title">Habit & Task Tracker</h1>
-        
         <div class="controls-group">
-            <span id="user-display" style="font-weight:bold; color:#495057;"></span>
-            <div class="customizer-panel">
-                <div>
-                    <label for="month-select">Period: </label>
-                    <input type="month" id="month-select">
-                </div>
-                <div>
-                    <label for="color-picker">Theme Color: </label>
-                    <input type="color" id="color-picker" value="#7b2cbf">
-                </div>
+            <span id="user-display" class="user-pill"></span>
+            <div class="month-chip">
+                <label for="month-select">Period:</label>
+                <input type="month" id="month-select">
             </div>
+            <!-- Dark mode toggle -->
+            <button class="icon-btn" id="theme-toggle-btn" onclick="toggleDarkMode()" title="Toggle dark/light mode">
+                <svg id="theme-icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
+                <svg id="theme-icon-sun" viewBox="0 0 24 24" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            </button>
+            <!-- Settings gear -->
+            <button class="icon-btn" onclick="openSettings()" title="Settings">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            </button>
             <button class="logout-btn" onclick="handleLogout()">Logout</button>
         </div>
     </header>
 
     <div class="add-task-box">
         <input type="text" id="new-task-input" placeholder="Enter new habit/task (e.g., Read 30 pages, Memorize Quran)...">
-        <button id="add-task-btn" onclick="addTask()">Add Task</button>
+        <button id="add-task-btn" onclick="addTask()">+ Add Task</button>
     </div>
 
     <div class="tracker-wrapper">
         <table id="tracker-table">
-            <thead>
-                <tr id="header-days-row"></tr>
-            </thead>
+            <thead><tr id="header-days-row"></tr></thead>
             <tbody id="tracker-body"></tbody>
             <tfoot>
                 <tr id="total-completed-row" class="summary-row"></tr>
@@ -226,36 +510,131 @@
     </div>
 </div>
 
+<!-- Settings Panel -->
+<div class="settings-overlay" id="settings-overlay" onclick="handleOverlayClick(event)">
+    <div class="settings-panel">
+        <h2>⚙️ Appearance Settings</h2>
+
+        <div class="settings-row">
+            <div>
+                <div style="font-size:14px;font-weight:600;color:var(--text-color)">Dark Mode</div>
+                <div class="desc">Switch between light and dark theme</div>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="dark-mode-toggle" onchange="toggleDarkModeFromSettings(this)">
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+
+        <div style="margin-bottom:16px">
+            <div style="font-size:14px;font-weight:600;color:var(--text-color);margin-bottom:12px">Theme Color</div>
+            <div class="color-swatch-group" id="swatch-group">
+                <div class="color-swatch" style="background:#7b2cbf" data-color="#7b2cbf" onclick="applyColor('#7b2cbf')"></div>
+                <div class="color-swatch" style="background:#2563eb" data-color="#2563eb" onclick="applyColor('#2563eb')"></div>
+                <div class="color-swatch" style="background:#0d9488" data-color="#0d9488" onclick="applyColor('#0d9488')"></div>
+                <div class="color-swatch" style="background:#db2777" data-color="#db2777" onclick="applyColor('#db2777')"></div>
+                <div class="color-swatch" style="background:#ea580c" data-color="#ea580c" onclick="applyColor('#ea580c')"></div>
+                <div class="color-swatch" style="background:#16a34a" data-color="#16a34a" onclick="applyColor('#16a34a')"></div>
+                <div class="color-swatch" style="background:#dc2626" data-color="#dc2626" onclick="applyColor('#dc2626')"></div>
+                <div class="color-swatch" style="background:#1d4ed8" data-color="#1d4ed8" onclick="applyColor('#1d4ed8')"></div>
+            </div>
+            <div class="custom-color-row">
+                <label>Custom:</label>
+                <input type="color" id="color-picker" value="#7b2cbf" oninput="applyColor(this.value)">
+                <span style="font-size:13px;color:var(--text-muted)" id="color-hex-label">#7b2cbf</span>
+            </div>
+        </div>
+
+        <button class="settings-close-btn" onclick="closeSettings()">Done</button>
+    </div>
+</div>
+
 <script>
-    let currentPeriod = ""; 
-    let habitData = {}; 
+    let currentPeriod = "";
+    let habitData = {};
     let chartInstance = null;
     let authMode = 'login';
-
-    // Global Token Control
     let token = localStorage.getItem('auth_token');
+    let activeMenu = null;
+
+    const PRESET_COLORS = ['#7b2cbf','#2563eb','#0d9488','#db2777','#ea580c','#16a34a','#dc2626','#1d4ed8'];
 
     document.addEventListener('DOMContentLoaded', () => {
         setupTheme();
-        if (token) {
-            showDashboard();
-        } else {
-            showAuth();
+        const savedDark = localStorage.getItem('tracker_dark') === 'true';
+        if (savedDark) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            document.getElementById('dark-mode-toggle').checked = true;
+            document.getElementById('theme-icon-moon').style.display = 'none';
+            document.getElementById('theme-icon-sun').style.display = 'block';
         }
+        if (token) showDashboard();
+        else showAuth();
+
+        document.addEventListener('click', (e) => {
+            if (activeMenu && !activeMenu.contains(e.target) && !e.target.closest('.burger-btn')) {
+                activeMenu.classList.remove('open');
+                activeMenu = null;
+            }
+        });
     });
 
     function setupTheme() {
         const savedColor = localStorage.getItem('tracker_theme') || '#7b2cbf';
-        document.getElementById('color-picker').value = savedColor;
         document.documentElement.style.setProperty('--primary-color', savedColor);
+        document.getElementById('color-picker').value = savedColor;
+        document.getElementById('color-hex-label').textContent = savedColor;
+        updateSwatchActive(savedColor);
     }
 
-    document.getElementById('color-picker').addEventListener('input', (e) => {
-        const selectedColor = e.target.value;
-        document.documentElement.style.setProperty('--primary-color', selectedColor);
-        localStorage.setItem('tracker_theme', selectedColor);
-        if(chartInstance) updateChartStyles();
-    });
+    function applyColor(color) {
+        document.documentElement.style.setProperty('--primary-color', color);
+        localStorage.setItem('tracker_theme', color);
+        document.getElementById('color-picker').value = color;
+        document.getElementById('color-hex-label').textContent = color;
+        updateSwatchActive(color);
+        if (chartInstance) updateChartStyles();
+    }
+
+    function updateSwatchActive(color) {
+        document.querySelectorAll('.color-swatch').forEach(s => {
+            s.classList.toggle('active', s.dataset.color === color);
+        });
+    }
+
+    function toggleDarkMode() {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const newDark = !isDark;
+        document.documentElement.setAttribute('data-theme', newDark ? 'dark' : 'light');
+        localStorage.setItem('tracker_dark', newDark);
+        document.getElementById('dark-mode-toggle').checked = newDark;
+        document.getElementById('theme-icon-moon').style.display = newDark ? 'none' : 'block';
+        document.getElementById('theme-icon-sun').style.display = newDark ? 'block' : 'none';
+        if (chartInstance) updateChartStyles();
+    }
+
+    function toggleDarkModeFromSettings(el) {
+        const newDark = el.checked;
+        document.documentElement.setAttribute('data-theme', newDark ? 'dark' : 'light');
+        localStorage.setItem('tracker_dark', newDark);
+        document.getElementById('theme-icon-moon').style.display = newDark ? 'none' : 'block';
+        document.getElementById('theme-icon-sun').style.display = newDark ? 'block' : 'none';
+        if (chartInstance) updateChartStyles();
+    }
+
+    function openSettings() {
+        document.getElementById('settings-overlay').classList.add('open');
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        document.getElementById('dark-mode-toggle').checked = isDark;
+    }
+
+    function closeSettings() {
+        document.getElementById('settings-overlay').classList.remove('open');
+    }
+
+    function handleOverlayClick(e) {
+        if (e.target === document.getElementById('settings-overlay')) closeSettings();
+    }
 
     document.getElementById('month-select').addEventListener('change', (e) => {
         currentPeriod = e.target.value;
@@ -263,10 +642,9 @@
     });
 
     document.getElementById('new-task-input').addEventListener('keypress', (e) => {
-        if(e.key === 'Enter') addTask();
+        if (e.key === 'Enter') addTask();
     });
 
-    // Auth UX Handling
     function switchAuthTab(mode) {
         authMode = mode;
         document.getElementById('tab-login').classList.toggle('active', mode === 'login');
@@ -274,46 +652,33 @@
         document.getElementById('auth-submit-btn').innerText = mode === 'login' ? 'Log In' : 'Create Account';
     }
 
-   async function handleAuthSubmit() {
-    const username = document.getElementById('auth-username').value.trim();
-    const password = document.getElementById('auth-password').value;
-
-    if(!username || !password) return alert('Please enter both parameters.');
-
-    const endpoint = authMode === 'login' ? '/api/auth/login' : '/api/auth/register';
-    
-    try {
-        const res = await fetch(endpoint, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
-        });
-        
-        // Smart Error Interception Layer
-        const responseText = await res.text();
-        let data;
+    async function handleAuthSubmit() {
+        const username = document.getElementById('auth-username').value.trim();
+        const password = document.getElementById('auth-password').value;
+        if (!username || !password) return alert('Please enter both parameters.');
+        const endpoint = authMode === 'login' ? '/api/auth/login' : '/api/auth/register';
         try {
-            data = JSON.parse(responseText);
-        } catch(e) {
-            // If it's not JSON, it means Render or Express returned a direct status code error
-            throw new Error(`Server Error (${res.status}): Make sure your database URI is attached properly.`);
-        }
-
-        if(!res.ok) throw new Error(data.error || 'Authentication Failed');
-
-        if(authMode === 'login') {
-            localStorage.setItem('auth_token', data.token);
-            localStorage.setItem('auth_username', data.username);
-            token = data.token;
-            showDashboard();
-        } else {
-            alert('Account Created! You can now log in.');
-            switchAuthTab('login');
-        }
-    } catch(err) {
-        alert(err.message);
+            const res = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+            const responseText = await res.text();
+            let data;
+            try { data = JSON.parse(responseText); }
+            catch(e) { throw new Error(`Server Error (${res.status}): Make sure your database URI is attached properly.`); }
+            if (!res.ok) throw new Error(data.error || 'Authentication Failed');
+            if (authMode === 'login') {
+                localStorage.setItem('auth_token', data.token);
+                localStorage.setItem('auth_username', data.username);
+                token = data.token;
+                showDashboard();
+            } else {
+                alert('Account Created! You can now log in.');
+                switchAuthTab('login');
+            }
+        } catch(err) { alert(err.message); }
     }
-}
 
     function handleLogout() {
         localStorage.removeItem('auth_token');
@@ -330,55 +695,37 @@
     function showDashboard() {
         document.getElementById('auth-view').style.display = 'none';
         document.getElementById('app-view').style.display = 'block';
-        document.getElementById('user-display').innerText = `👤 Hello, ${localStorage.getItem('auth_username')}`;
-        
+        document.getElementById('user-display').innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ${localStorage.getItem('auth_username')}`;
         const today = new Date();
         document.getElementById('month-select').value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
         currentPeriod = document.getElementById('month-select').value;
-        
         fetchTrackerData();
     }
 
-    // Networking Synchronization
     async function fetchTrackerData() {
         try {
-            const res = await fetch('/api/tracker', {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            if(res.status === 401 || res.status === 403) return handleLogout();
-            
+            const res = await fetch('/api/tracker', { headers: { 'Authorization': `Bearer ${token}` } });
+            if (res.status === 401 || res.status === 403) return handleLogout();
             const serverRes = await res.json();
             habitData = serverRes.data || {};
             initTracker();
-        } catch (e) {
-            console.error("Network synchronization error", e);
-        }
+        } catch (e) { console.error("Network synchronization error", e); }
     }
 
     async function syncToServer() {
         try {
             await fetch('/api/tracker', {
                 method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify({ data: habitData })
             });
-        } catch (e) {
-            console.error("Autosave tracking failed", e);
-        }
+        } catch (e) { console.error("Autosave tracking failed", e); }
     }
 
-    // Core System Engines
     function initTracker() {
         const [year, month] = currentPeriod.split('-');
         const daysCount = new Date(year, month, 0).getDate();
-        
-        if (!habitData[currentPeriod]) {
-            habitData[currentPeriod] = { tasks: {} };
-        }
-
+        if (!habitData[currentPeriod]) habitData[currentPeriod] = { tasks: {} };
         renderHeaders(daysCount, year, month);
         renderRows(daysCount);
         updateCalculationsAndGraph();
@@ -387,76 +734,120 @@
     function renderHeaders(days, year, month) {
         const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
         let html = `<th class="task-col">Daily Habits</th>`;
-        
-        for(let i = 1; i <= days; i++) {
+        for (let i = 1; i <= days; i++) {
             const dayName = dayNames[new Date(year, month - 1, i).getDay()];
             html += `<th>${dayName}<br>${i}</th>`;
         }
-        html += `<th class="days-complete-col">Days Complete</th>`;
+        html += `<th class="days-complete-col">Days Done</th>`;
         document.getElementById('header-days-row').innerHTML = html;
-        
         const monthLabel = new Date(year, month - 1).toLocaleString('default', { month: 'long' }).toUpperCase();
-        document.getElementById('tracker-title').innerText = `${monthLabel} ${year} - TRACKER`;
+        document.getElementById('tracker-title').innerText = `${monthLabel} ${year} — TRACKER`;
     }
 
     function renderRows(daysCount) {
         const tasksObj = habitData[currentPeriod].tasks;
         let html = '';
-
         if (Object.keys(tasksObj).length === 0) {
-            html = `<tr><td colspan="${daysCount + 2}" style="padding:20px; color:#868e96;">No active entries. Add one below!</td></tr>`;
+            html = `<tr><td colspan="${daysCount + 2}" style="padding:22px; color:var(--text-muted); font-size:14px;">No active entries. Add one above!</td></tr>`;
             document.getElementById('tracker-body').innerHTML = html;
             return;
         }
-
         for (const [taskName, checkedArray] of Object.entries(tasksObj)) {
-            if (checkedArray.length !== daysCount) {
-                habitData[currentPeriod].tasks[taskName] = Array(daysCount).fill(false);
-            }
-            
-            const currentCheckedArray = habitData[currentPeriod].tasks[taskName];
-            let rowCompletedCount = currentCheckedArray.filter(Boolean).length;
-
+            if (checkedArray.length !== daysCount) habitData[currentPeriod].tasks[taskName] = Array(daysCount).fill(false);
+            const currentChecked = habitData[currentPeriod].tasks[taskName];
+            const rowCount = currentChecked.filter(Boolean).length;
+            const safeId = taskName.replace(/[^a-zA-Z0-9]/g, '_');
             html += `<tr>
                 <td class="task-col">
-                    <div class="task-item-cell">
-                        <span>${taskName}</span>
-                        <button class="delete-btn" onclick="deleteTask('${taskName.replace(/'/g, "\\'")}')">×</button>
+                  <div class="task-item-cell">
+                    <span class="task-name" id="taskname-${safeId}">${taskName}</span>
+                    <div style="position:relative;flex-shrink:0">
+                      <button class="burger-btn" onclick="toggleTaskMenu(event,'menu-${safeId}')" title="Options">
+                        <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                      </button>
+                      <div class="task-menu" id="menu-${safeId}">
+                        <div class="task-menu-item" onclick="startEdit('${taskName.replace(/'/g,"\\'")}','${safeId}')">
+                          <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                          Edit
+                        </div>
+                        <div class="task-menu-item danger" onclick="deleteTask('${taskName.replace(/'/g,"\\'")}')">
+                          <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                          Delete
+                        </div>
+                      </div>
                     </div>
+                  </div>
                 </td>`;
-            
             for (let d = 0; d < daysCount; d++) {
-                const isChecked = currentCheckedArray[d] ? 'checked' : '';
-                html += `<td>
-                    <label class="checkbox-container">
-                        <input type="checkbox" ${isChecked} data-task="${taskName}" data-day="${d}" onchange="toggleCheckbox(this)">
-                        <span class="checkmark"></span>
-                    </label>
-                </td>`;
+                const isChecked = currentChecked[d] ? 'checked' : '';
+                html += `<td><label class="checkbox-container"><input type="checkbox" ${isChecked} data-task="${taskName}" data-day="${d}" onchange="toggleCheckbox(this)"><span class="checkmark"></span></label></td>`;
             }
-            html += `<td class="days-complete-col" id="count-${taskName}">${rowCompletedCount}</td></tr>`;
+            html += `<td class="days-complete-col" id="count-${safeId}">${rowCount}</td></tr>`;
         }
         document.getElementById('tracker-body').innerHTML = html;
+    }
+
+    function toggleTaskMenu(e, menuId) {
+        e.stopPropagation();
+        const menu = document.getElementById(menuId);
+        if (activeMenu && activeMenu !== menu) {
+            activeMenu.classList.remove('open');
+        }
+        menu.classList.toggle('open');
+        activeMenu = menu.classList.contains('open') ? menu : null;
+    }
+
+    function startEdit(taskName, safeId) {
+        if (activeMenu) { activeMenu.classList.remove('open'); activeMenu = null; }
+        const nameSpan = document.getElementById(`taskname-${safeId}`);
+        const original = nameSpan.innerText;
+        nameSpan.innerHTML = `<input class="task-edit-input" id="edit-input-${safeId}" value="${original}" onkeydown="handleEditKey(event,'${taskName.replace(/'/g,"\\'")}','${safeId}')">`;
+        const inp = document.getElementById(`edit-input-${safeId}`);
+        inp.focus();
+        inp.select();
+    }
+
+    function handleEditKey(e, oldName, safeId) {
+        if (e.key === 'Enter') commitEdit(oldName, safeId);
+        if (e.key === 'Escape') {
+            const nameSpan = document.getElementById(`taskname-${safeId}`);
+            nameSpan.innerText = oldName;
+        }
+    }
+
+    async function commitEdit(oldName, safeId) {
+        const inp = document.getElementById(`edit-input-${safeId}`);
+        const newName = inp ? inp.value.trim() : '';
+        if (!newName || newName === oldName) {
+            const nameSpan = document.getElementById(`taskname-${safeId}`);
+            if (nameSpan) nameSpan.innerText = oldName;
+            return;
+        }
+        if (habitData[currentPeriod].tasks[newName]) {
+            alert('A task with that name already exists.');
+            return;
+        }
+        habitData[currentPeriod].tasks[newName] = habitData[currentPeriod].tasks[oldName];
+        delete habitData[currentPeriod].tasks[oldName];
+        initTracker();
+        await syncToServer();
     }
 
     async function addTask() {
         const taskName = document.getElementById('new-task-input').value.trim();
         if (!taskName) return;
-
         const [year, month] = currentPeriod.split('-');
         const daysCount = new Date(year, month, 0).getDate();
-
         if (habitData[currentPeriod].tasks[taskName]) return alert("Habit entry already matches context.");
-
         habitData[currentPeriod].tasks[taskName] = Array(daysCount).fill(false);
         document.getElementById('new-task-input').value = '';
-        
         initTracker();
         await syncToServer();
     }
 
     async function deleteTask(taskName) {
-        if(confirm(`Remove "${taskName}"?`)) {
+        if (confirm(`Remove "${taskName}"?`)) {
+            if (activeMenu) { activeMenu.classList.remove('open'); activeMenu = null; }
             delete habitData[currentPeriod].tasks[taskName];
             initTracker();
             await syncToServer();
@@ -466,10 +857,10 @@
     async function toggleCheckbox(element) {
         const taskName = element.getAttribute('data-task');
         const dayIdx = parseInt(element.getAttribute('data-day'));
-        
         habitData[currentPeriod].tasks[taskName][dayIdx] = element.checked;
-        document.getElementById(`count-${taskName}`).innerText = habitData[currentPeriod].tasks[taskName].filter(Boolean).length;
-
+        const safeId = taskName.replace(/[^a-zA-Z0-9]/g, '_');
+        const countEl = document.getElementById(`count-${safeId}`);
+        if (countEl) countEl.innerText = habitData[currentPeriod].tasks[taskName].filter(Boolean).length;
         updateCalculationsAndGraph();
         await syncToServer();
     }
@@ -482,78 +873,74 @@
 
         let totalCompletedHtml = `<td class="task-col">COMPLETE FOR THE DAY</td>`;
         let percentCompletedHtml = `<td class="task-col">PERCENT COMPLETE</td>`;
+        let dailyPercentages = [], labels = [];
 
-        let dailyPercentages = [];
-        let labels = [];
-
-        for(let d = 0; d < daysCount; d++) {
+        for (let d = 0; d < daysCount; d++) {
             labels.push(d + 1);
             let dayCheckedCount = 0;
-            for (const [taskName, checkedArray] of Object.entries(tasksObj)) {
-                if(checkedArray[d]) dayCheckedCount++;
-            }
+            for (const [, checkedArray] of Object.entries(tasksObj)) { if (checkedArray[d]) dayCheckedCount++; }
             let percentage = totalTasks > 0 ? Math.round((dayCheckedCount / totalTasks) * 100) : 0;
             dailyPercentages.push(percentage);
-
             totalCompletedHtml += `<td>${dayCheckedCount}</td>`;
             percentCompletedHtml += `<td>${percentage}%</td>`;
         }
 
         let maxTasksCompleted = 0;
-        for (const [taskName, checkedArray] of Object.entries(tasksObj)) {
-            let rowCompletedCount = checkedArray.filter(Boolean).length;
-            if(rowCompletedCount > maxTasksCompleted) maxTasksCompleted = rowCompletedCount;
+        for (const [, checkedArray] of Object.entries(tasksObj)) {
+            const c = checkedArray.filter(Boolean).length;
+            if (c > maxTasksCompleted) maxTasksCompleted = c;
         }
         totalCompletedHtml += `<td class="days-complete-col">BEST</td>`;
         percentCompletedHtml += `<td class="days-complete-col">${maxTasksCompleted}</td>`;
-
         document.getElementById('total-completed-row').innerHTML = totalCompletedHtml;
         document.getElementById('percent-completed-row').innerHTML = percentCompletedHtml;
-
         renderGraph(labels, dailyPercentages);
     }
 
     function renderGraph(labels, dataPoints) {
         const ctx = document.getElementById('completionChart').getContext('2d');
         const themeColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
-
         if (chartInstance) {
             chartInstance.data.labels = labels;
             chartInstance.data.datasets[0].data = dataPoints;
             chartInstance.data.datasets[0].borderColor = themeColor;
-            chartInstance.data.datasets[0].backgroundColor = themeColor + '20';
+            chartInstance.data.datasets[0].backgroundColor = themeColor + '22';
             chartInstance.update();
         } else {
             chartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: labels,
+                    labels,
                     datasets: [{
                         label: 'Completion rate (%)',
                         data: dataPoints,
                         borderColor: themeColor,
-                        backgroundColor: themeColor + '20',
+                        backgroundColor: themeColor + '22',
                         borderWidth: 2,
-                        tension: 0.1,
-                        fill: true
+                        tension: 0.3,
+                        fill: true,
+                        pointBackgroundColor: themeColor,
+                        pointRadius: 3
                     }]
                 },
                 options: {
                     responsive: true,
                     scales: {
-                        y: { min: 0, max: 100, ticks: { callback: value => value + '%' } },
-                        x: { title: { display: true, text: 'Days of Month' } }
-                    }
+                        y: { min: 0, max: 100, ticks: { callback: v => v + '%', color: '#888' }, grid: { color: 'rgba(128,128,128,0.1)' } },
+                        x: { title: { display: true, text: 'Days of Month', color: '#888' }, ticks: { color: '#888' }, grid: { color: 'rgba(128,128,128,0.1)' } }
+                    },
+                    plugins: { legend: { labels: { color: '#888' } } }
                 }
             });
         }
     }
 
     function updateChartStyles() {
-        if(chartInstance) {
+        if (chartInstance) {
             const themeColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
             chartInstance.data.datasets[0].borderColor = themeColor;
-            chartInstance.data.datasets[0].backgroundColor = themeColor + '20';
+            chartInstance.data.datasets[0].backgroundColor = themeColor + '22';
+            chartInstance.data.datasets[0].pointBackgroundColor = themeColor;
             chartInstance.update();
         }
     }
