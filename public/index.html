@@ -90,6 +90,46 @@
         }
         .auth-form input:focus { border-color: var(--primary-color); }
 
+        /* Input Container with Info Button Inline Placement */
+        .input-with-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            margin: 8px 0;
+        }
+
+        .input-with-info input {
+            margin: 0 !important;
+            flex: 1;
+        }
+
+        .info-btn {
+            background: transparent !important;
+            border: 1.5px solid var(--border-color) !important;
+            color: var(--text-muted) !important;
+            border-radius: 50% !important;
+            width: 32px !important;
+            height: 32px !important;
+            min-width: 32px;
+            padding: 0 !important;
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px !important;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            line-height: 1;
+            margin-top: 0 !important;
+        }
+        .info-btn:hover {
+            border-color: var(--primary-color) !important;
+            color: var(--primary-color) !important;
+            background: var(--chip-bg) !important;
+        }
+
         .auth-form button {
             width: 100%;
             background-color: var(--primary-color);
@@ -104,6 +144,35 @@
             transition: opacity 0.2s;
         }
         .auth-form button:hover { opacity: 0.88; }
+
+        /* Override for info-btn inside auth-form — must come AFTER .auth-form button */
+        .auth-form .info-btn {
+            width: 32px !important;
+            height: 32px !important;
+            min-width: 32px;
+            background: transparent !important;
+            background-color: transparent !important;
+            border: 1.5px solid var(--border-color) !important;
+            color: var(--text-muted) !important;
+            border-radius: 50% !important;
+            padding: 0 !important;
+            font-size: 15px !important;
+            margin-top: 0 !important;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            opacity: 1;
+            transition: all 0.2s;
+        }
+        .auth-form .info-btn:hover {
+            border-color: var(--primary-color) !important;
+            color: var(--primary-color) !important;
+            background: var(--chip-bg) !important;
+            opacity: 1;
+        }
 
         .forgot-link {
             display: block;
@@ -381,8 +450,15 @@
         
         <div id="recovery-question-display" class="recovery-question-text" style="display:none;"></div>
         
-        <input type="text" id="auth-question" placeholder="Security Question (e.g., What is your father's name?)">
-        <input type="text" id="auth-answer" placeholder="Security Answer (e.g., John)">
+        <div class="input-with-info" id="wrapper-question" style="display:none;">
+            <input type="text" id="auth-question" placeholder="Security Question (e.g., What is your father's name?)">
+            <button class="info-btn" onclick="showInfoPopup('question')" type="button" title="Help">ⓘ</button>
+        </div>
+        
+        <div class="input-with-info" id="wrapper-answer" style="display:none;">
+            <input type="text" id="auth-answer" placeholder="Security Answer (e.g., John)">
+            <button class="info-btn" onclick="showInfoPopup('answer')" type="button" title="Help">ⓘ</button>
+        </div>
         
         <input type="password" id="auth-password" placeholder="Password">
         
@@ -510,12 +586,11 @@
     let habitData = {};
     let chartInstance = null;
     let authMode = 'login'; 
-    let recoveryStep = 1; // 1: Find username, 2: Validate question & Answer
+    let recoveryStep = 1;
     let token = localStorage.getItem('auth_token');
     let activeMenu = null;
     let currentLang = localStorage.getItem('tracker_lang') || 'en';
 
-    // Multi-Language Translation Mapping Objects
     const translations = {
         en: {
             title: "Habit & Task Tracker",
@@ -544,8 +619,6 @@
             duplicateTask: "A task with that name already exists.",
             editOpt: "Edit",
             deleteOpt: "Delete",
-            
-            // New Profile & Security Question Translations
             profileTitle: "👤 User Profile Settings",
             profUserLabel: "Profile Username",
             profPassLabel: "New Account Password",
@@ -566,7 +639,9 @@
             alertProfileSuccess: "Profile configurations saved and updated successfully!",
             alertWrongAnswer: "Incorrect security challenge answer verification!",
             alertUserNotFound: "This username configuration parameters were not found.",
-            alertResetSuccess: "Password reset complete. You can now securely log into your profile."
+            alertResetSuccess: "Password reset complete. You can now securely log into your profile.",
+            questionInfo: "This custom security question will be asked if you ever forget your password, allowing you to safely recover your account without an email or phone number.",
+            answerInfo: "Provide a secure answer to your custom question. Make sure it's something only you know and can remember exactly!"
         },
         ru: {
             title: "Трекер привычек и задач",
@@ -595,7 +670,6 @@
             duplicateTask: "Задача с таким названием уже существует.",
             editOpt: "Редактировать",
             deleteOpt: "Удалить",
-
             profileTitle: "👤 Настройки профиля",
             profUserLabel: "Имя пользователя",
             profPassLabel: "Новый пароль",
@@ -616,7 +690,9 @@
             alertProfileSuccess: "Профиль успешно изменен и обновлен!",
             alertWrongAnswer: "Неверный ответ на секретный вопрос проверки безопасности!",
             alertUserNotFound: "Данное имя пользователя не найдено в базе системы.",
-            alertResetSuccess: "Пароль успешно обновлен. Теперь вы можете войти в систему."
+            alertResetSuccess: "Пароль успешно обновлен. Теперь вы можете войти в систему.",
+            questionInfo: "Этот секретный вопрос будет задан, если вы забудете пароль. Это позволит безопасно восстановить доступ к аккаунту без электронной почты или телефона.",
+            answerInfo: "Укажите ответ на ваш секретный вопрос. Убедитесь, что этот ответ знаете только вы и сможете ввести его в точности так же!"
         },
         uz: {
             title: "Odatlar va vazifalar trekeri",
@@ -645,7 +721,6 @@
             duplicateTask: "Bunday nomli vazifa allaqachon mavjud.",
             editOpt: "Tahrirlash",
             deleteOpt: "O'chirish",
-
             profileTitle: "👤 Profil sozlamalari",
             profUserLabel: "Foydalanuvchi nomi",
             profPassLabel: "Yangi akkaunt paroli",
@@ -666,7 +741,9 @@
             alertProfileSuccess: "Profil ma'lumotlari muvaffaqiyatli yangilandi!",
             alertWrongAnswer: "Xavfsizlik savoliga noto'g'ri javob berildi!",
             alertUserNotFound: "Bunday foydalanuvchi nomi tizimda topilmadi.",
-            alertResetSuccess: "Parol muvaffaqiyatli tiklandi. Endi tizimga kirishingiz mumkin."
+            alertResetSuccess: "Parol muvaffaqiyatli tiklandi. Endi tizimga kirishingiz mumkin.",
+            questionInfo: "Agar parolingizni unutsangiz, ushbu maxfiy savol beriladi. Bu sizga elektron pochta yoki telefonsiz akkauntingizni xavfsiz tiklash imkonini beradi.",
+            answerInfo: "Maxfiy savolga javob kiriting. Buni faqat o'zingiz bilishingizga va aniq eslab qolishingizga ishonch hosil qiling!"
         }
     };
 
@@ -688,7 +765,6 @@
             document.getElementById('theme-icon-sun').style.display = 'block';
         }
 
-        // Initialize user directory fallback data structure if missing
         if(!localStorage.getItem('tracker_users_db')){
             localStorage.setItem('tracker_users_db', JSON.stringify({
                 "admin": { password: "admin", question: "What is your father's name?", answer: "John" }
@@ -709,13 +785,11 @@
 
     function applyTranslations() {
         const dict = translations[currentLang];
-
         document.getElementById('lbl-period').innerText = dict.period;
         document.getElementById('btn-logout').innerText = dict.logout;
         document.getElementById('new-task-input').placeholder = dict.addTaskPlaceholder;
         document.getElementById('add-task-btn').innerText = dict.addTaskBtn;
         document.getElementById('chart-section-title').innerText = dict.chartTitle;
-        
         document.getElementById('settings-title').innerText = dict.settingsTitle;
         document.getElementById('lbl-lang').innerText = dict.langLabel;
         document.getElementById('lbl-lang-desc').innerText = dict.langDesc;
@@ -724,25 +798,19 @@
         document.getElementById('lbl-theme-color').innerText = dict.themeColor;
         document.getElementById('lbl-custom-color').innerText = dict.custom;
         document.getElementById('btn-settings-done').innerText = dict.done;
-
-        // Profile Panel Language Assignments
         document.getElementById('profile-modal-title').innerText = dict.profileTitle;
         document.getElementById('lbl-prof-username').innerText = dict.profUserLabel;
         document.getElementById('lbl-prof-pass').innerText = dict.profPassLabel;
         document.getElementById('btn-profile-save').innerText = dict.profSaveBtn;
         document.getElementById('btn-profile-cancel').innerText = dict.profCancelBtn;
-
-        // Login System Language Assignments
         document.getElementById('tab-login').innerText = dict.loginTab;
         document.getElementById('tab-register').innerText = dict.registerTab;
         document.getElementById('link-forgot').innerText = dict.forgotPassword;
         document.getElementById('link-back-login').innerText = dict.backToLogin;
-        
         document.getElementById('auth-username').placeholder = dict.usernamePlaceholder;
         document.getElementById('auth-password').placeholder = dict.passwordPlaceholder;
         document.getElementById('auth-question').placeholder = dict.questionPlaceholder;
         document.getElementById('auth-answer').placeholder = dict.answerPlaceholder;
-        
         updateAuthTitles();
     }
 
@@ -755,18 +823,17 @@
 
     function switchAuthMode(mode) {
         authMode = mode;
-        recoveryStep = 1; // Default back to initial configuration step
+        recoveryStep = 1; 
         
         const tabsBar = document.getElementById('auth-tabs-bar');
-        const inputQuestion = document.getElementById('auth-question');
-        const inputAnswer = document.getElementById('auth-answer');
+        const wrapperQuestion = document.getElementById('wrapper-question');
+        const wrapperAnswer = document.getElementById('wrapper-answer');
         const inputPassword = document.getElementById('auth-password');
         const displayQuestion = document.getElementById('recovery-question-display');
         const linkForgot = document.getElementById('link-forgot');
         const linkBackLogin = document.getElementById('link-back-login');
         const inputUsername = document.getElementById('auth-username');
 
-        // Clear dynamic authorization fields
         displayQuestion.style.display = 'none';
         displayQuestion.innerText = '';
 
@@ -774,8 +841,8 @@
             tabsBar.style.display = 'flex';
             inputUsername.style.display = 'block';
             inputPassword.style.display = 'block';
-            inputQuestion.style.display = 'block';
-            inputAnswer.style.display = 'block';
+            wrapperQuestion.style.display = 'flex';
+            wrapperAnswer.style.display = 'flex';
             linkForgot.style.display = 'none';
             linkBackLogin.style.display = 'none';
             document.getElementById('tab-login').classList.remove('active');
@@ -784,17 +851,16 @@
             tabsBar.style.display = 'none';
             inputUsername.style.display = 'block';
             inputPassword.style.display = 'none';
-            inputQuestion.style.display = 'none';
-            inputAnswer.style.display = 'none';
+            wrapperQuestion.style.display = 'none';
+            wrapperAnswer.style.display = 'none';
             linkForgot.style.display = 'none';
             linkBackLogin.style.display = 'block';
         } else {
-            // Default Active Login View State
             tabsBar.style.display = 'flex';
             inputUsername.style.display = 'block';
             inputPassword.style.display = 'block';
-            inputQuestion.style.display = 'none';
-            inputAnswer.style.display = 'none';
+            wrapperQuestion.style.display = 'none';
+            wrapperAnswer.style.display = 'none';
             linkForgot.style.display = 'block';
             linkBackLogin.style.display = 'none';
             document.getElementById('tab-login').classList.add('active');
@@ -820,6 +886,15 @@
         }
     }
 
+    function showInfoPopup(type) {
+        const dict = translations[currentLang];
+        if (type === 'question') {
+            alert(dict.questionInfo);
+        } else if (type === 'answer') {
+            alert(dict.answerInfo);
+        }
+    }
+
     function handleAuthProcessing() {
         const db = JSON.parse(localStorage.getItem('tracker_users_db') || '{}');
         const userVal = document.getElementById('auth-username').value.trim();
@@ -841,7 +916,6 @@
         } else if (authMode === 'register') {
             if (!userVal || !passVal || !questVal || !ansVal) return alert(dict.alertFillFields);
             if (db[userVal]) return alert(dict.duplicateTask);
-            
             db[userVal] = { password: passVal, question: questVal, answer: ansVal };
             localStorage.setItem('tracker_users_db', JSON.stringify(db));
             switchAuthMode('login');
@@ -849,25 +923,19 @@
             if (recoveryStep === 1) {
                 if (!userVal) return alert(dict.alertFillFields);
                 if (!db[userVal]) return alert(dict.alertUserNotFound);
-                
-                // Username located successfully -> move to verification stage
                 recoveryStep = 2;
                 document.getElementById('auth-username').style.display = 'none';
-                
                 const qDisplay = document.getElementById('recovery-question-display');
                 qDisplay.innerText = `${dict.questionPlaceholder.split(' (')[0]}: ${db[userVal].question}`;
                 qDisplay.style.display = 'block';
-                
-                document.getElementById('auth-answer').style.display = 'block';
+                document.getElementById('wrapper-answer').style.display = 'flex';
                 document.getElementById('auth-password').style.display = 'block';
                 updateAuthTitles();
             } else {
-                // Execute verification process and set new password
                 if (!ansVal || !passVal) return alert(dict.alertFillFields);
                 if (db[userVal].answer.toLowerCase() !== ansVal.toLowerCase()) {
                     return alert(dict.alertWrongAnswer);
                 }
-                
                 db[userVal].password = passVal;
                 localStorage.setItem('tracker_users_db', JSON.stringify(db));
                 alert(dict.alertResetSuccess);
@@ -876,7 +944,6 @@
         }
     }
 
-    // Interactive Profile Settings Controllers
     function openProfileMenu() {
         document.getElementById('profile-username-input').value = localStorage.getItem('auth_username') || '';
         document.getElementById('profile-password-input').value = '';
@@ -895,10 +962,7 @@
         const dict = translations[currentLang];
 
         if (!newUser) return alert(dict.alertFillFields);
-
-        if (newUser !== oldUser && db[newUser]) {
-            return alert(dict.duplicateTask);
-        }
+        if (newUser !== oldUser && db[newUser]) return alert(dict.duplicateTask);
 
         let userRecord = db[oldUser] || { question: "What is your father's name?", answer: "John" };
         if (newPass) userRecord.password = newPass;
@@ -913,7 +977,6 @@
 
         localStorage.setItem('tracker_users_db', JSON.stringify(db));
         document.getElementById('user-display').innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ${newUser}`;
-        
         alert(dict.alertProfileSuccess);
         closeProfileMenu();
     }
@@ -1041,10 +1104,8 @@
             if (checkedArray.length !== daysCount) habitData[currentPeriod].tasks[taskName] = Array(daysCount).fill(false);
             const currentChecked = habitData[currentPeriod].tasks[taskName];
             const rowCount = currentChecked.filter(Boolean).length;
-            
             const safeId = `row_${rowIndex}`;
             rowIndex++;
-            
             const escapedTaskNameForJs = taskName.replace(/'/g, "\\'").replace(/"/g, "&quot;");
             const escapedTaskNameForAttr = taskName.replace(/"/g, "&quot;");
             
@@ -1082,12 +1143,10 @@
         e.stopPropagation();
         const menu = document.getElementById(menuId);
         const parentCol = menu.closest('.task-col');
-        
         if (activeMenu && activeMenu !== menu) {
             activeMenu.classList.remove('open');
             if (activeMenu.closest('.task-col')) activeMenu.closest('.task-col').classList.remove('task-col-active');
         }
-        
         menu.classList.toggle('open');
         if (menu.classList.contains('open')) {
             parentCol.classList.add('task-col-active');
@@ -1107,7 +1166,6 @@
         const nameSpan = document.getElementById(`taskname-${safeId}`);
         if (!nameSpan) return;
         const original = nameSpan.innerText;
-        
         const escapedTaskName = taskName.replace(/'/g, "\\'").replace(/"/g, "&quot;");
         nameSpan.innerHTML = `<input class="task-edit-input" id="edit-input-${safeId}" value="${original.replace(/"/g, '&quot;')}" onkeydown="handleEditKey(event,'${escapedTaskName}', '${safeId}')">`;
         const inp = document.getElementById(`edit-input-${safeId}`);
@@ -1167,7 +1225,6 @@
         const taskName = element.getAttribute('data-task');
         const dayIdx = parseInt(element.getAttribute('data-day'));
         habitData[currentPeriod].tasks[taskName][dayIdx] = element.checked;
-        
         const row = element.closest('tr');
         if (row) {
             const countEl = row.querySelector('.days-complete-col');
