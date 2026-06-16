@@ -64,30 +64,31 @@
 
         /* Auth Screen */
         .auth-container {
-            max-width: 400px;
-            margin: 100px auto;
+            max-width: 420px;
+            margin: 60px auto;
             background: var(--card-bg);
             padding: 30px;
             border-radius: 16px;
             box-shadow: 0 4px 32px rgba(123,44,191,0.10);
-            text-align: center;
             border: 1px solid var(--border-color);
         }
 
         .auth-tabs { display: flex; margin-bottom: 20px; border-bottom: 2px solid var(--border-color); }
-        .auth-tab { flex: 1; padding: 10px; cursor: pointer; font-weight: bold; color: var(--text-muted); transition: color 0.2s; }
+        .auth-tab { flex: 1; padding: 10px; cursor: pointer; font-weight: bold; color: var(--text-muted); text-align: center; transition: color 0.2s; }
         .auth-tab.active { color: var(--primary-color); border-bottom: 2px solid var(--primary-color); margin-bottom: -2px; }
 
-        .auth-form input {
+        .auth-form input, .auth-form select {
             width: 100%;
             padding: 12px;
-            margin: 10px 0;
+            margin: 8px 0;
             border: 1px solid var(--input-border);
             border-radius: 8px;
             background: var(--input-bg);
             color: var(--text-color);
             font-size: 15px;
+            outline: none;
         }
+        .auth-form input:focus { border-color: var(--primary-color); }
 
         .auth-form button {
             width: 100%;
@@ -99,10 +100,33 @@
             cursor: pointer;
             font-weight: bold;
             font-size: 16px;
-            margin-top: 10px;
+            margin-top: 12px;
             transition: opacity 0.2s;
         }
         .auth-form button:hover { opacity: 0.88; }
+
+        .forgot-link {
+            display: block;
+            text-align: right;
+            font-size: 13px;
+            color: var(--primary-color);
+            cursor: pointer;
+            margin-top: 4px;
+            margin-bottom: 10px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .recovery-question-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-color);
+            background: var(--chip-bg);
+            padding: 10px;
+            border-radius: 8px;
+            margin: 8px 0;
+            border-left: 4px solid var(--primary-color);
+        }
 
         /* Dashboard */
         .dashboard {
@@ -128,10 +152,8 @@
         }
 
         h1 { margin: 0; font-size: 22px; color: var(--primary-color); font-weight: 700; letter-spacing: -0.3px; }
-
         .controls-group { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
 
-        /* Month picker chip */
         .month-chip {
             display: flex;
             align-items: center;
@@ -141,7 +163,6 @@
             border-radius: 10px;
             padding: 8px 14px;
         }
-
         .month-chip label { font-size: 13px; font-weight: 600; color: var(--text-muted); white-space: nowrap; }
 
         input[type="month"] {
@@ -154,7 +175,6 @@
             outline: none;
         }
 
-        /* Icon Buttons */
         .icon-btn {
             width: 38px;
             height: 38px;
@@ -174,7 +194,6 @@
         .icon-btn:hover { background: var(--chip-hover); border-color: var(--primary-color); }
         .icon-btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-        /* User display */
         .user-pill {
             display: flex;
             align-items: center;
@@ -185,7 +204,10 @@
             padding: 7px 14px;
             font-size: 14px;
             font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
         }
+        .user-pill:hover { background: var(--chip-hover); border-color: var(--primary-color); }
 
         .logout-btn {
             background-color: transparent;
@@ -200,12 +222,11 @@
         }
         .logout-btn:hover { background: rgba(224,92,92,0.10); }
 
-        /* Table */
+        /* Table components */
         .tracker-wrapper { overflow-x: auto; margin-bottom: 28px; border: 1px solid var(--border-color); border-radius: 12px; }
         table { width: 100%; border-collapse: collapse; text-align: center; background: var(--card-bg); }
         th, td { border: 1px solid var(--border-color); padding: 7px 5px; font-size: 12px; color: var(--text-color); }
         th { background-color: var(--primary-color); color: var(--table-header-text); font-weight: 600; }
-
         tbody tr:nth-child(even) { background-color: var(--row-alt); }
         tbody tr:hover { background: var(--chip-hover); }
 
@@ -221,22 +242,11 @@
             box-shadow: 2px 0 8px rgba(0,0,0,0.06);
         }
         th.task-col { background-color: var(--primary-color); z-index: 3; }
+        .task-col.task-col-active { z-index: 10 !important; }
 
-        /* Layer active column completely above subsequent items when dropdown reveals */
-        .task-col.task-col-active {
-            z-index: 10 !important;
-        }
-
-        /* Task cell with burger menu */
-        .task-item-cell {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 6px;
-        }
+        .task-item-cell { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
         .task-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
 
-        /* Burger button */
         .burger-btn {
             width: 26px;
             height: 26px;
@@ -248,14 +258,11 @@
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            transition: background 0.15s, border-color 0.15s;
-            position: relative;
+            transition: background 0.15s;
         }
         .burger-btn:hover { background: var(--chip-hover); border-color: var(--primary-color); }
-        .burger-btn svg { width: 13px; height: 13px; stroke: var(--text-muted); fill: none; stroke-width: 2.2; stroke-linecap: round; }
-        .burger-btn:hover svg { stroke: var(--primary-color); }
+        .burger-btn svg { width: 13px; height: 13px; stroke: var(--text-muted); fill: none; stroke-width: 2.2; }
 
-        /* Task dropdown menu */
         .task-menu {
             position: absolute;
             right: 0;
@@ -276,314 +283,113 @@
             gap: 8px;
             padding: 9px 14px;
             font-size: 13px;
-            font-weight: 500;
             cursor: pointer;
             color: var(--text-color);
             transition: background 0.14s;
-            white-space: nowrap;
         }
         .task-menu-item:hover { background: var(--chip-hover); }
-        .task-menu-item svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
         .task-menu-item.danger { color: #e05c5c; }
-        .task-menu-item.danger:hover { background: rgba(224,92,92,0.09); }
-        .task-menu-item + .task-menu-item { border-top: 1px solid var(--border-color); }
+        .task-menu-item svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; }
 
-        /* Inline edit row */
         .task-edit-input {
-            flex: 1;
+            width: 100%;
             border: 1px solid var(--primary-color);
             border-radius: 6px;
             background: var(--input-bg);
             color: var(--text-color);
             font-size: 13px;
             padding: 3px 7px;
-            font-weight: 600;
             outline: none;
-            min-width: 0;
         }
 
-        /* Checkbox */
+        /* Checkbox markup */
         .checkbox-container { display: inline-block; position: relative; cursor: pointer; width: 18px; height: 18px; }
-        .checkbox-container input { position: absolute; opacity: 0; cursor: pointer; height: 0; width: 0; }
-        .checkmark { position: absolute; top: 0; left: 0; height: 18px; width: 18px; background-color: var(--chip-bg); border-radius: 5px; border: 1.5px solid var(--input-border); transition: background-color 0.18s; }
-        .checkbox-container:hover input ~ .checkmark { border-color: var(--primary-color); }
+        .checkbox-container input { position: absolute; opacity: 0; width: 0; height: 0; }
+        .checkmark { position: absolute; inset: 0; background-color: var(--chip-bg); border-radius: 5px; border: 1.5px solid var(--input-border); }
         .checkbox-container input:checked ~ .checkmark { background-color: var(--primary-color); border-color: var(--primary-color); }
         .checkmark:after { content: ""; position: absolute; display: none; left: 5px; top: 2px; width: 5px; height: 9px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg); }
         .checkbox-container input:checked ~ .checkmark:after { display: block; }
 
-        /* Add task row */
         .add-task-box { display: flex; gap: 10px; margin-bottom: 20px; }
         .add-task-box input[type="text"] {
-            flex: 1;
-            padding: 10px 14px;
-            border: 1.5px solid var(--input-border);
-            border-radius: 10px;
-            font-size: 14px;
-            background: var(--input-bg);
-            color: var(--text-color);
-            transition: border-color 0.18s;
+            flex: 1; padding: 10px 14px; border: 1.5px solid var(--input-border); border-radius: 10px;
+            font-size: 14px; background: var(--input-bg); color: var(--text-color);
         }
-        .add-task-box input[type="text"]:focus { outline: none; border-color: var(--primary-color); }
-        .add-task-box input[type="text"]::placeholder { color: var(--text-muted); }
-        .add-task-box button {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 10px 22px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 14px;
-            transition: opacity 0.18s;
-            white-space: nowrap;
-        }
-        .add-task-box button:hover { opacity: 0.88; }
+        .add-task-box button { background-color: var(--primary-color); color: white; border: none; padding: 10px 22px; border-radius: 10px; font-weight: 700; cursor: pointer; }
 
-        /* Summary rows */
         .summary-row { background-color: var(--summary-bg) !important; font-weight: bold; }
-        .summary-row td { color: var(--text-color); font-size: 11px; }
+        .days-complete-col { font-weight: bold; background: var(--chip-bg); min-width: 80px; }
 
-        .days-complete-col { font-weight: bold; background: var(--chip-bg); min-width: 80px; color: var(--text-color); }
+        .chart-section { margin-top: 24px; padding: 20px; background: var(--chip-bg); border: 1px solid var(--border-color); border-radius: 12px; }
+        .chart-section h3 { margin: 0 0 14px; font-size: 15px; }
 
-        /* Chart section */
-        .chart-section {
-            margin-top: 24px;
-            padding: 20px;
-            background: var(--chip-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-        }
-        .chart-section h3 { margin: 0 0 14px; font-size: 15px; font-weight: 600; color: var(--text-color); }
-
-        /* Settings panel */
+        /* Configuration Overlay Modals */
         .settings-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: var(--overlay-bg);
-            z-index: 1000;
-            backdrop-filter: blur(2px);
+            display: none; position: fixed; inset: 0; background: var(--overlay-bg);
+            z-index: 1000; backdrop-filter: blur(2px); align-items: center; justify-content: center;
         }
-        .settings-overlay.open { display: flex; align-items: center; justify-content: center; }
+        .settings-overlay.open { display: flex; }
         .settings-panel {
-            background: var(--settings-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 18px;
-            padding: 28px 32px;
-            min-width: 320px;
+            background: var(--settings-bg); border: 1px solid var(--border-color);
+            border-radius: 18px; padding: 28px 32px; min-width: 340px; max-width: 440px; width: 100%;
             box-shadow: 0 8px 48px rgba(0,0,0,0.18);
         }
-        .settings-panel h2 { margin: 0 0 22px; font-size: 17px; font-weight: 700; color: var(--text-color); }
-        .settings-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            margin-bottom: 20px;
-        }
-        .settings-row label { font-size: 14px; font-weight: 600; color: var(--text-color); }
+        .settings-panel h2 { margin: 0 0 20px; font-size: 17px; font-weight: 700; }
+        .settings-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
+        .settings-row label { font-size: 14px; font-weight: 600; }
         .settings-row .desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
 
-        /* Color swatches */
         .color-swatch-group { display: flex; gap: 8px; flex-wrap: wrap; }
-        .color-swatch {
-            width: 30px;
-            height: 30px;
-            border-radius: 8px;
-            border: 2.5px solid transparent;
-            cursor: pointer;
-            transition: transform 0.15s, border-color 0.15s;
-        }
-        .color-swatch:hover { transform: scale(1.12); }
+        .color-swatch { width: 30px; height: 30px; border-radius: 8px; border: 2.5px solid transparent; cursor: pointer; }
         .color-swatch.active { border-color: var(--text-color); }
+        .custom-color-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; font-size: 13px; }
 
-        .custom-color-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
-        .custom-color-row label { font-size: 13px; color: var(--text-muted); }
-        input[type="color"] {
-            width: 38px;
-            height: 32px;
-            border: 1px solid var(--border-color);
-            border-radius: 7px;
-            padding: 2px;
-            cursor: pointer;
-            background: var(--input-bg);
-        }
+        .lang-dropdown-select { padding: 6px 10px; border-radius: 8px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); font-weight: 600; cursor: pointer; }
 
-        /* Language configuration selection controller */
-        .lang-dropdown-select {
-            padding: 6px 10px;
-            border-radius: 8px;
-            border: 1px solid var(--input-border);
-            background: var(--input-bg);
-            color: var(--text-color);
-            font-weight: 600;
-            font-size: 13px;
-            outline: none;
-            cursor: pointer;
-        }
-
-        /* Dark mode toggle */
-        .toggle-switch {
-            position: relative;
-            width: 44px;
-            height: 24px;
-            flex-shrink: 0;
-        }
+        .toggle-switch { position: relative; width: 44px; height: 24px; }
         .toggle-switch input { opacity: 0; width: 0; height: 0; }
-        .toggle-slider {
-            position: absolute;
-            inset: 0;
-            background: var(--input-border);
-            border-radius: 999px;
-            cursor: pointer;
-            transition: background 0.22s;
-        }
-        .toggle-slider:before {
-            content: '';
-            position: absolute;
-            left: 3px;
-            top: 3px;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: white;
-            transition: transform 0.22s;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.18);
-        }
+        .toggle-slider { position: absolute; inset: 0; background: var(--input-border); border-radius: 999px; cursor: pointer; }
+        .toggle-slider:before { content: ''; position: absolute; left: 3px; top: 3px; width: 18px; height: 18px; border-radius: 50%; background: white; transition: transform 0.22s; }
         .toggle-switch input:checked + .toggle-slider { background: var(--primary-color); }
         .toggle-switch input:checked + .toggle-slider:before { transform: translateX(20px); }
 
-        .settings-close-btn {
-            width: 100%;
-            margin-top: 10px;
-            padding: 11px;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 15px;
-            cursor: pointer;
-            transition: opacity 0.18s;
-        }
-        .settings-close-btn:hover { opacity: 0.88; }
+        .settings-close-btn { width: 100%; margin-top: 10px; padding: 11px; background: var(--primary-color); color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; }
 
-        /* ==========================================================================
-           RESPONSIVE DESIGN ADAPTATIONS (PHONES & TABLETS)
-           ========================================================================== */
         @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-
-            .auth-container {
-                margin: 40px auto;
-                padding: 20px;
-                width: 100%;
-            }
-
-            .dashboard {
-                padding: 14px;
-            }
-
-            header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 12px;
-            }
-
-            header h1 {
-                font-size: 19px;
-            }
-
-            .controls-group {
-                width: 100%;
-                justify-content: space-between;
-                gap: 8px;
-            }
-
-            .user-pill, .month-chip {
-                padding: 6px 10px;
-                font-size: 12px;
-            }
-
-            .logout-btn {
-                padding: 6px 12px;
-                font-size: 12px;
-            }
-
-            .add-task-box {
-                flex-direction: column;
-                gap: 8px;
-            }
-
-            .add-task-box button {
-                width: 100%;
-                padding: 12px;
-            }
-
-            th, td {
-                padding: 8px 4px; 
-                font-size: 11px;
-            }
-
-            .task-col {
-                min-width: 150px;
-                padding-left: 6px;
-            }
-
-            .checkbox-container {
-                width: 22px; 
-                height: 22px;
-            }
-
-            .checkmark {
-                height: 22px;
-                width: 22px;
-                border-radius: 6px;
-            }
-
-            .checkmark:after {
-                left: 7px;
-                top: 3px;
-                width: 5px;
-                height: 11px;
-            }
-
-            .burger-btn {
-                width: 30px;
-                height: 30px;
-            }
-
-            .burger-btn svg {
-                width: 15px;
-                height: 15px;
-            }
-
-            .task-menu {
-                right: auto;
-                left: 0;
-                top: calc(100% + 6px);
-            }
-
-            .chart-section {
-                padding: 12px;
-            }
+            body { padding: 10px; }
+            .auth-container { margin: 20px auto; padding: 20px; }
+            .dashboard { padding: 14px; }
+            header { flex-direction: column; align-items: flex-start; }
+            .controls-group { width: 100%; justify-content: space-between; }
+            .add-task-box { flex-direction: column; }
+            .task-col { min-width: 140px; }
         }
     </style>
 </head>
 <body>
 
 <div id="auth-view" class="auth-container">
-    <div class="auth-tabs">
-        <div id="tab-login" class="auth-tab active" onclick="switchAuthTab('login')">Login</div>
-        <div id="tab-register" class="auth-tab" onclick="switchAuthTab('register')">Register</div>
+    <div class="auth-tabs" id="auth-tabs-bar">
+        <div id="tab-login" class="auth-tab active" onclick="switchAuthMode('login')">Login</div>
+        <div id="tab-register" class="auth-tab" onclick="switchAuthMode('register')">Register</div>
     </div>
-    <div class="auth-form">
-        <h3 id="auth-title" style="margin-bottom:20px; color:var(--primary-color);">Account Access</h3>
+    
+    <div class="auth-form" id="auth-form-body">
+        <h3 id="auth-title" style="margin-bottom:15px; color:var(--primary-color);">Account Access</h3>
+        
         <input type="text" id="auth-username" placeholder="Username">
+        
+        <div id="recovery-question-display" class="recovery-question-text" style="display:none;"></div>
+        
+        <input type="text" id="auth-question" placeholder="Security Question (e.g., What is your father's name?)">
+        <input type="text" id="auth-answer" placeholder="Security Answer (e.g., John)">
+        
         <input type="password" id="auth-password" placeholder="Password">
-        <button id="auth-submit-btn" onclick="handleAuthSubmit()">Log In</button>
+        
+        <span class="forgot-link" id="link-forgot" onclick="switchAuthMode('forgot')">Forgot Password?</span>
+        
+        <button id="auth-submit-btn" onclick="handleAuthProcessing()">Log In</button>
+        <span class="forgot-link" id="link-back-login" style="display:none; text-align:center; margin-top:15px;" onclick="switchAuthMode('login')">Back to Login</span>
     </div>
 </div>
 
@@ -591,7 +397,8 @@
     <header>
         <h1 id="tracker-title">Habit & Task Tracker</h1>
         <div class="controls-group">
-            <span id="user-display" class="user-pill"></span>
+            <span id="user-display" class="user-pill" onclick="openProfileMenu()" title="Edit Profile Settings"></span>
+            
             <div class="month-chip">
                 <label for="month-select" id="lbl-period">Period:</label>
                 <input type="month" id="month-select">
@@ -629,13 +436,32 @@
     </div>
 </div>
 
-<div class="settings-overlay" id="settings-overlay" onclick="handleOverlayClick(event)">
+<div class="settings-overlay" id="profile-overlay" onclick="handleOverlayCloseCheck(event, 'profile-overlay')">
+    <div class="settings-panel">
+        <h2 id="profile-modal-title">👤 User Profile Settings</h2>
+        
+        <div class="settings-row" style="flex-direction: column; align-items: stretch; gap: 4px;">
+            <label id="lbl-prof-username">Profile Username</label>
+            <input type="text" id="profile-username-input" class="task-edit-input" style="padding: 10px; font-size: 14px;">
+        </div>
+        
+        <div class="settings-row" style="flex-direction: column; align-items: stretch; gap: 4px; margin-top: 12px;">
+            <label id="lbl-prof-pass">New Account Password</label>
+            <input type="password" id="profile-password-input" class="task-edit-input" style="padding: 10px; font-size: 14px;" placeholder="••••••••">
+        </div>
+        
+        <button class="settings-close-btn" id="btn-profile-save" onclick="saveProfileChanges()" style="margin-top: 20px;">Save Profile Info</button>
+        <button class="settings-close-btn" id="btn-profile-cancel" onclick="closeProfileMenu()" style="background: transparent; color: var(--text-muted); border: 1px solid var(--border-color); margin-top: 8px;">Cancel</button>
+    </div>
+</div>
+
+<div class="settings-overlay" id="settings-overlay" onclick="handleOverlayCloseCheck(event, 'settings-overlay')">
     <div class="settings-panel">
         <h2 id="settings-title">⚙️ Appearance Settings</h2>
 
         <div class="settings-row">
             <div>
-                <div style="font-size:14px;font-weight:600;color:var(--text-color)" id="lbl-lang">Language</div>
+                <div style="font-size:14px;font-weight:600;" id="lbl-lang">Language</div>
                 <div class="desc" id="lbl-lang-desc">Choose interface language</div>
             </div>
             <select id="lang-select" class="lang-dropdown-select" onchange="changeLanguage(this.value)">
@@ -647,7 +473,7 @@
 
         <div class="settings-row">
             <div>
-                <div style="font-size:14px;font-weight:600;color:var(--text-color)" id="lbl-darkmode">Dark Mode</div>
+                <div style="font-size:14px;font-weight:600;" id="lbl-darkmode">Dark Mode</div>
                 <div class="desc" id="lbl-darkmode-desc">Switch between light and dark theme</div>
             </div>
             <label class="toggle-switch">
@@ -657,7 +483,7 @@
         </div>
 
         <div style="margin-bottom:16px">
-            <div style="font-size:14px;font-weight:600;color:var(--text-color);margin-bottom:12px" id="lbl-theme-color">Theme Color</div>
+            <div style="font-size:14px;font-weight:600;margin-bottom:12px" id="lbl-theme-color">Theme Color</div>
             <div class="color-swatch-group" id="swatch-group">
                 <div class="color-swatch" style="background:#7b2cbf" data-color="#7b2cbf" onclick="applyColor('#7b2cbf')"></div>
                 <div class="color-swatch" style="background:#2563eb" data-color="#2563eb" onclick="applyColor('#2563eb')"></div>
@@ -683,20 +509,19 @@
     let currentPeriod = "";
     let habitData = {};
     let chartInstance = null;
-    let authMode = 'login';
+    let authMode = 'login'; 
+    let recoveryStep = 1; // 1: Find username, 2: Validate question & Answer
     let token = localStorage.getItem('auth_token');
     let activeMenu = null;
     let currentLang = localStorage.getItem('tracker_lang') || 'en';
 
-    const PRESET_COLORS = ['#7b2cbf','#2563eb','#0d9488','#db2777','#ea580c','#16a34a','#dc2626','#1d4ed8'];
-
-    // Multilingual dictionary configuration asset matrix
+    // Multi-Language Translation Mapping Objects
     const translations = {
         en: {
             title: "Habit & Task Tracker",
             period: "Period:",
             addTaskBtn: "+ Add Task",
-            addTaskPlaceholder: "Enter new habit/task (e.g., Read 30 pages, Memorize Quran)...",
+            addTaskPlaceholder: "Enter new habit/task...",
             dailyHabits: "Daily Habits",
             daysDone: "Days Done",
             completeForDay: "COMPLETE FOR THE DAY",
@@ -718,13 +543,36 @@
             confirmDelete: "Remove \"{task}\"?",
             duplicateTask: "A task with that name already exists.",
             editOpt: "Edit",
-            deleteOpt: "Delete"
+            deleteOpt: "Delete",
+            
+            // New Profile & Security Question Translations
+            profileTitle: "👤 User Profile Settings",
+            profUserLabel: "Profile Username",
+            profPassLabel: "New Account Password",
+            profSaveBtn: "Save Profile Info",
+            profCancelBtn: "Cancel",
+            forgotPassword: "Forgot Password?",
+            backToLogin: "Back to Login",
+            loginTab: "Login",
+            registerTab: "Register",
+            authRecoveryTitle: "Account Recovery",
+            authRecoverySubmitFind: "Find Account",
+            authRecoverySubmitReset: "Reset Password",
+            questionPlaceholder: "Security Question (e.g., What is your father's name?)",
+            answerPlaceholder: "Security Answer (e.g., John)",
+            usernamePlaceholder: "Username",
+            passwordPlaceholder: "Password",
+            alertFillFields: "Please fill out all visible input configuration fields.",
+            alertProfileSuccess: "Profile configurations saved and updated successfully!",
+            alertWrongAnswer: "Incorrect security challenge answer verification!",
+            alertUserNotFound: "This username configuration parameters were not found.",
+            alertResetSuccess: "Password reset complete. You can now securely log into your profile."
         },
         ru: {
             title: "Трекер привычек и задач",
             period: "Период:",
             addTaskBtn: "+ Добавить задачу",
-            addTaskPlaceholder: "Введите привычку/задачу (например, Читать 30 страниц)...",
+            addTaskPlaceholder: "Введите привычку/задачу...",
             dailyHabits: "Привычки",
             daysDone: "Выполнено",
             completeForDay: "ВЫПОЛНЕНО ЗА ДЕНЬ",
@@ -746,13 +594,35 @@
             confirmDelete: "Удалить \"{task}\"?",
             duplicateTask: "Задача с таким названием уже существует.",
             editOpt: "Редактировать",
-            deleteOpt: "Удалить"
+            deleteOpt: "Удалить",
+
+            profileTitle: "👤 Настройки профиля",
+            profUserLabel: "Имя пользователя",
+            profPassLabel: "Новый пароль",
+            profSaveBtn: "Сохранить профиль",
+            profCancelBtn: "Отмена",
+            forgotPassword: "Забыли пароль?",
+            backToLogin: "Вернуться к входу",
+            loginTab: "Вход",
+            registerTab: "Регистрация",
+            authRecoveryTitle: "Восстановление доступа",
+            authRecoverySubmitFind: "Найти аккаунт",
+            authRecoverySubmitReset: "Сбросить пароль",
+            questionPlaceholder: "Секретный вопрос (например: Имя вашего отца?)",
+            answerPlaceholder: "Ответ (например: Иван)",
+            usernamePlaceholder: "Имя пользователя",
+            passwordPlaceholder: "Пароль",
+            alertFillFields: "Пожалуйста, заполните все видимые поля ввода.",
+            alertProfileSuccess: "Профиль успешно изменен и обновлен!",
+            alertWrongAnswer: "Неверный ответ на секретный вопрос проверки безопасности!",
+            alertUserNotFound: "Данное имя пользователя не найдено в базе системы.",
+            alertResetSuccess: "Пароль успешно обновлен. Теперь вы можете войти в систему."
         },
         uz: {
             title: "Odatlar va vazifalar trekeri",
             period: "Davr:",
             addTaskBtn: "+ Qo'shish",
-            addTaskPlaceholder: "Yangi odat/vazifa kiriting (masalan, 30 sahifa o'qish)...",
+            addTaskPlaceholder: "Yangi odat/vazifa kiriting...",
             dailyHabits: "Kundalik odatlar",
             daysDone: "Bajarilgan kunlar",
             completeForDay: "KUNLIK BAJARILGANLAR",
@@ -774,7 +644,29 @@
             confirmDelete: "\"{task}\" olib tashlansinmi?",
             duplicateTask: "Bunday nomli vazifa allaqachon mavjud.",
             editOpt: "Tahrirlash",
-            deleteOpt: "O'chirish"
+            deleteOpt: "O'chirish",
+
+            profileTitle: "👤 Profil sozlamalari",
+            profUserLabel: "Foydalanuvchi nomi",
+            profPassLabel: "Yangi akkaunt paroli",
+            profSaveBtn: "Profilni saqlash",
+            profCancelBtn: "Bekor qilish",
+            forgotPassword: "Parolni unutdingizmi?",
+            backToLogin: "Kirishga qaytish",
+            loginTab: "Kirish",
+            registerTab: "Ro'yxatdan o'tish",
+            authRecoveryTitle: "Akkauntni tiklash",
+            authRecoverySubmitFind: "Akkauntni topish",
+            authRecoverySubmitReset: "Parolni yangilash",
+            questionPlaceholder: "Xavfsizlik savoli (masalan: Otangizning ismi nima?)",
+            answerPlaceholder: "Xavfsizlik javobi (masalan: Ali)",
+            usernamePlaceholder: "Foydalanuvchi nomi",
+            passwordPlaceholder: "Parol",
+            alertFillFields: "Iltimos, barcha ko'rinadigan kataklarni to'ldiring.",
+            alertProfileSuccess: "Profil ma'lumotlari muvaffaqiyatli yangilandi!",
+            alertWrongAnswer: "Xavfsizlik savoliga noto'g'ri javob berildi!",
+            alertUserNotFound: "Bunday foydalanuvchi nomi tizimda topilmadi.",
+            alertResetSuccess: "Parol muvaffaqiyatli tiklandi. Endi tizimga kirishingiz mumkin."
         }
     };
 
@@ -795,23 +687,28 @@
             document.getElementById('theme-icon-moon').style.display = 'none';
             document.getElementById('theme-icon-sun').style.display = 'block';
         }
+
+        // Initialize user directory fallback data structure if missing
+        if(!localStorage.getItem('tracker_users_db')){
+            localStorage.setItem('tracker_users_db', JSON.stringify({
+                "admin": { password: "admin", question: "What is your father's name?", answer: "John" }
+            }));
+        }
+
         if (token) showDashboard();
         else showAuth();
 
         document.addEventListener('click', (e) => {
             if (activeMenu && !activeMenu.contains(e.target) && !e.target.closest('.burger-btn')) {
                 activeMenu.classList.remove('open');
-                if (activeMenu.closest('.task-col')) {
-                    activeMenu.closest('.task-col').classList.remove('task-col-active');
-                }
+                if (activeMenu.closest('.task-col')) activeMenu.closest('.task-col').classList.remove('task-col-active');
                 activeMenu = null;
             }
         });
     });
 
     function applyTranslations() {
-        const lang = currentLang;
-        const dict = translations[lang];
+        const dict = translations[currentLang];
 
         document.getElementById('lbl-period').innerText = dict.period;
         document.getElementById('btn-logout').innerText = dict.logout;
@@ -827,14 +724,203 @@
         document.getElementById('lbl-theme-color').innerText = dict.themeColor;
         document.getElementById('lbl-custom-color').innerText = dict.custom;
         document.getElementById('btn-settings-done').innerText = dict.done;
+
+        // Profile Panel Language Assignments
+        document.getElementById('profile-modal-title').innerText = dict.profileTitle;
+        document.getElementById('lbl-prof-username').innerText = dict.profUserLabel;
+        document.getElementById('lbl-prof-pass').innerText = dict.profPassLabel;
+        document.getElementById('btn-profile-save').innerText = dict.profSaveBtn;
+        document.getElementById('btn-profile-cancel').innerText = dict.profCancelBtn;
+
+        // Login System Language Assignments
+        document.getElementById('tab-login').innerText = dict.loginTab;
+        document.getElementById('tab-register').innerText = dict.registerTab;
+        document.getElementById('link-forgot').innerText = dict.forgotPassword;
+        document.getElementById('link-back-login').innerText = dict.backToLogin;
+        
+        document.getElementById('auth-username').placeholder = dict.usernamePlaceholder;
+        document.getElementById('auth-password').placeholder = dict.passwordPlaceholder;
+        document.getElementById('auth-question').placeholder = dict.questionPlaceholder;
+        document.getElementById('auth-answer').placeholder = dict.answerPlaceholder;
+        
+        updateAuthTitles();
     }
 
     function changeLanguage(lang) {
         currentLang = lang;
         localStorage.setItem('tracker_lang', lang);
         applyTranslations();
-        if (token) {
-            initTracker();
+        if (token) initTracker();
+    }
+
+    function switchAuthMode(mode) {
+        authMode = mode;
+        recoveryStep = 1; // Default back to initial configuration step
+        
+        const tabsBar = document.getElementById('auth-tabs-bar');
+        const inputQuestion = document.getElementById('auth-question');
+        const inputAnswer = document.getElementById('auth-answer');
+        const inputPassword = document.getElementById('auth-password');
+        const displayQuestion = document.getElementById('recovery-question-display');
+        const linkForgot = document.getElementById('link-forgot');
+        const linkBackLogin = document.getElementById('link-back-login');
+        const inputUsername = document.getElementById('auth-username');
+
+        // Clear dynamic authorization fields
+        displayQuestion.style.display = 'none';
+        displayQuestion.innerText = '';
+
+        if (mode === 'register') {
+            tabsBar.style.display = 'flex';
+            inputUsername.style.display = 'block';
+            inputPassword.style.display = 'block';
+            inputQuestion.style.display = 'block';
+            inputAnswer.style.display = 'block';
+            linkForgot.style.display = 'none';
+            linkBackLogin.style.display = 'none';
+            document.getElementById('tab-login').classList.remove('active');
+            document.getElementById('tab-register').classList.add('active');
+        } else if (mode === 'forgot') {
+            tabsBar.style.display = 'none';
+            inputUsername.style.display = 'block';
+            inputPassword.style.display = 'none';
+            inputQuestion.style.display = 'none';
+            inputAnswer.style.display = 'none';
+            linkForgot.style.display = 'none';
+            linkBackLogin.style.display = 'block';
+        } else {
+            // Default Active Login View State
+            tabsBar.style.display = 'flex';
+            inputUsername.style.display = 'block';
+            inputPassword.style.display = 'block';
+            inputQuestion.style.display = 'none';
+            inputAnswer.style.display = 'none';
+            linkForgot.style.display = 'block';
+            linkBackLogin.style.display = 'none';
+            document.getElementById('tab-login').classList.add('active');
+            document.getElementById('tab-register').classList.remove('active');
+        }
+        updateAuthTitles();
+    }
+
+    function updateAuthTitles() {
+        const dict = translations[currentLang];
+        const titleEl = document.getElementById('auth-title');
+        const submitBtn = document.getElementById('auth-submit-btn');
+
+        if (authMode === 'login') {
+            titleEl.innerText = dict.loginTab;
+            submitBtn.innerText = dict.loginTab;
+        } else if (authMode === 'register') {
+            titleEl.innerText = dict.registerTab;
+            submitBtn.innerText = dict.registerTab;
+        } else if (authMode === 'forgot') {
+            titleEl.innerText = dict.authRecoveryTitle;
+            submitBtn.innerText = (recoveryStep === 1) ? dict.authRecoverySubmitFind : dict.authRecoverySubmitReset;
+        }
+    }
+
+    function handleAuthProcessing() {
+        const db = JSON.parse(localStorage.getItem('tracker_users_db') || '{}');
+        const userVal = document.getElementById('auth-username').value.trim();
+        const passVal = document.getElementById('auth-password').value;
+        const questVal = document.getElementById('auth-question').value.trim();
+        const ansVal = document.getElementById('auth-answer').value.trim();
+        const dict = translations[currentLang];
+
+        if (authMode === 'login') {
+            if (!userVal || !passVal) return alert(dict.alertFillFields);
+            if (db[userVal] && db[userVal].password === passVal) {
+                localStorage.setItem('auth_token', 'session_' + Date.now());
+                localStorage.setItem('auth_username', userVal);
+                token = localStorage.getItem('auth_token');
+                showDashboard();
+            } else {
+                alert(dict.alertWrongAnswer || "Invalid details");
+            }
+        } else if (authMode === 'register') {
+            if (!userVal || !passVal || !questVal || !ansVal) return alert(dict.alertFillFields);
+            if (db[userVal]) return alert(dict.duplicateTask);
+            
+            db[userVal] = { password: passVal, question: questVal, answer: ansVal };
+            localStorage.setItem('tracker_users_db', JSON.stringify(db));
+            switchAuthMode('login');
+        } else if (authMode === 'forgot') {
+            if (recoveryStep === 1) {
+                if (!userVal) return alert(dict.alertFillFields);
+                if (!db[userVal]) return alert(dict.alertUserNotFound);
+                
+                // Username located successfully -> move to verification stage
+                recoveryStep = 2;
+                document.getElementById('auth-username').style.display = 'none';
+                
+                const qDisplay = document.getElementById('recovery-question-display');
+                qDisplay.innerText = `${dict.questionPlaceholder.split(' (')[0]}: ${db[userVal].question}`;
+                qDisplay.style.display = 'block';
+                
+                document.getElementById('auth-answer').style.display = 'block';
+                document.getElementById('auth-password').style.display = 'block';
+                updateAuthTitles();
+            } else {
+                // Execute verification process and set new password
+                if (!ansVal || !passVal) return alert(dict.alertFillFields);
+                if (db[userVal].answer.toLowerCase() !== ansVal.toLowerCase()) {
+                    return alert(dict.alertWrongAnswer);
+                }
+                
+                db[userVal].password = passVal;
+                localStorage.setItem('tracker_users_db', JSON.stringify(db));
+                alert(dict.alertResetSuccess);
+                switchAuthMode('login');
+            }
+        }
+    }
+
+    // Interactive Profile Settings Controllers
+    function openProfileMenu() {
+        document.getElementById('profile-username-input').value = localStorage.getItem('auth_username') || '';
+        document.getElementById('profile-password-input').value = '';
+        document.getElementById('profile-overlay').classList.add('open');
+    }
+
+    function closeProfileMenu() {
+        document.getElementById('profile-overlay').classList.remove('open');
+    }
+
+    function saveProfileChanges() {
+        const db = JSON.parse(localStorage.getItem('tracker_users_db') || '{}');
+        const oldUser = localStorage.getItem('auth_username');
+        const newUser = document.getElementById('profile-username-input').value.trim();
+        const newPass = document.getElementById('profile-password-input').value;
+        const dict = translations[currentLang];
+
+        if (!newUser) return alert(dict.alertFillFields);
+
+        if (newUser !== oldUser && db[newUser]) {
+            return alert(dict.duplicateTask);
+        }
+
+        let userRecord = db[oldUser] || { question: "What is your father's name?", answer: "John" };
+        if (newPass) userRecord.password = newPass;
+
+        if (newUser !== oldUser) {
+            db[newUser] = userRecord;
+            delete db[oldUser];
+            localStorage.setItem('auth_username', newUser);
+        } else {
+            db[oldUser] = userRecord;
+        }
+
+        localStorage.setItem('tracker_users_db', JSON.stringify(db));
+        document.getElementById('user-display').innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ${newUser}`;
+        
+        alert(dict.alertProfileSuccess);
+        closeProfileMenu();
+    }
+
+    function handleOverlayCloseCheck(e, targetId) {
+        if (e.target === document.getElementById(targetId)) {
+            document.getElementById(targetId).classList.remove('open');
         }
     }
 
@@ -881,19 +967,8 @@
         if (chartInstance) updateChartStyles();
     }
 
-    function openSettings() {
-        document.getElementById('settings-overlay').classList.add('open');
-        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-        document.getElementById('dark-mode-toggle').checked = isDark;
-    }
-
-    function closeSettings() {
-        document.getElementById('settings-overlay').classList.remove('open');
-    }
-
-    function handleOverlayClick(e) {
-        if (e.target === document.getElementById('settings-overlay')) closeSettings();
-    }
+    function openSettings() { document.getElementById('settings-overlay').classList.add('open'); }
+    function closeSettings() { document.getElementById('settings-overlay').classList.remove('open'); }
 
     document.getElementById('month-select').addEventListener('change', (e) => {
         currentPeriod = e.target.value;
@@ -903,41 +978,6 @@
     document.getElementById('new-task-input').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') addTask();
     });
-
-    function switchAuthTab(mode) {
-        authMode = mode;
-        document.getElementById('tab-login').classList.toggle('active', mode === 'login');
-        document.getElementById('tab-register').classList.toggle('active', mode === 'register');
-        document.getElementById('auth-submit-btn').innerText = mode === 'login' ? 'Log In' : 'Create Account';
-    }
-
-    async function handleAuthSubmit() {
-        const username = document.getElementById('auth-username').value.trim();
-        const password = document.getElementById('auth-password').value;
-        if (!username || !password) return alert('Please enter both parameters.');
-        const endpoint = authMode === 'login' ? '/api/auth/login' : '/api/auth/register';
-        try {
-            const res = await fetch(endpoint, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password })
-            });
-            const responseText = await res.text();
-            let data;
-            try { data = JSON.parse(responseText); }
-            catch(e) { throw new Error(`Server Error (${res.status}): Make sure your database URI is attached properly.`); }
-            if (!res.ok) throw new Error(data.error || 'Authentication Failed');
-            if (authMode === 'login') {
-                localStorage.setItem('auth_token', data.token);
-                localStorage.setItem('auth_username', data.username);
-                token = data.token;
-                showDashboard();
-            } else {
-                alert('Account Created! You can now log in.');
-                switchAuthTab('login');
-            }
-        } catch(err) { alert(err.message); }
-    }
 
     function handleLogout() {
         localStorage.removeItem('auth_token');
@@ -949,37 +989,20 @@
     function showAuth() {
         document.getElementById('auth-view').style.display = 'block';
         document.getElementById('app-view').style.display = 'none';
+        switchAuthMode('login');
+        applyTranslations();
     }
 
     function showDashboard() {
         document.getElementById('auth-view').style.display = 'none';
         document.getElementById('app-view').style.display = 'block';
-        document.getElementById('user-display').innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ${localStorage.getItem('auth_username')}`;
+        const uName = localStorage.getItem('auth_username') || 'User';
+        document.getElementById('user-display').innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ${uName}`;
         const today = new Date();
         document.getElementById('month-select').value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
         currentPeriod = document.getElementById('month-select').value;
         applyTranslations();
-        fetchTrackerData();
-    }
-
-    async function fetchTrackerData() {
-        try {
-            const res = await fetch('/api/tracker', { headers: { 'Authorization': `Bearer ${token}` } });
-            if (res.status === 401 || res.status === 403) return handleLogout();
-            const serverRes = await res.json();
-            habitData = serverRes.data || {};
-            initTracker();
-        } catch (e) { console.error("Network synchronization error", e); }
-    }
-
-    async function syncToServer() {
-        try {
-            await fetch('/api/tracker', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                body: JSON.stringify({ data: habitData })
-            });
-        } catch (e) { console.error("Autosave tracking failed", e); }
+        initTracker();
     }
 
     function initTracker() {
@@ -1062,9 +1085,7 @@
         
         if (activeMenu && activeMenu !== menu) {
             activeMenu.classList.remove('open');
-            if (activeMenu.closest('.task-col')) {
-                activeMenu.closest('.task-col').classList.remove('task-col-active');
-            }
+            if (activeMenu.closest('.task-col')) activeMenu.closest('.task-col').classList.remove('task-col-active');
         }
         
         menu.classList.toggle('open');
@@ -1080,9 +1101,7 @@
     function startEdit(taskName, safeId) {
         if (activeMenu) {
             activeMenu.classList.remove('open');
-            if (activeMenu.closest('.task-col')) {
-                activeMenu.closest('.task-col').classList.remove('task-col-active');
-            }
+            if (activeMenu.closest('.task-col')) activeMenu.closest('.task-col').classList.remove('task-col-active');
             activeMenu = null;
         }
         const nameSpan = document.getElementById(`taskname-${safeId}`);
@@ -1092,10 +1111,7 @@
         const escapedTaskName = taskName.replace(/'/g, "\\'").replace(/"/g, "&quot;");
         nameSpan.innerHTML = `<input class="task-edit-input" id="edit-input-${safeId}" value="${original.replace(/"/g, '&quot;')}" onkeydown="handleEditKey(event,'${escapedTaskName}', '${safeId}')">`;
         const inp = document.getElementById(`edit-input-${safeId}`);
-        if (inp) {
-            inp.focus();
-            inp.select();
-        }
+        if (inp) { inp.focus(); inp.select(); }
     }
 
     function handleEditKey(e, oldName, safeId) {
@@ -1106,7 +1122,7 @@
         }
     }
 
-    async function commitEdit(oldName, safeId) {
+    function commitEdit(oldName, safeId) {
         const inp = document.getElementById(`edit-input-${safeId}`);
         const newName = inp ? inp.value.trim() : '';
         if (!newName || newName === oldName) {
@@ -1121,10 +1137,9 @@
         habitData[currentPeriod].tasks[newName] = habitData[currentPeriod].tasks[oldName];
         delete habitData[currentPeriod].tasks[oldName];
         initTracker();
-        await syncToServer();
     }
 
-    async function addTask() {
+    function addTask() {
         const taskName = document.getElementById('new-task-input').value.trim();
         if (!taskName) return;
         const [year, month] = currentPeriod.split('-');
@@ -1133,26 +1148,22 @@
         habitData[currentPeriod].tasks[taskName] = Array(daysCount).fill(false);
         document.getElementById('new-task-input').value = '';
         initTracker();
-        await syncToServer();
     }
 
-    async function deleteTask(taskName) {
+    function deleteTask(taskName) {
         const msg = translations[currentLang].confirmDelete.replace('{task}', taskName);
         if (confirm(msg)) {
             if (activeMenu) {
                 activeMenu.classList.remove('open');
-                if (activeMenu.closest('.task-col')) {
-                    activeMenu.closest('.task-col').classList.remove('task-col-active');
-                }
+                if (activeMenu.closest('.task-col')) activeMenu.closest('.task-col').classList.remove('task-col-active');
                 activeMenu = null;
             }
             delete habitData[currentPeriod].tasks[taskName];
             initTracker();
-            await syncToServer();
         }
     }
 
-    async function toggleCheckbox(element) {
+    function toggleCheckbox(element) {
         const taskName = element.getAttribute('data-task');
         const dayIdx = parseInt(element.getAttribute('data-day'));
         habitData[currentPeriod].tasks[taskName][dayIdx] = element.checked;
@@ -1160,13 +1171,9 @@
         const row = element.closest('tr');
         if (row) {
             const countEl = row.querySelector('.days-complete-col');
-            if (countEl) {
-                countEl.innerText = habitData[currentPeriod].tasks[taskName].filter(Boolean).length;
-            }
+            if (countEl) countEl.innerText = habitData[currentPeriod].tasks[taskName].filter(Boolean).length;
         }
-        
         updateCalculationsAndGraph();
-        await syncToServer();
     }
 
     function updateCalculationsAndGraph() {
