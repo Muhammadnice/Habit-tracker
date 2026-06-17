@@ -6,80 +6,342 @@
     <title>Dynamic Monthly Habit Tracker</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { --primary-color: #7b2cbf; }
+        :root {
+            --primary-color: #7b2cbf;
+        }
 
         [data-theme="light"] {
-            --bg-color: #f4f2f8; --card-bg: #ffffff; --text-color: #1a1a2e;
-            --text-muted: #6c757d; --border-color: #e2dff0; --table-header-text: #ffffff;
-            --row-alt: #faf9fd; --summary-bg: #f0ecfa; --input-bg: #ffffff;
-            --input-border: #d0cce8; --chip-bg: #f0ecfa; --chip-hover: #e5dff5;
-            --overlay-bg: rgba(0,0,0,0.08); --menu-bg: #ffffff;
+            --bg-color: #f4f2f8;
+            --card-bg: #ffffff;
+            --text-color: #1a1a2e;
+            --text-muted: #6c757d;
+            --border-color: #e2dff0;
+            --table-header-text: #ffffff;
+            --row-alt: #faf9fd;
+            --summary-bg: #f0ecfa;
+            --input-bg: #ffffff;
+            --input-border: #d0cce8;
+            --chip-bg: #f0ecfa;
+            --chip-hover: #e5dff5;
+            --overlay-bg: rgba(0,0,0,0.08);
+            --menu-bg: #ffffff;
             --menu-shadow: 0 4px 24px rgba(123,44,191,0.13);
             --settings-bg: rgba(255,255,255,0.98);
         }
+
         [data-theme="dark"] {
-            --bg-color: #12101a; --card-bg: #1e1b2e; --text-color: #e8e4f8;
-            --text-muted: #9990bb; --border-color: #2e2a45; --table-header-text: #ffffff;
-            --row-alt: #1a1728; --summary-bg: #1a1728; --input-bg: #16132a;
-            --input-border: #2e2a45; --chip-bg: #2a2545; --chip-hover: #332e55;
-            --overlay-bg: rgba(0,0,0,0.55); --menu-bg: #231f38;
+            --bg-color: #12101a;
+            --card-bg: #1e1b2e;
+            --text-color: #e8e4f8;
+            --text-muted: #9990bb;
+            --border-color: #2e2a45;
+            --table-header-text: #ffffff;
+            --row-alt: #1a1728;
+            --summary-bg: #1a1728;
+            --input-bg: #16132a;
+            --input-border: #2e2a45;
+            --chip-bg: #2a2545;
+            --chip-hover: #332e55;
+            --overlay-bg: rgba(0,0,0,0.55);
+            --menu-bg: #231f38;
             --menu-shadow: 0 4px 24px rgba(0,0,0,0.5);
             --settings-bg: rgba(30,27,46,0.98);
         }
 
         * { box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 20px; transition: background-color 0.3s ease, color 0.3s ease; }
 
-        .auth-container { max-width: 420px; margin: 60px auto; background: var(--card-bg); padding: 30px; border-radius: 16px; box-shadow: 0 4px 32px rgba(123,44,191,0.10); border: 1px solid var(--border-color); }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Auth Screen */
+        .auth-container {
+            max-width: 420px;
+            margin: 60px auto;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 32px rgba(123,44,191,0.10);
+            border: 1px solid var(--border-color);
+        }
+
         .auth-tabs { display: flex; margin-bottom: 20px; border-bottom: 2px solid var(--border-color); }
         .auth-tab { flex: 1; padding: 10px; cursor: pointer; font-weight: bold; color: var(--text-muted); text-align: center; transition: color 0.2s; }
         .auth-tab.active { color: var(--primary-color); border-bottom: 2px solid var(--primary-color); margin-bottom: -2px; }
 
-        .auth-form input, .auth-form select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid var(--input-border); border-radius: 8px; background: var(--input-bg); color: var(--text-color); font-size: 15px; outline: none; }
+        .auth-form input, .auth-form select {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+            background: var(--input-bg);
+            color: var(--text-color);
+            font-size: 15px;
+            outline: none;
+        }
         .auth-form input:focus { border-color: var(--primary-color); }
 
-        .input-with-info { display: flex; align-items: center; gap: 8px; width: 100%; margin: 8px 0; }
-        .input-with-info input { margin: 0 !important; flex: 1; }
+        .input-with-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            margin: 8px 0;
+        }
 
-        .info-btn { background: transparent !important; border: 1.5px solid var(--border-color) !important; color: var(--text-muted) !important; border-radius: 50% !important; width: 32px !important; height: 32px !important; min-width: 32px; padding: 0 !important; display: flex !important; align-items: center; justify-content: center; font-size: 15px !important; font-weight: bold; cursor: pointer; transition: all 0.2s; flex-shrink: 0; line-height: 1; margin-top: 0 !important; }
-        .info-btn:hover { border-color: var(--primary-color) !important; color: var(--primary-color) !important; background: var(--chip-bg) !important; }
+        .input-with-info input {
+            margin: 0 !important;
+            flex: 1;
+        }
 
-        .auth-form button { width: 100%; background-color: var(--primary-color); color: white; border: none; padding: 13px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; margin-top: 12px; transition: opacity 0.2s; }
+        .info-btn {
+            background: transparent !important;
+            border: 1.5px solid var(--border-color) !important;
+            color: var(--text-muted) !important;
+            border-radius: 50% !important;
+            width: 32px !important;
+            height: 32px !important;
+            min-width: 32px;
+            padding: 0 !important;
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px !important;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            line-height: 1;
+            margin-top: 0 !important;
+        }
+        .info-btn:hover {
+            border-color: var(--primary-color) !important;
+            color: var(--primary-color) !important;
+            background: var(--chip-bg) !important;
+        }
+
+        .auth-form button {
+            width: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 13px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 12px;
+            transition: opacity 0.2s;
+        }
         .auth-form button:hover { opacity: 0.88; }
 
-        .auth-form .info-btn { width: 32px !important; height: 32px !important; min-width: 32px; background: transparent !important; background-color: transparent !important; border: 1.5px solid var(--border-color) !important; color: var(--text-muted) !important; border-radius: 50% !important; padding: 0 !important; font-size: 15px !important; margin-top: 0 !important; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; opacity: 1; transition: all 0.2s; }
-        .auth-form .info-btn:hover { border-color: var(--primary-color) !important; color: var(--primary-color) !important; background: var(--chip-bg) !important; opacity: 1; }
+        /* Override info-btn inside auth-form — must come AFTER .auth-form button */
+        .auth-form .info-btn {
+            width: 32px !important;
+            height: 32px !important;
+            min-width: 32px;
+            background: transparent !important;
+            background-color: transparent !important;
+            border: 1.5px solid var(--border-color) !important;
+            color: var(--text-muted) !important;
+            border-radius: 50% !important;
+            padding: 0 !important;
+            font-size: 15px !important;
+            margin-top: 0 !important;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            opacity: 1;
+            transition: all 0.2s;
+        }
+        .auth-form .info-btn:hover {
+            border-color: var(--primary-color) !important;
+            color: var(--primary-color) !important;
+            background: var(--chip-bg) !important;
+            opacity: 1;
+        }
 
-        .password-wrapper { position: relative; width: 100%; margin: 8px 0; }
-        .password-wrapper input { width: 100%; padding: 12px 44px 12px 12px; margin: 0 !important; border: 1px solid var(--input-border); border-radius: 8px; background: var(--input-bg); color: var(--text-color); font-size: 15px; outline: none; }
+        /* Password field with eye toggle */
+        .password-wrapper {
+            position: relative;
+            width: 100%;
+            margin: 8px 0;
+        }
+        .password-wrapper input {
+            width: 100%;
+            padding: 12px 44px 12px 12px;
+            margin: 0 !important;
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+            background: var(--input-bg);
+            color: var(--text-color);
+            font-size: 15px;
+            outline: none;
+        }
         .password-wrapper input:focus { border-color: var(--primary-color); }
-        .eye-btn { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: transparent; border: none; cursor: pointer; color: var(--text-muted); width: 28px !important; height: 28px !important; min-width: 28px; padding: 0 !important; display: flex; align-items: center; justify-content: center; border-radius: 6px; margin-top: 0 !important; transition: color 0.18s; }
-        .eye-btn:hover { color: var(--primary-color) !important; }
+        .eye-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+            width: 28px !important;
+            height: 28px !important;
+            min-width: 28px;
+            padding: 0 !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            margin-top: 0 !important;
+            transition: color 0.18s;
+        }
+        .eye-btn:hover { color: var(--primary-color) !important; opacity: 1 !important; }
         .eye-btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
-        .auth-form .eye-btn { width: 28px !important; height: 28px !important; background: transparent !important; background-color: transparent !important; border: none !important; padding: 0 !important; margin-top: 0 !important; font-size: 15px !important; color: var(--text-muted) !important; opacity: 1; }
+        .auth-form .eye-btn {
+            width: 28px !important;
+            height: 28px !important;
+            background: transparent !important;
+            background-color: transparent !important;
+            border: none !important;
+            padding: 0 !important;
+            margin-top: 0 !important;
+            font-size: 15px !important;
+            color: var(--text-muted) !important;
+            opacity: 1;
+        }
         .auth-form .eye-btn:hover { color: var(--primary-color) !important; opacity: 1 !important; background: transparent !important; }
 
-        .forgot-link { display: block; text-align: right; font-size: 13px; color: var(--primary-color); cursor: pointer; margin-top: 4px; margin-bottom: 10px; font-weight: 600; text-decoration: none; }
-        .recovery-question-text { font-size: 14px; font-weight: 600; color: var(--text-color); background: var(--chip-bg); padding: 10px; border-radius: 8px; margin: 8px 0; border-left: 4px solid var(--primary-color); }
+        .forgot-link {
+            display: block;
+            text-align: right;
+            font-size: 13px;
+            color: var(--primary-color);
+            cursor: pointer;
+            margin-top: 4px;
+            margin-bottom: 10px;
+            font-weight: 600;
+            text-decoration: none;
+        }
 
-        .dashboard { display: none; max-width: 1400px; margin: 0 auto; background: var(--card-bg); padding: 28px; border-radius: 16px; box-shadow: 0 4px 32px rgba(0,0,0,0.07); border: 1px solid var(--border-color); }
-        header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 18px; margin-bottom: 22px; flex-wrap: wrap; gap: 15px; }
+        .recovery-question-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-color);
+            background: var(--chip-bg);
+            padding: 10px;
+            border-radius: 8px;
+            margin: 8px 0;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: none;
+            max-width: 1400px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 28px;
+            border-radius: 16px;
+            box-shadow: 0 4px 32px rgba(0,0,0,0.07);
+            border: 1px solid var(--border-color);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 18px;
+            margin-bottom: 22px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
         h1 { margin: 0; font-size: 22px; color: var(--primary-color); font-weight: 700; letter-spacing: -0.3px; }
         .controls-group { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
 
-        .month-chip { display: flex; align-items: center; gap: 8px; background: var(--chip-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 8px 14px; }
+        .month-chip {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--chip-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 8px 14px;
+        }
         .month-chip label { font-size: 13px; font-weight: 600; color: var(--text-muted); white-space: nowrap; }
-        input[type="month"] { border: none; background: transparent; color: var(--text-color); font-size: 14px; font-weight: 600; cursor: pointer; outline: none; }
 
-        .icon-btn { width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--chip-bg); color: var(--text-color); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; transition: background 0.18s, border-color 0.18s; position: relative; flex-shrink: 0; }
+        input[type="month"] {
+            border: none;
+            background: transparent;
+            color: var(--text-color);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .icon-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background: var(--chip-bg);
+            color: var(--text-color);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: background 0.18s, border-color 0.18s;
+            position: relative;
+            flex-shrink: 0;
+        }
         .icon-btn:hover { background: var(--chip-hover); border-color: var(--primary-color); }
         .icon-btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-        .user-pill { display: flex; align-items: center; gap: 8px; background: var(--chip-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 7px 14px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s, border-color 0.2s; }
+        .user-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--chip-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 7px 14px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+        }
         .user-pill:hover { background: var(--chip-hover); border-color: var(--primary-color); }
-        .logout-btn { background-color: transparent; color: #e05c5c; border: 1px solid #e05c5c; padding: 7px 14px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 13px; transition: background 0.18s; }
+
+        .logout-btn {
+            background-color: transparent;
+            color: #e05c5c;
+            border: 1px solid #e05c5c;
+            padding: 7px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: background 0.18s;
+        }
         .logout-btn:hover { background: rgba(224,92,92,0.10); }
 
+        /* Table components */
         .tracker-wrapper { overflow-x: auto; margin-bottom: 28px; border: 1px solid var(--border-color); border-radius: 12px; }
         table { width: 100%; border-collapse: collapse; text-align: center; background: var(--card-bg); }
         th, td { border: 1px solid var(--border-color); padding: 7px 5px; font-size: 12px; color: var(--text-color); }
@@ -87,25 +349,79 @@
         tbody tr:nth-child(even) { background-color: var(--row-alt); }
         tbody tr:hover { background: var(--chip-hover); }
 
-        .task-col { text-align: left; min-width: 230px; font-weight: 600; padding-left: 10px; background: var(--card-bg); position: sticky; left: 0; z-index: 2; box-shadow: 2px 0 8px rgba(0,0,0,0.06); }
+        .task-col {
+            text-align: left;
+            min-width: 230px;
+            font-weight: 600;
+            padding-left: 10px;
+            background: var(--card-bg);
+            position: sticky;
+            left: 0;
+            z-index: 2;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.06);
+        }
         th.task-col { background-color: var(--primary-color); z-index: 3; }
         .task-col.task-col-active { z-index: 10 !important; }
+
         .task-item-cell { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
         .task-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
 
-        .burger-btn { width: 26px; height: 26px; border-radius: 7px; border: 1px solid var(--border-color); background: var(--chip-bg); cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.15s; }
+        .burger-btn {
+            width: 26px;
+            height: 26px;
+            border-radius: 7px;
+            border: 1px solid var(--border-color);
+            background: var(--chip-bg);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: background 0.15s;
+        }
         .burger-btn:hover { background: var(--chip-hover); border-color: var(--primary-color); }
         .burger-btn svg { width: 13px; height: 13px; stroke: var(--text-muted); fill: none; stroke-width: 2.2; }
 
-        .task-menu { position: absolute; right: 0; top: calc(100% + 4px); background: var(--menu-bg); border: 1px solid var(--border-color); border-radius: 10px; box-shadow: var(--menu-shadow); z-index: 999; min-width: 130px; overflow: hidden; display: none; }
+        .task-menu {
+            position: absolute;
+            right: 0;
+            top: calc(100% + 4px);
+            background: var(--menu-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            box-shadow: var(--menu-shadow);
+            z-index: 999;
+            min-width: 130px;
+            overflow: hidden;
+            display: none;
+        }
         .task-menu.open { display: block; }
-        .task-menu-item { display: flex; align-items: center; gap: 8px; padding: 9px 14px; font-size: 13px; cursor: pointer; color: var(--text-color); transition: background 0.14s; }
+        .task-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 14px;
+            font-size: 13px;
+            cursor: pointer;
+            color: var(--text-color);
+            transition: background 0.14s;
+        }
         .task-menu-item:hover { background: var(--chip-hover); }
         .task-menu-item.danger { color: #e05c5c; }
         .task-menu-item svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; }
 
-        .task-edit-input { width: 100%; border: 1px solid var(--primary-color); border-radius: 6px; background: var(--input-bg); color: var(--text-color); font-size: 13px; padding: 3px 7px; outline: none; }
+        .task-edit-input {
+            width: 100%;
+            border: 1px solid var(--primary-color);
+            border-radius: 6px;
+            background: var(--input-bg);
+            color: var(--text-color);
+            font-size: 13px;
+            padding: 3px 7px;
+            outline: none;
+        }
 
+        /* Checkbox markup */
         .checkbox-container { display: inline-block; position: relative; cursor: pointer; width: 18px; height: 18px; }
         .checkbox-container input { position: absolute; opacity: 0; width: 0; height: 0; }
         .checkmark { position: absolute; inset: 0; background-color: var(--chip-bg); border-radius: 5px; border: 1.5px solid var(--input-border); }
@@ -114,17 +430,29 @@
         .checkbox-container input:checked ~ .checkmark:after { display: block; }
 
         .add-task-box { display: flex; gap: 10px; margin-bottom: 20px; }
-        .add-task-box input[type="text"] { flex: 1; padding: 10px 14px; border: 1.5px solid var(--input-border); border-radius: 10px; font-size: 14px; background: var(--input-bg); color: var(--text-color); }
+        .add-task-box input[type="text"] {
+            flex: 1; padding: 10px 14px; border: 1.5px solid var(--input-border); border-radius: 10px;
+            font-size: 14px; background: var(--input-bg); color: var(--text-color);
+        }
         .add-task-box button { background-color: var(--primary-color); color: white; border: none; padding: 10px 22px; border-radius: 10px; font-weight: 700; cursor: pointer; }
 
         .summary-row { background-color: var(--summary-bg) !important; font-weight: bold; }
         .days-complete-col { font-weight: bold; background: var(--chip-bg); min-width: 80px; }
+
         .chart-section { margin-top: 24px; padding: 20px; background: var(--chip-bg); border: 1px solid var(--border-color); border-radius: 12px; }
         .chart-section h3 { margin: 0 0 14px; font-size: 15px; }
 
-        .settings-overlay { display: none; position: fixed; inset: 0; background: var(--overlay-bg); z-index: 1000; backdrop-filter: blur(2px); align-items: center; justify-content: center; }
+        /* Configuration Overlay Modals */
+        .settings-overlay {
+            display: none; position: fixed; inset: 0; background: var(--overlay-bg);
+            z-index: 1000; backdrop-filter: blur(2px); align-items: center; justify-content: center;
+        }
         .settings-overlay.open { display: flex; }
-        .settings-panel { background: var(--settings-bg); border: 1px solid var(--border-color); border-radius: 18px; padding: 28px 32px; min-width: 340px; max-width: 440px; width: 100%; box-shadow: 0 8px 48px rgba(0,0,0,0.18); }
+        .settings-panel {
+            background: var(--settings-bg); border: 1px solid var(--border-color);
+            border-radius: 18px; padding: 28px 32px; min-width: 340px; max-width: 440px; width: 100%;
+            box-shadow: 0 8px 48px rgba(0,0,0,0.18);
+        }
         .settings-panel h2 { margin: 0 0 20px; font-size: 17px; font-weight: 700; }
         .settings-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
         .settings-row label { font-size: 14px; font-weight: 600; }
@@ -134,6 +462,7 @@
         .color-swatch { width: 30px; height: 30px; border-radius: 8px; border: 2.5px solid transparent; cursor: pointer; }
         .color-swatch.active { border-color: var(--text-color); }
         .custom-color-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; font-size: 13px; }
+
         .lang-dropdown-select { padding: 6px 10px; border-radius: 8px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); font-weight: 600; cursor: pointer; }
 
         .toggle-switch { position: relative; width: 44px; height: 24px; }
@@ -142,6 +471,7 @@
         .toggle-slider:before { content: ''; position: absolute; left: 3px; top: 3px; width: 18px; height: 18px; border-radius: 50%; background: white; transition: transform 0.22s; }
         .toggle-switch input:checked + .toggle-slider { background: var(--primary-color); }
         .toggle-switch input:checked + .toggle-slider:before { transform: translateX(20px); }
+
         .settings-close-btn { width: 100%; margin-top: 10px; padding: 11px; background: var(--primary-color); color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; }
 
         @media (max-width: 768px) {
@@ -162,31 +492,40 @@
         <div id="tab-login" class="auth-tab active" onclick="switchAuthMode('login')">Login</div>
         <div id="tab-register" class="auth-tab" onclick="switchAuthMode('register')">Register</div>
     </div>
+    
     <div class="auth-form" id="auth-form-body">
         <h3 id="auth-title" style="margin-bottom:15px; color:var(--primary-color);">Account Access</h3>
+        
         <input type="text" id="auth-username" placeholder="Username" autocomplete="username" maxlength="40">
+        
         <div id="recovery-question-display" class="recovery-question-text" style="display:none;"></div>
+        
         <div class="input-with-info" id="wrapper-question" style="display:none;">
             <input type="text" id="auth-question" placeholder="Security Question (e.g., What is your father's name?)" autocomplete="off" maxlength="120">
             <button class="info-btn" onclick="showInfoPopup('question')" type="button" title="Help">ⓘ</button>
         </div>
+        
         <div class="input-with-info" id="wrapper-answer" style="display:none;">
             <input type="text" id="auth-answer" placeholder="Security Answer (e.g., John)" autocomplete="off" maxlength="80">
             <button class="info-btn" onclick="showInfoPopup('answer')" type="button" title="Help">ⓘ</button>
         </div>
+        
         <div class="password-wrapper" id="wrapper-password">
             <input type="password" id="auth-password" placeholder="Password" autocomplete="current-password" maxlength="64">
             <button class="eye-btn" type="button" onclick="toggleEye('auth-password','eye-main')" tabindex="-1">
                 <svg id="eye-main"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             </button>
         </div>
+
         <div class="password-wrapper" id="wrapper-confirm-password" style="display:none;">
             <input type="password" id="auth-password-confirm" placeholder="Confirm Password" autocomplete="new-password" maxlength="64">
             <button class="eye-btn" type="button" onclick="toggleEye('auth-password-confirm','eye-confirm')" tabindex="-1">
                 <svg id="eye-confirm"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             </button>
         </div>
+
         <span class="forgot-link" id="link-forgot" onclick="switchAuthMode('forgot')">Forgot Password?</span>
+        
         <button id="auth-submit-btn" onclick="handleAuthProcessing()">Log In</button>
         <span class="forgot-link" id="link-back-login" style="display:none; text-align:center; margin-top:15px;" onclick="switchAuthMode('login')">Back to Login</span>
     </div>
@@ -197,6 +536,7 @@
         <h1 id="tracker-title">Habit &amp; Task Tracker</h1>
         <div class="controls-group">
             <span id="user-display" class="user-pill" onclick="openProfileMenu()" title="Edit Profile Settings"></span>
+            
             <div class="month-chip">
                 <label for="month-select" id="lbl-period">Period:</label>
                 <input type="month" id="month-select">
@@ -211,10 +551,12 @@
             <button class="logout-btn" id="btn-logout" onclick="handleLogout()">Logout</button>
         </div>
     </header>
+
     <div class="add-task-box">
-        <input type="text" id="new-task-input" placeholder="Enter new habit/task..." maxlength="80">
+        <input type="text" id="new-task-input" placeholder="Enter new habit/task (e.g., Read 30 pages, Memorize Quran)..." maxlength="80">
         <button id="add-task-btn" onclick="addTask()">+ Add Task</button>
     </div>
+
     <div class="tracker-wrapper">
         <table id="tracker-table">
             <thead><tr id="header-days-row"></tr></thead>
@@ -225,31 +567,36 @@
             </tfoot>
         </table>
     </div>
+
     <div class="chart-section">
         <h3 id="chart-section-title">Daily Completion Performance (%)</h3>
         <canvas id="completionChart" height="100"></canvas>
     </div>
 </div>
 
-<div class="settings-overlay" id="profile-overlay" onclick="handleOverlayCloseCheck(event,'profile-overlay')">
+<div class="settings-overlay" id="profile-overlay" onclick="handleOverlayCloseCheck(event, 'profile-overlay')">
     <div class="settings-panel">
         <h2 id="profile-modal-title">👤 User Profile Settings</h2>
-        <div class="settings-row" style="flex-direction:column;align-items:stretch;gap:4px;">
+        
+        <div class="settings-row" style="flex-direction: column; align-items: stretch; gap: 4px;">
             <label id="lbl-prof-username">Profile Username</label>
-            <input type="text" id="profile-username-input" class="task-edit-input" style="padding:10px;font-size:14px;" maxlength="40" autocomplete="off">
+            <input type="text" id="profile-username-input" class="task-edit-input" style="padding: 10px; font-size: 14px;" maxlength="40" autocomplete="off">
         </div>
-        <div class="settings-row" style="flex-direction:column;align-items:stretch;gap:4px;margin-top:12px;">
+        
+        <div class="settings-row" style="flex-direction: column; align-items: stretch; gap: 4px; margin-top: 12px;">
             <label id="lbl-prof-pass">New Account Password</label>
-            <input type="password" id="profile-password-input" class="task-edit-input" style="padding:10px;font-size:14px;" placeholder="••••••••" maxlength="64" autocomplete="new-password">
+            <input type="password" id="profile-password-input" class="task-edit-input" style="padding: 10px; font-size: 14px;" placeholder="••••••••" maxlength="64" autocomplete="new-password">
         </div>
-        <button class="settings-close-btn" id="btn-profile-save" onclick="saveProfileChanges()" style="margin-top:20px;">Save Profile Info</button>
-        <button class="settings-close-btn" id="btn-profile-cancel" onclick="closeProfileMenu()" style="background:transparent;color:var(--text-muted);border:1px solid var(--border-color);margin-top:8px;">Cancel</button>
+        
+        <button class="settings-close-btn" id="btn-profile-save" onclick="saveProfileChanges()" style="margin-top: 20px;">Save Profile Info</button>
+        <button class="settings-close-btn" id="btn-profile-cancel" onclick="closeProfileMenu()" style="background: transparent; color: var(--text-muted); border: 1px solid var(--border-color); margin-top: 8px;">Cancel</button>
     </div>
 </div>
 
-<div class="settings-overlay" id="settings-overlay" onclick="handleOverlayCloseCheck(event,'settings-overlay')">
+<div class="settings-overlay" id="settings-overlay" onclick="handleOverlayCloseCheck(event, 'settings-overlay')">
     <div class="settings-panel">
         <h2 id="settings-title">⚙️ Appearance Settings</h2>
+
         <div class="settings-row">
             <div>
                 <div style="font-size:14px;font-weight:600;" id="lbl-lang">Language</div>
@@ -261,6 +608,7 @@
                 <option value="uz">Oʻzbekcha</option>
             </select>
         </div>
+
         <div class="settings-row">
             <div>
                 <div style="font-size:14px;font-weight:600;" id="lbl-darkmode">Dark Mode</div>
@@ -271,6 +619,7 @@
                 <span class="toggle-slider"></span>
             </label>
         </div>
+
         <div style="margin-bottom:16px">
             <div style="font-size:14px;font-weight:600;margin-bottom:12px" id="lbl-theme-color">Theme Color</div>
             <div class="color-swatch-group" id="swatch-group">
@@ -289,164 +638,229 @@
                 <span style="font-size:13px;color:var(--text-muted)" id="color-hex-label">#7b2cbf</span>
             </div>
         </div>
+
         <button class="settings-close-btn" id="btn-settings-done" onclick="closeSettings()">Done</button>
     </div>
 </div>
 
 <script>
-    // ── State ──────────────────────────────────────────────────────────────────
-    let currentPeriod = '';
+    // ─── State ───────────────────────────────────────────────────────────────
+    let currentPeriod = "";
     let habitData = {};
     let chartInstance = null;
     let authMode = 'login';
     let recoveryStep = 1;
-    let recoveryUsername = '';        // stores username across recovery steps
+    // FIX #1/2: No server — token is a simple flag stored in localStorage.
+    // We do NOT use a Bearer token to hit a backend. Auth is fully localStorage-based.
     let token = localStorage.getItem('auth_token');
     let activeMenu = null;
     let currentLang = localStorage.getItem('tracker_lang') || 'en';
+    // FIX #5: Store the recovery username separately so it's available at step 2
+    // even after hiding the input field.
+    let recoveryUsername = '';
 
-    // ── Translations ───────────────────────────────────────────────────────────
+    // ─── Translations ─────────────────────────────────────────────────────────
     const translations = {
         en: {
-            title:"Habit & Task Tracker", period:"Period:", addTaskBtn:"+ Add Task",
-            addTaskPlaceholder:"Enter new habit/task...", dailyHabits:"Daily Habits",
-            daysDone:"Days Done", completeForDay:"COMPLETE FOR THE DAY",
-            percentComplete:"PERCENT COMPLETE", best:"BEST",
-            chartTitle:"Daily Completion Performance (%)", chartLabel:"Completion rate (%)",
-            chartXAxis:"Days of Month", settingsTitle:"⚙️ Appearance Settings",
-            darkMode:"Dark Mode", darkModeDesc:"Switch between light and dark theme",
-            themeColor:"Theme Color", custom:"Custom:", done:"Done",
-            langLabel:"Language", langDesc:"Choose interface language", logout:"Logout",
-            noEntries:"No active entries. Add one above!",
-            confirmDelete:'Remove "{task}"?',
-            duplicateTask:"A task with that name already exists.",
-            duplicateUser:"A user with that username already exists.",
-            editOpt:"Edit", deleteOpt:"Delete",
-            profileTitle:"👤 User Profile Settings", profUserLabel:"Profile Username",
-            profPassLabel:"New Account Password", profSaveBtn:"Save Profile Info",
-            profCancelBtn:"Cancel", forgotPassword:"Forgot Password?",
-            backToLogin:"Back to Login", loginTab:"Login", registerTab:"Register",
-            authRecoveryTitle:"Account Recovery", authRecoverySubmitFind:"Find Account",
-            authRecoverySubmitReset:"Reset Password",
-            questionPlaceholder:"Security Question (e.g., What is your father's name?)",
-            answerPlaceholder:"Security Answer (e.g., John)",
-            usernamePlaceholder:"Username", passwordPlaceholder:"Password",
-            alertFillFields:"Please fill out all visible fields.",
-            alertProfileSuccess:"Profile updated successfully!",
-            alertWrongAnswer:"Incorrect security answer!",
-            alertInvalidLogin:"Invalid username or password. Please try again.",
-            alertUserNotFound:"This username was not found.",
-            alertResetSuccess:"Password reset complete. You can now log in.",
-            confirmPasswordPlaceholder:"Confirm Password",
-            alertPasswordMismatch:"Passwords do not match. Please try again.",
-            questionInfo:"This security question will be asked if you forget your password, letting you recover your account without email or phone.",
-            answerInfo:"Provide a memorable answer only you know. You must enter it exactly the same way when recovering your account!"
+            title: "Habit & Task Tracker",
+            period: "Period:",
+            addTaskBtn: "+ Add Task",
+            addTaskPlaceholder: "Enter new habit/task...",
+            dailyHabits: "Daily Habits",
+            daysDone: "Days Done",
+            completeForDay: "COMPLETE FOR THE DAY",
+            percentComplete: "PERCENT COMPLETE",
+            best: "BEST",
+            chartTitle: "Daily Completion Performance (%)",
+            chartLabel: "Completion rate (%)",
+            chartXAxis: "Days of Month",
+            settingsTitle: "⚙️ Appearance Settings",
+            darkMode: "Dark Mode",
+            darkModeDesc: "Switch between light and dark theme",
+            themeColor: "Theme Color",
+            custom: "Custom:",
+            done: "Done",
+            langLabel: "Language",
+            langDesc: "Choose interface language",
+            logout: "Logout",
+            noEntries: "No active entries. Add one above!",
+            confirmDelete: "Remove \"{task}\"?",
+            duplicateTask: "A task with that name already exists.",
+            duplicateUser: "A user with that username already exists.",
+            editOpt: "Edit",
+            deleteOpt: "Delete",
+            profileTitle: "👤 User Profile Settings",
+            profUserLabel: "Profile Username",
+            profPassLabel: "New Account Password",
+            profSaveBtn: "Save Profile Info",
+            profCancelBtn: "Cancel",
+            forgotPassword: "Forgot Password?",
+            backToLogin: "Back to Login",
+            loginTab: "Login",
+            registerTab: "Register",
+            authRecoveryTitle: "Account Recovery",
+            authRecoverySubmitFind: "Find Account",
+            authRecoverySubmitReset: "Reset Password",
+            questionPlaceholder: "Security Question (e.g., What is your father's name?)",
+            answerPlaceholder: "Security Answer (e.g., John)",
+            usernamePlaceholder: "Username",
+            passwordPlaceholder: "Password",
+            alertFillFields: "Please fill out all visible input configuration fields.",
+            alertProfileSuccess: "Profile configurations saved and updated successfully!",
+            alertWrongAnswer: "Incorrect security challenge answer verification!",
+            alertInvalidLogin: "Invalid username or password. Please try again.",
+            alertUserNotFound: "This username was not found.",
+            alertResetSuccess: "Password reset complete. You can now securely log into your profile.",
+            confirmPasswordPlaceholder: "Confirm Password",
+            alertPasswordMismatch: "Passwords do not match. Please try again.",
+            questionInfo: "This custom security question will be asked if you ever forget your password, allowing you to safely recover your account without an email or phone number.",
+            answerInfo: "Provide a secure answer to your custom question. Make sure it's something only you know and can remember exactly!"
         },
         ru: {
-            title:"Трекер привычек и задач", period:"Период:", addTaskBtn:"+ Добавить задачу",
-            addTaskPlaceholder:"Введите привычку/задачу...", dailyHabits:"Привычки",
-            daysDone:"Выполнено", completeForDay:"ВЫПОЛНЕНО ЗА ДЕНЬ",
-            percentComplete:"ПРОЦЕНТ ВЫПОЛНЕНИЯ", best:"ЛУЧШИЙ КУРС",
-            chartTitle:"Ежедневная статистика выполнения (%)", chartLabel:"Процент выполнения (%)",
-            chartXAxis:"Дни месяца", settingsTitle:"⚙️ Настройки внешнего вида",
-            darkMode:"Темная тема", darkModeDesc:"Переключение между светлой и темной темой",
-            themeColor:"Цвет интерфейса", custom:"Свой цвет:", done:"Готово",
-            langLabel:"Язык", langDesc:"Выберите язык интерфейса", logout:"Выйти",
-            noEntries:"Нет активных записей. Добавьте выше!",
-            confirmDelete:'Удалить "{task}"?',
-            duplicateTask:"Задача с таким названием уже существует.",
-            duplicateUser:"Пользователь с таким именем уже существует.",
-            editOpt:"Редактировать", deleteOpt:"Удалить",
-            profileTitle:"👤 Настройки профиля", profUserLabel:"Имя пользователя",
-            profPassLabel:"Новый пароль", profSaveBtn:"Сохранить профиль",
-            profCancelBtn:"Отмена", forgotPassword:"Забыли пароль?",
-            backToLogin:"Вернуться к входу", loginTab:"Вход", registerTab:"Регистрация",
-            authRecoveryTitle:"Восстановление доступа", authRecoverySubmitFind:"Найти аккаунт",
-            authRecoverySubmitReset:"Сбросить пароль",
-            questionPlaceholder:"Секретный вопрос (например: Имя вашего отца?)",
-            answerPlaceholder:"Ответ (например: Иван)",
-            usernamePlaceholder:"Имя пользователя", passwordPlaceholder:"Пароль",
-            alertFillFields:"Пожалуйста, заполните все видимые поля.",
-            alertProfileSuccess:"Профиль успешно обновлен!",
-            alertWrongAnswer:"Неверный ответ на секретный вопрос!",
-            alertInvalidLogin:"Неверное имя пользователя или пароль.",
-            alertUserNotFound:"Данное имя пользователя не найдено.",
-            alertResetSuccess:"Пароль успешно обновлен. Теперь вы можете войти.",
-            confirmPasswordPlaceholder:"Подтвердите пароль",
-            alertPasswordMismatch:"Пароли не совпадают.",
-            questionInfo:"Этот вопрос будет задан при восстановлении пароля.",
-            answerInfo:"Укажите ответ, который точно запомните!"
+            title: "Трекер привычек и задач",
+            period: "Период:",
+            addTaskBtn: "+ Добавить задачу",
+            addTaskPlaceholder: "Введите привычку/задачу...",
+            dailyHabits: "Привычки",
+            daysDone: "Выполнено",
+            completeForDay: "ВЫПОЛНЕНО ЗА ДЕНЬ",
+            percentComplete: "ПРОЦЕНТ ВЫПОЛНЕНИЯ",
+            best: "ЛУЧШИЙ КУРС",
+            chartTitle: "Ежедневная статистика выполнения (%)",
+            chartLabel: "Процент выполнения (%)",
+            chartXAxis: "Дни месяца",
+            settingsTitle: "⚙️ Настройки внешнего вида",
+            darkMode: "Темная тема",
+            darkModeDesc: "Переключение между светлой и темной темой",
+            themeColor: "Цвет интерфейса",
+            custom: "Свой цвет:",
+            done: "Готово",
+            langLabel: "Язык",
+            langDesc: "Выберите язык интерфейса",
+            logout: "Выйти",
+            noEntries: "Нет активных записей. Добавьте выше!",
+            confirmDelete: "Удалить \"{task}\"?",
+            duplicateTask: "Задача с таким названием уже существует.",
+            duplicateUser: "Пользователь с таким именем уже существует.",
+            editOpt: "Редактировать",
+            deleteOpt: "Удалить",
+            profileTitle: "👤 Настройки профиля",
+            profUserLabel: "Имя пользователя",
+            profPassLabel: "Новый пароль",
+            profSaveBtn: "Сохранить профиль",
+            profCancelBtn: "Отмена",
+            forgotPassword: "Забыли пароль?",
+            backToLogin: "Вернуться к входу",
+            loginTab: "Вход",
+            registerTab: "Регистрация",
+            authRecoveryTitle: "Восстановление доступа",
+            authRecoverySubmitFind: "Найти аккаунт",
+            authRecoverySubmitReset: "Сбросить пароль",
+            questionPlaceholder: "Секретный вопрос (например: Имя вашего отца?)",
+            answerPlaceholder: "Ответ (например: Иван)",
+            usernamePlaceholder: "Имя пользователя",
+            passwordPlaceholder: "Пароль",
+            alertFillFields: "Пожалуйста, заполните все видимые поля ввода.",
+            alertProfileSuccess: "Профиль успешно изменен и обновлен!",
+            alertWrongAnswer: "Неверный ответ на секретный вопрос проверки безопасности!",
+            alertInvalidLogin: "Неверное имя пользователя или пароль. Попробуйте снова.",
+            alertUserNotFound: "Данное имя пользователя не найдено в системе.",
+            alertResetSuccess: "Пароль успешно обновлен. Теперь вы можете войти в систему.",
+            confirmPasswordPlaceholder: "Подтвердите пароль",
+            alertPasswordMismatch: "Пароли не совпадают. Пожалуйста, попробуйте ещё раз.",
+            questionInfo: "Этот секретный вопрос будет задан, если вы забудете пароль. Это позволит безопасно восстановить доступ к аккаунту без электронной почты или телефона.",
+            answerInfo: "Укажите ответ на ваш секретный вопрос. Убедитесь, что этот ответ знаете только вы и сможете ввести его в точности так же!"
         },
         uz: {
-            title:"Odatlar va vazifalar trekeri", period:"Davr:", addTaskBtn:"+ Qo'shish",
-            addTaskPlaceholder:"Yangi odat/vazifa kiriting...", dailyHabits:"Kundalik odatlar",
-            daysDone:"Bajarilgan kunlar", completeForDay:"KUNLIK BAJARILGANLAR",
-            percentComplete:"BAJARILISH FOIZI", best:"ENG YAXSHI",
-            chartTitle:"Kunlik bajarilish ko'rsatkichi (%)", chartLabel:"Bajarilish foizi (%)",
-            chartXAxis:"Oy kunlari", settingsTitle:"⚙️ Tashqi ko'rinish sozlamalari",
-            darkMode:"Tungi rejim", darkModeDesc:"Yorug' va qorong'u mavzuni almashtirish",
-            themeColor:"Mavzu rangi", custom:"Boshqa rang:", done:"Tayyor",
-            langLabel:"Til", langDesc:"Interfeys tilini tanlang", logout:"Chiqish",
-            noEntries:"Faol yozuvlar yo'q. Yuqoridan qo'shing!",
-            confirmDelete:'"{task}" olib tashlansinmi?',
-            duplicateTask:"Bunday nomli vazifa allaqachon mavjud.",
-            duplicateUser:"Bunday nomli foydalanuvchi allaqachon mavjud.",
-            editOpt:"Tahrirlash", deleteOpt:"O'chirish",
-            profileTitle:"👤 Profil sozlamalari", profUserLabel:"Foydalanuvchi nomi",
-            profPassLabel:"Yangi akkaunt paroli", profSaveBtn:"Profilni saqlash",
-            profCancelBtn:"Bekor qilish", forgotPassword:"Parolni unutdingizmi?",
-            backToLogin:"Kirishga qaytish", loginTab:"Kirish", registerTab:"Ro'yxatdan o'tish",
-            authRecoveryTitle:"Akkauntni tiklash", authRecoverySubmitFind:"Akkauntni topish",
-            authRecoverySubmitReset:"Parolni yangilash",
-            questionPlaceholder:"Xavfsizlik savoli (masalan: Otangizning ismi nima?)",
-            answerPlaceholder:"Xavfsizlik javobi (masalan: Ali)",
-            usernamePlaceholder:"Foydalanuvchi nomi", passwordPlaceholder:"Parol",
-            alertFillFields:"Iltimos, barcha ko'rinadigan kataklarni to'ldiring.",
-            alertProfileSuccess:"Profil ma'lumotlari muvaffaqiyatli yangilandi!",
-            alertWrongAnswer:"Xavfsizlik savoliga noto'g'ri javob!",
-            alertInvalidLogin:"Noto'g'ri foydalanuvchi nomi yoki parol.",
-            alertUserNotFound:"Bunday foydalanuvchi nomi topilmadi.",
-            alertResetSuccess:"Parol muvaffaqiyatli tiklandi. Endi kirishingiz mumkin.",
-            confirmPasswordPlaceholder:"Parolni tasdiqlang",
-            alertPasswordMismatch:"Parollar mos kelmaydi.",
-            questionInfo:"Agar parolingizni unutsangiz, ushbu savol beriladi.",
-            answerInfo:"Faqat o'zingiz biladigan javobni kiriting!"
+            title: "Odatlar va vazifalar trekeri",
+            period: "Davr:",
+            addTaskBtn: "+ Qo'shish",
+            addTaskPlaceholder: "Yangi odat/vazifa kiriting...",
+            dailyHabits: "Kundalik odatlar",
+            daysDone: "Bajarilgan kunlar",
+            completeForDay: "KUNLIK BAJARILGANLAR",
+            percentComplete: "BAJARILISH FOIZI",
+            best: "ENG YAXSHI",
+            chartTitle: "Kunlik bajarilish ko'rsatkichi (%)",
+            chartLabel: "Bajarilish foizi (%)",
+            chartXAxis: "Oy kunlari",
+            settingsTitle: "⚙️ Tashqi ko'rinish sozlamalari",
+            darkMode: "Tungi rejim",
+            darkModeDesc: "Yorug' va qorong'u mavzuni almashtirish",
+            themeColor: "Mavzu rangi",
+            custom: "Boshqa rang:",
+            done: "Tayyor",
+            langLabel: "Til",
+            langDesc: "Interfeys tilini tanlang",
+            logout: "Chiqish",
+            noEntries: "Faol yozuvlar yo'q. Yuqoridan qo'shing!",
+            confirmDelete: "\"{task}\" olib tashlansinmi?",
+            duplicateTask: "Bunday nomli vazifa allaqachon mavjud.",
+            duplicateUser: "Bunday nomli foydalanuvchi allaqachon mavjud.",
+            editOpt: "Tahrirlash",
+            deleteOpt: "O'chirish",
+            profileTitle: "👤 Profil sozlamalari",
+            profUserLabel: "Foydalanuvchi nomi",
+            profPassLabel: "Yangi akkaunt paroli",
+            profSaveBtn: "Profilni saqlash",
+            profCancelBtn: "Bekor qilish",
+            forgotPassword: "Parolni unutdingizmi?",
+            backToLogin: "Kirishga qaytish",
+            loginTab: "Kirish",
+            registerTab: "Ro'yxatdan o'tish",
+            authRecoveryTitle: "Akkauntni tiklash",
+            authRecoverySubmitFind: "Akkauntni topish",
+            authRecoverySubmitReset: "Parolni yangilash",
+            questionPlaceholder: "Xavfsizlik savoli (masalan: Otangizning ismi nima?)",
+            answerPlaceholder: "Xavfsizlik javobi (masalan: Ali)",
+            usernamePlaceholder: "Foydalanuvchi nomi",
+            passwordPlaceholder: "Parol",
+            alertFillFields: "Iltimos, barcha ko'rinadigan kataklarni to'ldiring.",
+            alertProfileSuccess: "Profil ma'lumotlari muvaffaqiyatli yangilandi!",
+            alertWrongAnswer: "Xavfsizlik savoliga noto'g'ri javob berildi!",
+            alertInvalidLogin: "Noto'g'ri foydalanuvchi nomi yoki parol. Qayta urinib ko'ring.",
+            alertUserNotFound: "Bunday foydalanuvchi nomi tizimda topilmadi.",
+            alertResetSuccess: "Parol muvaffaqiyatli tiklandi. Endi tizimga kirishingiz mumkin.",
+            confirmPasswordPlaceholder: "Parolni tasdiqlang",
+            alertPasswordMismatch: "Parollar mos kelmaydi. Iltimos, qayta urinib ko'ring.",
+            questionInfo: "Agar parolingizni unutsangiz, ushbu maxfiy savol beriladi. Bu sizga elektron pochta yoki telefonsiz akkauntingizni xavfsiz tiklash imkonini beradi.",
+            answerInfo: "Maxfiy savolga javob kiriting. Buni faqat o'zingiz bilishingizga va aniq eslab qolishingizga ishonch hosil qiling!"
         }
     };
 
     const localDayNames = {
-        en:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
-        ru:['Вс','Пн','Вт','Ср','Чт','Пт','Сб'],
-        uz:['Yak','Dush','Sesh','Chor','Pay','Jum','Shan']
+        en: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+        ru: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+        uz: ['Yak', 'Dush', 'Sesh', 'Chor', 'Pay', 'Jum', 'Shan']
     };
 
-    // ── API helpers ────────────────────────────────────────────────────────────
-    // All data lives in MongoDB via server.js. Token is stored in localStorage
-    // only as a session credential — the actual habit data is always fetched
-    // from the server, so it works identically on every device and browser.
+    // ─── Persistence helpers (localStorage only — no server) ─────────────────
+    // FIX #1/2/6/7/8: All data persisted to localStorage per user, no API calls.
 
-    async function apiGet(url) {
-        const res = await fetch(url, { headers: { 'Authorization': `Bearer ${token}` } });
-        if (res.status === 401 || res.status === 403) { handleLogout(); return null; }
-        return res.json();
+    function getStorageKey() {
+        const user = localStorage.getItem('auth_username') || '__guest__';
+        return 'tracker_data_' + user;
     }
 
-    async function apiPost(url, body) {
-        const res = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-            body: JSON.stringify(body)
-        });
-        if (res.status === 401 || res.status === 403) { handleLogout(); return null; }
-        return res.json();
+    function saveHabitData() {
+        try {
+            localStorage.setItem(getStorageKey(), JSON.stringify(habitData));
+        } catch(e) {
+            console.error('Save failed:', e);
+        }
     }
 
-    async function saveToServer() {
-        try { await apiPost('/api/tracker', { data: habitData }); }
-        catch(e) { console.error('Auto-save failed:', e); }
+    function loadHabitData() {
+        try {
+            const raw = localStorage.getItem(getStorageKey());
+            habitData = raw ? JSON.parse(raw) : {};
+        } catch(e) {
+            habitData = {};
+        }
     }
 
-    // ── Boot ───────────────────────────────────────────────────────────────────
+    // ─── Boot ─────────────────────────────────────────────────────────────────
+    // FIX #11: All DOM interaction inside DOMContentLoaded.
     document.addEventListener('DOMContentLoaded', () => {
         setupTheme();
         document.getElementById('lang-select').value = currentLang;
@@ -459,18 +873,29 @@
             document.getElementById('theme-icon-sun').style.display = 'block';
         }
 
-        // Initialize currentPeriod to current month
+        if (!localStorage.getItem('tracker_users_db')) {
+            localStorage.setItem('tracker_users_db', JSON.stringify({
+                "admin": { password: "admin", question: "What is your father's name?", answer: "John" }
+            }));
+        }
+
+        // FIX #3: Initialize currentPeriod to current month immediately.
         const now = new Date();
-        currentPeriod = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+        const y = now.getFullYear();
+        const m = String(now.getMonth() + 1).padStart(2, '0');
+        currentPeriod = `${y}-${m}`;
         document.getElementById('month-select').value = currentPeriod;
 
+        // FIX #11: Attach event listeners here, inside DOMContentLoaded.
         document.getElementById('month-select').addEventListener('change', (e) => {
             currentPeriod = e.target.value;
             initTracker();
         });
+
         document.getElementById('new-task-input').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') addTask();
         });
+
         document.addEventListener('click', (e) => {
             if (activeMenu && !activeMenu.contains(e.target) && !e.target.closest('.burger-btn')) {
                 activeMenu.classList.remove('open');
@@ -483,36 +908,36 @@
         else showAuth();
     });
 
-    // ── Auth ───────────────────────────────────────────────────────────────────
+    // ─── Auth ─────────────────────────────────────────────────────────────────
     function applyTranslations() {
-        const d = translations[currentLang];
-        document.getElementById('lbl-period').innerText = d.period;
-        document.getElementById('btn-logout').innerText = d.logout;
-        document.getElementById('new-task-input').placeholder = d.addTaskPlaceholder;
-        document.getElementById('add-task-btn').innerText = d.addTaskBtn;
-        document.getElementById('chart-section-title').innerText = d.chartTitle;
-        document.getElementById('settings-title').innerText = d.settingsTitle;
-        document.getElementById('lbl-lang').innerText = d.langLabel;
-        document.getElementById('lbl-lang-desc').innerText = d.langDesc;
-        document.getElementById('lbl-darkmode').innerText = d.darkMode;
-        document.getElementById('lbl-darkmode-desc').innerText = d.darkModeDesc;
-        document.getElementById('lbl-theme-color').innerText = d.themeColor;
-        document.getElementById('lbl-custom-color').innerText = d.custom;
-        document.getElementById('btn-settings-done').innerText = d.done;
-        document.getElementById('profile-modal-title').innerText = d.profileTitle;
-        document.getElementById('lbl-prof-username').innerText = d.profUserLabel;
-        document.getElementById('lbl-prof-pass').innerText = d.profPassLabel;
-        document.getElementById('btn-profile-save').innerText = d.profSaveBtn;
-        document.getElementById('btn-profile-cancel').innerText = d.profCancelBtn;
-        document.getElementById('tab-login').innerText = d.loginTab;
-        document.getElementById('tab-register').innerText = d.registerTab;
-        document.getElementById('link-forgot').innerText = d.forgotPassword;
-        document.getElementById('link-back-login').innerText = d.backToLogin;
-        document.getElementById('auth-username').placeholder = d.usernamePlaceholder;
-        document.getElementById('auth-password').placeholder = d.passwordPlaceholder;
-        document.getElementById('auth-question').placeholder = d.questionPlaceholder;
-        document.getElementById('auth-answer').placeholder = d.answerPlaceholder;
-        document.getElementById('auth-password-confirm').placeholder = d.confirmPasswordPlaceholder;
+        const dict = translations[currentLang];
+        document.getElementById('lbl-period').innerText = dict.period;
+        document.getElementById('btn-logout').innerText = dict.logout;
+        document.getElementById('new-task-input').placeholder = dict.addTaskPlaceholder;
+        document.getElementById('add-task-btn').innerText = dict.addTaskBtn;
+        document.getElementById('chart-section-title').innerText = dict.chartTitle;
+        document.getElementById('settings-title').innerText = dict.settingsTitle;
+        document.getElementById('lbl-lang').innerText = dict.langLabel;
+        document.getElementById('lbl-lang-desc').innerText = dict.langDesc;
+        document.getElementById('lbl-darkmode').innerText = dict.darkMode;
+        document.getElementById('lbl-darkmode-desc').innerText = dict.darkModeDesc;
+        document.getElementById('lbl-theme-color').innerText = dict.themeColor;
+        document.getElementById('lbl-custom-color').innerText = dict.custom;
+        document.getElementById('btn-settings-done').innerText = dict.done;
+        document.getElementById('profile-modal-title').innerText = dict.profileTitle;
+        document.getElementById('lbl-prof-username').innerText = dict.profUserLabel;
+        document.getElementById('lbl-prof-pass').innerText = dict.profPassLabel;
+        document.getElementById('btn-profile-save').innerText = dict.profSaveBtn;
+        document.getElementById('btn-profile-cancel').innerText = dict.profCancelBtn;
+        document.getElementById('tab-login').innerText = dict.loginTab;
+        document.getElementById('tab-register').innerText = dict.registerTab;
+        document.getElementById('link-forgot').innerText = dict.forgotPassword;
+        document.getElementById('link-back-login').innerText = dict.backToLogin;
+        document.getElementById('auth-username').placeholder = dict.usernamePlaceholder;
+        document.getElementById('auth-password').placeholder = dict.passwordPlaceholder;
+        document.getElementById('auth-question').placeholder = dict.questionPlaceholder;
+        document.getElementById('auth-answer').placeholder = dict.answerPlaceholder;
+        document.getElementById('auth-password-confirm').placeholder = dict.confirmPasswordPlaceholder;
         updateAuthTitles();
     }
 
@@ -524,28 +949,52 @@
     }
 
     function switchAuthMode(mode) {
-        authMode = mode; recoveryStep = 1; recoveryUsername = '';
-        const show = id => document.getElementById(id).style.display = 'block';
-        const hide = id => document.getElementById(id).style.display = 'none';
-        const showFlex = id => document.getElementById(id).style.display = 'flex';
+        authMode = mode;
+        recoveryStep = 1;
+        recoveryUsername = '';
 
-        document.getElementById('recovery-question-display').style.display = 'none';
-        document.getElementById('recovery-question-display').innerText = '';
+        const tabsBar = document.getElementById('auth-tabs-bar');
+        const wrapperQuestion = document.getElementById('wrapper-question');
+        const wrapperAnswer = document.getElementById('wrapper-answer');
+        const inputPassword = document.getElementById('wrapper-password');
+        const displayQuestion = document.getElementById('recovery-question-display');
+        const linkForgot = document.getElementById('link-forgot');
+        const linkBackLogin = document.getElementById('link-back-login');
+        const inputUsername = document.getElementById('auth-username');
+        const wrapperConfirm = document.getElementById('wrapper-confirm-password');
+
+        displayQuestion.style.display = 'none';
+        displayQuestion.innerText = '';
 
         if (mode === 'register') {
-            showFlex('auth-tabs-bar'); show('auth-username'); show('wrapper-password');
-            show('wrapper-confirm-password'); showFlex('wrapper-question'); showFlex('wrapper-answer');
-            hide('link-forgot'); hide('link-back-login');
+            tabsBar.style.display = 'flex';
+            inputUsername.style.display = 'block';
+            inputPassword.style.display = 'block';
+            wrapperConfirm.style.display = 'block';
+            wrapperQuestion.style.display = 'flex';
+            wrapperAnswer.style.display = 'flex';
+            linkForgot.style.display = 'none';
+            linkBackLogin.style.display = 'none';
             document.getElementById('tab-login').classList.remove('active');
             document.getElementById('tab-register').classList.add('active');
         } else if (mode === 'forgot') {
-            hide('auth-tabs-bar'); show('auth-username'); hide('wrapper-password');
-            hide('wrapper-confirm-password'); hide('wrapper-question'); hide('wrapper-answer');
-            hide('link-forgot'); show('link-back-login');
+            tabsBar.style.display = 'none';
+            inputUsername.style.display = 'block';
+            inputPassword.style.display = 'none';
+            wrapperConfirm.style.display = 'none';
+            wrapperQuestion.style.display = 'none';
+            wrapperAnswer.style.display = 'none';
+            linkForgot.style.display = 'none';
+            linkBackLogin.style.display = 'block';
         } else {
-            showFlex('auth-tabs-bar'); show('auth-username'); show('wrapper-password');
-            hide('wrapper-confirm-password'); hide('wrapper-question'); hide('wrapper-answer');
-            show('link-forgot'); hide('link-back-login');
+            tabsBar.style.display = 'flex';
+            inputUsername.style.display = 'block';
+            inputPassword.style.display = 'block';
+            wrapperConfirm.style.display = 'none';
+            wrapperQuestion.style.display = 'none';
+            wrapperAnswer.style.display = 'none';
+            linkForgot.style.display = 'block';
+            linkBackLogin.style.display = 'none';
             document.getElementById('tab-login').classList.add('active');
             document.getElementById('tab-register').classList.remove('active');
         }
@@ -553,12 +1002,20 @@
     }
 
     function updateAuthTitles() {
-        const d = translations[currentLang];
+        const dict = translations[currentLang];
         const titleEl = document.getElementById('auth-title');
-        const btn = document.getElementById('auth-submit-btn');
-        if (authMode === 'login')         { titleEl.innerText = d.loginTab;   btn.innerText = d.loginTab; }
-        else if (authMode === 'register') { titleEl.innerText = d.registerTab; btn.innerText = d.registerTab; }
-        else { titleEl.innerText = d.authRecoveryTitle; btn.innerText = recoveryStep === 1 ? d.authRecoverySubmitFind : d.authRecoverySubmitReset; }
+        const submitBtn = document.getElementById('auth-submit-btn');
+
+        if (authMode === 'login') {
+            titleEl.innerText = dict.loginTab;
+            submitBtn.innerText = dict.loginTab;
+        } else if (authMode === 'register') {
+            titleEl.innerText = dict.registerTab;
+            submitBtn.innerText = dict.registerTab;
+        } else if (authMode === 'forgot') {
+            titleEl.innerText = dict.authRecoveryTitle;
+            submitBtn.innerText = (recoveryStep === 1) ? dict.authRecoverySubmitFind : dict.authRecoverySubmitReset;
+        }
     }
 
     function toggleEye(inputId, svgId) {
@@ -567,100 +1024,80 @@
         if (!inp || !svg) return;
         const isHidden = inp.type === 'password';
         inp.type = isHidden ? 'text' : 'password';
-        svg.innerHTML = isHidden
-            ? `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>`
-            : `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`;
+        if (isHidden) {
+            svg.innerHTML = `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>`;
+        } else {
+            svg.innerHTML = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`;
+        }
     }
 
     function showInfoPopup(type) {
-        const d = translations[currentLang];
-        alert(type === 'question' ? d.questionInfo : d.answerInfo);
+        const dict = translations[currentLang];
+        alert(type === 'question' ? dict.questionInfo : dict.answerInfo);
     }
 
-    async function handleAuthProcessing() {
-        const d = translations[currentLang];
+    function handleAuthProcessing() {
+        const db = JSON.parse(localStorage.getItem('tracker_users_db') || '{}');
         const userVal = document.getElementById('auth-username').value.trim();
         const passVal = document.getElementById('auth-password').value;
         const questVal = document.getElementById('auth-question').value.trim();
-        const ansVal  = document.getElementById('auth-answer').value.trim();
+        const ansVal = document.getElementById('auth-answer').value.trim();
+        const dict = translations[currentLang];
 
         if (authMode === 'login') {
-            if (!userVal || !passVal) return alert(d.alertFillFields);
-            try {
-                const res = await fetch('/api/auth/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username: userVal, password: passVal })
-                });
-                const data = await res.json();
-                if (!res.ok) return alert(d.alertInvalidLogin);
-                token = data.token;
-                localStorage.setItem('auth_token', token);
-                localStorage.setItem('auth_username', data.username);
+            if (!userVal || !passVal) return alert(dict.alertFillFields);
+            // FIX #4: Correct message for invalid login credentials.
+            if (db[userVal] && db[userVal].password === passVal) {
+                localStorage.setItem('auth_token', 'session_' + Date.now());
+                localStorage.setItem('auth_username', userVal);
+                token = localStorage.getItem('auth_token');
                 showDashboard();
-            } catch(e) { alert('Network error. Please try again.'); }
+            } else {
+                alert(dict.alertInvalidLogin);
+            }
 
         } else if (authMode === 'register') {
             const confirmVal = document.getElementById('auth-password-confirm').value;
-            if (!userVal || !passVal || !confirmVal || !questVal || !ansVal) return alert(d.alertFillFields);
-            if (passVal !== confirmVal) return alert(d.alertPasswordMismatch);
-            try {
-                const res = await fetch('/api/auth/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username: userVal, password: passVal, securityQuestion: questVal, securityAnswer: ansVal })
-                });
-                if (!res.ok) {
-                    const err = await res.json().catch(() => ({}));
-                    return alert(err.error || d.duplicateUser);
-                }
-                switchAuthMode('login');
-            } catch(e) { alert('Network error. Please try again.'); }
+            if (!userVal || !passVal || !confirmVal || !questVal || !ansVal) return alert(dict.alertFillFields);
+            if (passVal !== confirmVal) return alert(dict.alertPasswordMismatch);
+            // FIX #9: Correct message for duplicate username on register.
+            if (db[userVal]) return alert(dict.duplicateUser);
+            db[userVal] = { password: passVal, question: questVal, answer: ansVal };
+            localStorage.setItem('tracker_users_db', JSON.stringify(db));
+            switchAuthMode('login');
 
         } else if (authMode === 'forgot') {
-            // Security question/answer now lives in MongoDB, so recovery works
-            // from any device or browser — not just the one used to register.
             if (recoveryStep === 1) {
-                if (!userVal) return alert(d.alertFillFields);
-                try {
-                    const res = await fetch('/api/auth/recovery-question', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ username: userVal })
-                    });
-                    const data = await res.json();
-                    if (!res.ok) return alert(d.alertUserNotFound);
-                    recoveryUsername = userVal;
-                    recoveryStep = 2;
-                    document.getElementById('auth-username').style.display = 'none';
-                    const qEl = document.getElementById('recovery-question-display');
-                    qEl.innerText = data.question;
-                    qEl.style.display = 'block';
-                    document.getElementById('wrapper-answer').style.display = 'flex';
-                    document.getElementById('wrapper-password').style.display = 'block';
-                    updateAuthTitles();
-                } catch(e) { alert('Network error. Please try again.'); }
+                if (!userVal) return alert(dict.alertFillFields);
+                if (!db[userVal]) return alert(dict.alertUserNotFound);
+                // FIX #5: Store the username for use in step 2 before hiding the input.
+                recoveryUsername = userVal;
+                recoveryStep = 2;
+                document.getElementById('auth-username').style.display = 'none';
+                const qDisplay = document.getElementById('recovery-question-display');
+                // FIX #19: Use a safe label instead of splitting on ' ('.
+                qDisplay.innerText = db[recoveryUsername].question;
+                qDisplay.style.display = 'block';
+                document.getElementById('wrapper-answer').style.display = 'flex';
+                document.getElementById('wrapper-password').style.display = 'block';
+                updateAuthTitles();
             } else {
-                if (!ansVal || !passVal) return alert(d.alertFillFields);
-                try {
-                    const res = await fetch('/api/auth/reset-password', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ username: recoveryUsername, answer: ansVal, newPassword: passVal })
-                    });
-                    if (!res.ok) {
-                        const err = await res.json().catch(() => ({}));
-                        return alert(err.error === 'Incorrect security answer.' ? d.alertWrongAnswer : (err.error || d.alertUserNotFound));
-                    }
-                    alert(d.alertResetSuccess);
-                    recoveryUsername = '';
-                    switchAuthMode('login');
-                } catch(e) { alert('Network error. Please try again.'); }
+                // FIX #5: Use recoveryUsername (stored), not the now-hidden input value.
+                if (!ansVal || !passVal) return alert(dict.alertFillFields);
+                if (!db[recoveryUsername]) return alert(dict.alertUserNotFound);
+                if (db[recoveryUsername].answer.toLowerCase() !== ansVal.toLowerCase()) {
+                    return alert(dict.alertWrongAnswer);
+                }
+                db[recoveryUsername].password = passVal;
+                localStorage.setItem('tracker_users_db', JSON.stringify(db));
+                alert(dict.alertResetSuccess);
+                recoveryUsername = '';
+                switchAuthMode('login');
             }
         }
     }
 
-    // ── Dashboard ──────────────────────────────────────────────────────────────
+    // ─── Dashboard ────────────────────────────────────────────────────────────
     function showAuth() {
         document.getElementById('auth-view').style.display = 'block';
         document.getElementById('app-view').style.display = 'none';
@@ -668,36 +1105,19 @@
         applyTranslations();
     }
 
-    async function showDashboard() {
+    function showDashboard() {
         document.getElementById('auth-view').style.display = 'none';
         document.getElementById('app-view').style.display = 'block';
+
+        // FIX #15: Set the user pill immediately on login.
         const username = localStorage.getItem('auth_username') || '';
         document.getElementById('user-display').innerHTML =
             `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ${username}`;
-        applyTranslations();
-        await loadFromServer();
-    }
 
-    async function loadFromServer() {
-        const btn = document.getElementById('add-task-btn');
-        const inp = document.getElementById('new-task-input');
-        if (btn) btn.disabled = true;
-        if (inp) inp.disabled = true;
-        try {
-            const data = await apiGet('/api/tracker');
-            if (data && data.data) {
-                habitData = data.data;
-            } else {
-                habitData = {};
-            }
-        } catch(e) {
-            console.error('Load error:', e);
-            habitData = {};
-        } finally {
-            if (btn) btn.disabled = false;
-            if (inp) inp.disabled = false;
-            initTracker();
-        }
+        // FIX #1/2: Load from localStorage, then render tracker immediately.
+        loadHabitData();
+        applyTranslations();
+        initTracker();
     }
 
     function handleLogout() {
@@ -709,52 +1129,61 @@
         showAuth();
     }
 
-    // ── Profile ────────────────────────────────────────────────────────────────
+    // ─── Profile ──────────────────────────────────────────────────────────────
     function openProfileMenu() {
         document.getElementById('profile-username-input').value = localStorage.getItem('auth_username') || '';
         document.getElementById('profile-password-input').value = '';
         document.getElementById('profile-overlay').classList.add('open');
     }
-    function closeProfileMenu() { document.getElementById('profile-overlay').classList.remove('open'); }
 
-    async function saveProfileChanges() {
-        const d = translations[currentLang];
+    function closeProfileMenu() {
+        document.getElementById('profile-overlay').classList.remove('open');
+    }
+
+    function saveProfileChanges() {
+        const db = JSON.parse(localStorage.getItem('tracker_users_db') || '{}');
         const oldUser = localStorage.getItem('auth_username');
         const newUser = document.getElementById('profile-username-input').value.trim();
         const newPass = document.getElementById('profile-password-input').value;
-        if (!newUser) return alert(d.alertFillFields);
+        const dict = translations[currentLang];
 
-        try {
-            const body = {};
-            if (newPass) body.newPassword = newPass;
-            if (newUser !== oldUser) body.newUsername = newUser;
+        if (!newUser) return alert(dict.alertFillFields);
+        // FIX #9: Use duplicateUser string (not duplicateTask) for username conflict.
+        if (newUser !== oldUser && db[newUser]) return alert(dict.duplicateUser);
 
-            if (Object.keys(body).length === 0) { closeProfileMenu(); return; }
+        let userRecord = db[oldUser] || { question: "What is your father's name?", answer: "John" };
+        if (newPass) userRecord.password = newPass;
 
-            const res = await fetch('/api/profile/update', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                body: JSON.stringify(body)
-            });
-            const data = await res.json();
-            if (!res.ok) return alert(data.error || d.duplicateUser);
+        if (newUser !== oldUser) {
+            // FIX #10: Migrate saved habit data to new username key.
+            const oldKey = 'tracker_data_' + oldUser;
+            const newKey = 'tracker_data_' + newUser;
+            const existingData = localStorage.getItem(oldKey);
+            if (existingData) {
+                localStorage.setItem(newKey, existingData);
+                localStorage.removeItem(oldKey);
+            }
+            db[newUser] = userRecord;
+            delete db[oldUser];
+            localStorage.setItem('auth_username', newUser);
+        } else {
+            db[oldUser] = userRecord;
+        }
 
-            // Server may issue a fresh token (e.g. if username changed)
-            if (data.token) { token = data.token; localStorage.setItem('auth_token', token); }
-            if (data.username) { localStorage.setItem('auth_username', data.username); }
-
-            document.getElementById('user-display').innerHTML =
-                `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ${data.username || newUser}`;
-            alert(d.alertProfileSuccess);
-            closeProfileMenu();
-        } catch(e) { alert('Network error. Please try again.'); }
+        localStorage.setItem('tracker_users_db', JSON.stringify(db));
+        document.getElementById('user-display').innerHTML =
+            `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ${newUser}`;
+        alert(dict.alertProfileSuccess);
+        closeProfileMenu();
     }
 
-    function handleOverlayCloseCheck(e, id) {
-        if (e.target === document.getElementById(id)) document.getElementById(id).classList.remove('open');
+    function handleOverlayCloseCheck(e, targetId) {
+        if (e.target === document.getElementById(targetId)) {
+            document.getElementById(targetId).classList.remove('open');
+        }
     }
 
-    // ── Tracker ────────────────────────────────────────────────────────────────
+    // ─── Tracker ──────────────────────────────────────────────────────────────
     function initTracker() {
         if (!currentPeriod) return;
         const [year, month] = currentPeriod.split('-');
@@ -769,88 +1198,114 @@
         const dayNames = localDayNames[currentLang] || localDayNames['en'];
         let html = `<th class="task-col">${translations[currentLang].dailyHabits}</th>`;
         for (let i = 1; i <= days; i++) {
-            const dn = dayNames[new Date(parseInt(year), parseInt(month)-1, i).getDay()];
-            html += `<th>${dn}<br>${i}</th>`;
+            const dayName = dayNames[new Date(parseInt(year), parseInt(month) - 1, i).getDay()];
+            html += `<th>${dayName}<br>${i}</th>`;
         }
         html += `<th class="days-complete-col">${translations[currentLang].daysDone}</th>`;
         document.getElementById('header-days-row').innerHTML = html;
-        const localeMap = { en:'en-US', ru:'ru-RU', uz:'uz-UZ' };
+
+        // FIX #16: Use a supported locale mapping instead of passing currentLang directly.
+        const localeMap = { en: 'en-US', ru: 'ru-RU', uz: 'uz-UZ' };
+        const safeLocale = localeMap[currentLang] || 'en-US';
         let monthLabel;
-        try { monthLabel = new Date(parseInt(year), parseInt(month)-1).toLocaleString(localeMap[currentLang]||'en-US', { month:'long' }).toUpperCase(); }
-        catch(e) { monthLabel = new Date(parseInt(year), parseInt(month)-1).toLocaleString('en-US', { month:'long' }).toUpperCase(); }
+        try {
+            monthLabel = new Date(parseInt(year), parseInt(month) - 1).toLocaleString(safeLocale, { month: 'long' }).toUpperCase();
+        } catch(e) {
+            monthLabel = new Date(parseInt(year), parseInt(month) - 1).toLocaleString('en-US', { month: 'long' }).toUpperCase();
+        }
         document.getElementById('tracker-title').innerText = `${monthLabel} ${year} — ${translations[currentLang].title.toUpperCase()}`;
     }
 
     function renderRows(daysCount) {
         const tasksObj = habitData[currentPeriod].tasks;
+        let html = '';
         if (Object.keys(tasksObj).length === 0) {
-            document.getElementById('tracker-body').innerHTML =
-                `<tr><td colspan="${daysCount+2}" style="padding:22px;color:var(--text-muted);font-size:14px;">${translations[currentLang].noEntries}</td></tr>`;
+            html = `<tr><td colspan="${daysCount + 2}" style="padding:22px; color:var(--text-muted); font-size:14px;">${translations[currentLang].noEntries}</td></tr>`;
+            document.getElementById('tracker-body').innerHTML = html;
             return;
         }
-        let html = ''; let rowIndex = 0;
+
+        let rowIndex = 0;
         for (const [taskName, checkedArray] of Object.entries(tasksObj)) {
-            // Resize array preserving existing values
+            // FIX #17: When resizing array, preserve existing checked values instead of wiping them.
             if (checkedArray.length !== daysCount) {
                 const resized = Array(daysCount).fill(false);
-                for (let i = 0; i < Math.min(checkedArray.length, daysCount); i++) resized[i] = checkedArray[i];
+                for (let i = 0; i < Math.min(checkedArray.length, daysCount); i++) {
+                    resized[i] = checkedArray[i];
+                }
                 habitData[currentPeriod].tasks[taskName] = resized;
             }
-            const cur = habitData[currentPeriod].tasks[taskName];
-            const rowCount = cur.filter(Boolean).length;
-            const safeId = `row_${rowIndex++}`;
-            const safeHtml = taskName.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-            const safeJs   = taskName.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-            html += `<tr><td class="task-col"><div class="task-item-cell">
-                <span class="task-name" id="taskname-${safeId}">${safeHtml}</span>
-                <div style="position:relative;flex-shrink:0">
-                  <button class="burger-btn" onclick="toggleTaskMenu(event,'menu-${safeId}')" title="Options">
-                    <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-                  </button>
-                  <div class="task-menu" id="menu-${safeId}">
-                    <div class="task-menu-item" onclick="startEdit('${safeJs}','${safeId}')">
-                      <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                      ${translations[currentLang].editOpt}
-                    </div>
-                    <div class="task-menu-item danger" onclick="deleteTask('${safeJs}')">
-                      <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-                      ${translations[currentLang].deleteOpt}
+            const currentChecked = habitData[currentPeriod].tasks[taskName];
+            const rowCount = currentChecked.filter(Boolean).length;
+            const safeId = `row_${rowIndex}`;
+            rowIndex++;
+
+            // FIX #14: Sanitize task name safely for HTML attributes and inline event handlers.
+            const safeTaskNameHtml = taskName.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+            const safeTaskNameJs = taskName.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+
+            html += `<tr>
+                <td class="task-col">
+                  <div class="task-item-cell">
+                    <span class="task-name" id="taskname-${safeId}">${safeTaskNameHtml}</span>
+                    <div style="position:relative;flex-shrink:0">
+                      <button class="burger-btn" onclick="toggleTaskMenu(event,'menu-${safeId}')" title="Options">
+                        <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                      </button>
+                      <div class="task-menu" id="menu-${safeId}">
+                        <div class="task-menu-item" onclick="startEdit('${safeTaskNameJs}','${safeId}')">
+                          <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                          ${translations[currentLang].editOpt}
+                        </div>
+                        <div class="task-menu-item danger" onclick="deleteTask('${safeTaskNameJs}')">
+                          <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                          ${translations[currentLang].deleteOpt}
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div></div></td>`;
+                </td>`;
             for (let d = 0; d < daysCount; d++) {
-                html += `<td><label class="checkbox-container"><input type="checkbox" ${cur[d]?'checked':''} data-task="${safeHtml}" data-day="${d}" onchange="toggleCheckbox(this)"><span class="checkmark"></span></label></td>`;
+                const isChecked = currentChecked[d] ? 'checked' : '';
+                html += `<td><label class="checkbox-container"><input type="checkbox" ${isChecked} data-task="${safeTaskNameHtml}" data-day="${d}" onchange="toggleCheckbox(this)"><span class="checkmark"></span></label></td>`;
             }
             html += `<td class="days-complete-col" id="count-${safeId}">${rowCount}</td></tr>`;
         }
         document.getElementById('tracker-body').innerHTML = html;
     }
 
-    // ── Task actions ───────────────────────────────────────────────────────────
-    async function addTask() {
+    // ─── Task actions ─────────────────────────────────────────────────────────
+    function addTask() {
         const input = document.getElementById('new-task-input');
         const taskName = input.value.trim();
         if (!taskName) return;
         if (!habitData[currentPeriod]) habitData[currentPeriod] = { tasks: {} };
-        if (habitData[currentPeriod].tasks[taskName]) return alert(translations[currentLang].duplicateTask);
+        if (habitData[currentPeriod].tasks[taskName]) {
+            alert(translations[currentLang].duplicateTask);
+            return;
+        }
         const [year, month] = currentPeriod.split('-');
         const daysCount = new Date(parseInt(year), parseInt(month), 0).getDate();
+        // FIX #1/2: Save to localStorage, no server call.
         habitData[currentPeriod].tasks[taskName] = Array(daysCount).fill(false);
+        saveHabitData();
         input.value = '';
         initTracker();
-        await saveToServer();
     }
 
-    async function deleteTask(taskName) {
-        if (!confirm(translations[currentLang].confirmDelete.replace('{task}', taskName))) return;
-        if (activeMenu) {
-            activeMenu.classList.remove('open');
-            if (activeMenu.closest('.task-col')) activeMenu.closest('.task-col').classList.remove('task-col-active');
-            activeMenu = null;
+    function deleteTask(taskName) {
+        const msg = translations[currentLang].confirmDelete.replace('{task}', taskName);
+        if (confirm(msg)) {
+            if (activeMenu) {
+                activeMenu.classList.remove('open');
+                if (activeMenu.closest('.task-col')) activeMenu.closest('.task-col').classList.remove('task-col-active');
+                activeMenu = null;
+            }
+            delete habitData[currentPeriod].tasks[taskName];
+            // FIX #7: Persist deletion to localStorage.
+            saveHabitData();
+            initTracker();
         }
-        delete habitData[currentPeriod].tasks[taskName];
-        initTracker();
-        await saveToServer();
     }
 
     function toggleTaskMenu(e, menuId) {
@@ -862,8 +1317,13 @@
             if (activeMenu.closest('.task-col')) activeMenu.closest('.task-col').classList.remove('task-col-active');
         }
         menu.classList.toggle('open');
-        if (menu.classList.contains('open')) { parentCol.classList.add('task-col-active'); activeMenu = menu; }
-        else { parentCol.classList.remove('task-col-active'); activeMenu = null; }
+        if (menu.classList.contains('open')) {
+            parentCol.classList.add('task-col-active');
+            activeMenu = menu;
+        } else {
+            parentCol.classList.remove('task-col-active');
+            activeMenu = null;
+        }
     }
 
     function startEdit(taskName, safeId) {
@@ -874,9 +1334,10 @@
         }
         const nameSpan = document.getElementById(`taskname-${safeId}`);
         if (!nameSpan) return;
-        const safeHtml = taskName.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-        const safeJs   = taskName.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-        nameSpan.innerHTML = `<input class="task-edit-input" id="edit-input-${safeId}" value="${safeHtml}" onkeydown="handleEditKey(event,'${safeJs}','${safeId}')">`;
+        const original = taskName;
+        const displaySafe = taskName.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        const jsSafe = taskName.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+        nameSpan.innerHTML = `<input class="task-edit-input" id="edit-input-${safeId}" value="${displaySafe}" onkeydown="handleEditKey(event,'${jsSafe}','${safeId}')">`;
         const inp = document.getElementById(`edit-input-${safeId}`);
         if (inp) { inp.focus(); inp.select(); }
     }
@@ -884,29 +1345,40 @@
     function handleEditKey(e, oldName, safeId) {
         if (e.key === 'Enter') commitEdit(oldName, safeId);
         if (e.key === 'Escape') {
-            const ns = document.getElementById(`taskname-${safeId}`);
-            if (ns) ns.innerHTML = oldName.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+            const nameSpan = document.getElementById(`taskname-${safeId}`);
+            if (nameSpan) {
+                const safe = oldName.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                nameSpan.innerHTML = safe;
+            }
         }
     }
 
-    async function commitEdit(oldName, safeId) {
+    function commitEdit(oldName, safeId) {
         const inp = document.getElementById(`edit-input-${safeId}`);
         const newName = inp ? inp.value.trim() : '';
         if (!newName || newName === oldName) {
-            const ns = document.getElementById(`taskname-${safeId}`);
-            if (ns) ns.innerHTML = oldName.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+            const nameSpan = document.getElementById(`taskname-${safeId}`);
+            if (nameSpan) {
+                const safe = oldName.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                nameSpan.innerHTML = safe;
+            }
             return;
         }
-        if (habitData[currentPeriod].tasks[newName]) return alert(translations[currentLang].duplicateTask);
+        if (habitData[currentPeriod].tasks[newName]) {
+            alert(translations[currentLang].duplicateTask);
+            return;
+        }
         habitData[currentPeriod].tasks[newName] = habitData[currentPeriod].tasks[oldName];
         delete habitData[currentPeriod].tasks[oldName];
+        // FIX #6: Persist rename to localStorage.
+        saveHabitData();
         initTracker();
-        await saveToServer();
     }
 
-    async function toggleCheckbox(element) {
+    function toggleCheckbox(element) {
         const taskName = element.getAttribute('data-task');
         const dayIdx = parseInt(element.getAttribute('data-day'));
+        // data-task is HTML-decoded when read from getAttribute, so it matches the key directly.
         if (!habitData[currentPeriod] || !habitData[currentPeriod].tasks[taskName]) return;
         habitData[currentPeriod].tasks[taskName][dayIdx] = element.checked;
         const row = element.closest('tr');
@@ -914,81 +1386,103 @@
             const countEl = row.querySelector('.days-complete-col');
             if (countEl) countEl.innerText = habitData[currentPeriod].tasks[taskName].filter(Boolean).length;
         }
+        // FIX #8: Persist checkbox change to localStorage.
+        saveHabitData();
         updateCalculationsAndGraph();
-        await saveToServer();
     }
 
-    // ── Calculations & Graph ───────────────────────────────────────────────────
+    // ─── Calculations & Graph ─────────────────────────────────────────────────
     function updateCalculationsAndGraph() {
         const [year, month] = currentPeriod.split('-');
         const daysCount = new Date(parseInt(year), parseInt(month), 0).getDate();
         const tasksObj = habitData[currentPeriod].tasks;
         const totalTasks = Object.keys(tasksObj).length;
-        let totalHtml = `<td class="task-col">${translations[currentLang].completeForDay}</td>`;
-        let percentHtml = `<td class="task-col">${translations[currentLang].percentComplete}</td>`;
-        let dailyPct = [], labels = [];
+
+        let totalCompletedHtml = `<td class="task-col">${translations[currentLang].completeForDay}</td>`;
+        let percentCompletedHtml = `<td class="task-col">${translations[currentLang].percentComplete}</td>`;
+        let dailyPercentages = [], labels = [];
+
         for (let d = 0; d < daysCount; d++) {
-            labels.push(d+1);
-            let count = 0;
-            for (const [,arr] of Object.entries(tasksObj)) { if (arr[d]) count++; }
-            const pct = totalTasks > 0 ? Math.round((count/totalTasks)*100) : 0;
-            dailyPct.push(pct);
-            totalHtml   += `<td>${count}</td>`;
-            percentHtml += `<td>${pct}%</td>`;
+            labels.push(d + 1);
+            let dayCheckedCount = 0;
+            for (const [, checkedArray] of Object.entries(tasksObj)) { if (checkedArray[d]) dayCheckedCount++; }
+            let percentage = totalTasks > 0 ? Math.round((dayCheckedCount / totalTasks) * 100) : 0;
+            dailyPercentages.push(percentage);
+            totalCompletedHtml += `<td>${dayCheckedCount}</td>`;
+            percentCompletedHtml += `<td>${percentage}%</td>`;
         }
-        let best = 0;
-        for (const [,arr] of Object.entries(tasksObj)) { const c = arr.filter(Boolean).length; if (c > best) best = c; }
-        totalHtml   += `<td class="days-complete-col">${translations[currentLang].best}</td>`;
-        percentHtml += `<td class="days-complete-col">${best}</td>`;
-        document.getElementById('total-completed-row').innerHTML = totalHtml;
-        document.getElementById('percent-completed-row').innerHTML = percentHtml;
-        renderGraph(labels, dailyPct);
+
+        let maxTasksCompleted = 0;
+        for (const [, checkedArray] of Object.entries(tasksObj)) {
+            const c = checkedArray.filter(Boolean).length;
+            if (c > maxTasksCompleted) maxTasksCompleted = c;
+        }
+        totalCompletedHtml += `<td class="days-complete-col">${translations[currentLang].best}</td>`;
+        percentCompletedHtml += `<td class="days-complete-col">${maxTasksCompleted}</td>`;
+        document.getElementById('total-completed-row').innerHTML = totalCompletedHtml;
+        document.getElementById('percent-completed-row').innerHTML = percentCompletedHtml;
+        renderGraph(labels, dailyPercentages);
     }
 
     function renderGraph(labels, dataPoints) {
         const ctx = document.getElementById('completionChart').getContext('2d');
-        const color = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
+        const themeColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
         if (chartInstance) {
             chartInstance.data.labels = labels;
             chartInstance.data.datasets[0].label = translations[currentLang].chartLabel;
             chartInstance.data.datasets[0].data = dataPoints;
-            chartInstance.data.datasets[0].borderColor = color;
-            chartInstance.data.datasets[0].backgroundColor = color + '22';
+            chartInstance.data.datasets[0].borderColor = themeColor;
+            chartInstance.data.datasets[0].backgroundColor = themeColor + '22';
             chartInstance.options.scales.x.title.text = translations[currentLang].chartXAxis;
             chartInstance.update();
         } else {
             chartInstance = new Chart(ctx, {
                 type: 'line',
-                data: { labels, datasets: [{ label: translations[currentLang].chartLabel, data: dataPoints, borderColor: color, backgroundColor: color+'22', borderWidth: 2, tension: 0.3, fill: true, pointBackgroundColor: color, pointRadius: 3 }] },
+                data: {
+                    labels,
+                    datasets: [{
+                        label: translations[currentLang].chartLabel,
+                        data: dataPoints,
+                        borderColor: themeColor,
+                        backgroundColor: themeColor + '22',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        fill: true,
+                        pointBackgroundColor: themeColor,
+                        pointRadius: 3
+                    }]
+                },
                 options: {
                     responsive: true,
                     scales: {
-                        y: { min:0, max:100, ticks:{ callback: v => v+'%', color:'#888' }, grid:{ color:'rgba(128,128,128,0.1)' } },
-                        x: { title:{ display:true, text: translations[currentLang].chartXAxis, color:'#888' }, ticks:{ color:'#888' }, grid:{ color:'rgba(128,128,128,0.1)' } }
+                        y: { min: 0, max: 100, ticks: { callback: v => v + '%', color: '#888' }, grid: { color: 'rgba(128,128,128,0.1)' } },
+                        x: { title: { display: true, text: translations[currentLang].chartXAxis, color: '#888' }, ticks: { color: '#888' }, grid: { color: 'rgba(128,128,128,0.1)' } }
                     },
-                    plugins: { legend: { labels: { color:'#888' } } }
+                    plugins: { legend: { labels: { color: '#888' } } }
                 }
             });
         }
     }
 
     function updateChartStyles() {
-        if (!chartInstance) return;
-        const color = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
-        chartInstance.data.datasets[0].borderColor = color;
-        chartInstance.data.datasets[0].backgroundColor = color+'22';
-        chartInstance.data.datasets[0].pointBackgroundColor = color;
-        chartInstance.update();
+        if (chartInstance) {
+            const themeColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
+            chartInstance.data.datasets[0].borderColor = themeColor;
+            chartInstance.data.datasets[0].backgroundColor = themeColor + '22';
+            chartInstance.data.datasets[0].pointBackgroundColor = themeColor;
+            chartInstance.update();
+        }
     }
 
-    // ── Theme & Settings ───────────────────────────────────────────────────────
+    // ─── Theme & Settings ─────────────────────────────────────────────────────
     function setupTheme() {
-        const c = localStorage.getItem('tracker_theme') || '#7b2cbf';
-        document.documentElement.style.setProperty('--primary-color', c);
-        document.getElementById('color-picker').value = c;
-        document.getElementById('color-hex-label').textContent = c;
-        updateSwatchActive(c);
+        const savedColor = localStorage.getItem('tracker_theme') || '#7b2cbf';
+        document.documentElement.style.setProperty('--primary-color', savedColor);
+        document.getElementById('color-picker').value = savedColor;
+        document.getElementById('color-hex-label').textContent = savedColor;
+        updateSwatchActive(savedColor);
     }
+
     function applyColor(color) {
         document.documentElement.style.setProperty('--primary-color', color);
         localStorage.setItem('tracker_theme', color);
@@ -997,27 +1491,34 @@
         updateSwatchActive(color);
         if (chartInstance) updateChartStyles();
     }
+
     function updateSwatchActive(color) {
-        document.querySelectorAll('.color-swatch').forEach(s => s.classList.toggle('active', s.dataset.color === color));
+        document.querySelectorAll('.color-swatch').forEach(s => {
+            s.classList.toggle('active', s.dataset.color === color);
+        });
     }
+
     function toggleDarkMode() {
-        const newDark = document.documentElement.getAttribute('data-theme') !== 'dark';
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const newDark = !isDark;
         document.documentElement.setAttribute('data-theme', newDark ? 'dark' : 'light');
         localStorage.setItem('tracker_dark', newDark);
         document.getElementById('dark-mode-toggle').checked = newDark;
         document.getElementById('theme-icon-moon').style.display = newDark ? 'none' : 'block';
-        document.getElementById('theme-icon-sun').style.display  = newDark ? 'block' : 'none';
+        document.getElementById('theme-icon-sun').style.display = newDark ? 'block' : 'none';
         if (chartInstance) updateChartStyles();
     }
+
     function toggleDarkModeFromSettings(el) {
         const newDark = el.checked;
         document.documentElement.setAttribute('data-theme', newDark ? 'dark' : 'light');
         localStorage.setItem('tracker_dark', newDark);
         document.getElementById('theme-icon-moon').style.display = newDark ? 'none' : 'block';
-        document.getElementById('theme-icon-sun').style.display  = newDark ? 'block' : 'none';
+        document.getElementById('theme-icon-sun').style.display = newDark ? 'block' : 'none';
         if (chartInstance) updateChartStyles();
     }
-    function openSettings()  { document.getElementById('settings-overlay').classList.add('open'); }
+
+    function openSettings() { document.getElementById('settings-overlay').classList.add('open'); }
     function closeSettings() { document.getElementById('settings-overlay').classList.remove('open'); }
 </script>
 </body>
