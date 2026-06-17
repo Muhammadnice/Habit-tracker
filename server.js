@@ -88,6 +88,45 @@ app.post('/api/auth/login', async (req, res) => {
     }
 });
 
+// Auth Endpoint: Reset Password (used by the "Forgot Password" flow)
+// NOTE: the client verifies the security question/answer locally before
+// calling this route, since the security Q&A is not stored server-side.
+// This route only resets the password for an existing username.
+app.post('/api/auth/reset-password', async (req, res) => {
+    const { username, newPassword } = req.body;
+    if (!username || !newPassword) return res.status(400).json({ error: 'All fields are required.' });
+
+    try {
+        const user = await User.findOne({ username });
+        if (!user) return res.status(400).json({ error: 'User not found.' });
+
+        user.password = await bcrypt.hash(newPassword, 10);
+        await user.save();
+
+        res.json({ message: 'Password reset successfully.' });
+    } catch (e) {
+        res.status(500).json({ error: 'Server error during password reset.' });
+    }
+});
+
+// Profile Endpoint: Update password (and in the future, other profile fields)
+app.post('/api/profile/update', authenticateToken, async (req, res) => {
+    const { newPassword } = req.body;
+    try {
+        const user = await User.findById(req.user.id);
+        if (!user) return res.status(404).json({ error: 'User not found.' });
+
+        if (newPassword) {
+            user.password = await bcrypt.hash(newPassword, 10);
+            await user.save();
+        }
+
+        res.json({ message: 'Profile updated successfully.' });
+    } catch (e) {
+        res.status(500).json({ error: 'Server error updating profile.' });
+    }
+});
+
 // Data Endpoint: Get User Habits
 app.get('/api/tracker', authenticateToken, async (req, res) => {
     try {
