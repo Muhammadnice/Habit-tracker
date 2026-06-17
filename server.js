@@ -9,40 +9,36 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'super_secret_habit_key_123';
 
-// Fallback to local memory database if MongoDB URI isn't provided yet
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/habit_tracker';
 
-// Middleware
 app.use(express.json());
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Connect to MongoDB Cloud
 mongoose.connect(MONGODB_URI)
     .then(() => console.log('Successfully connected to secure cloud database.'))
     .catch(err => console.error('Database connection error:', err.message));
 
-// Define User Schema
+// Define User Schema — now includes security question/answer so password
+// recovery works from ANY device, not just the one used to register.
 const userSchema = new mongoose.Schema({
     username: { type: String, unique: true, required: true },
-    password: { type: String, required: true }
+    password: { type: String, required: true },
+    securityQuestion: { type: String, default: '' },
+    securityAnswer: { type: String, default: '' } // stored lowercase for case-insensitive match
 });
 const User = mongoose.model('User', userSchema);
 
-// Define Tracker Data Schema
 const trackerSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', unique: true, required: true },
     data: { type: Object, default: {} }
 });
 const Tracker = mongoose.model('Tracker', trackerSchema);
 
-// Middleware to verify JWT Token
 const authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
-
     if (!token) return res.status(401).json({ error: 'Access denied. Sign in required.' });
-
     jwt.verify(token, JWT_SECRET, (err, user) => {
         if (err) return res.status(403).json({ error: 'Session expired. Please log in again.' });
         req.user = user;
@@ -50,17 +46,24 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
-// Auth Endpoint: Register
+// Auth Endpoint: Register — now also saves the security question/answer to MongoDB
 app.post('/api/auth/register', async (req, res) => {
-    const { username, password } = req.body;
-    if (!username || !password) return res.status(400).json({ error: 'All fields are required.' });
+    const { username, password, securityQuestion, securityAnswer } = req.body;
+    if (!username || !password || !securityQuestion || !securityAnswer) {
+        return res.status(400).json({ error: 'All fields are required.' });
+    }
 
     try {
         const existingUser = await User.findOne({ username });
         if (existingUser) return res.status(400).json({ error: 'Username already taken.' });
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new User({ username, password: hashedPassword });
+        const newUser = new User({
+            username,
+            password: hashedPassword,
+            securityQuestion,
+            securityAnswer: securityAnswer.toLowerCase().trim()
+        });
         await newUser.save();
 
         res.status(201).json({ message: 'User registered successfully!' });
@@ -88,17 +91,35 @@ app.post('/api/auth/login', async (req, res) => {
     }
 });
 
-// Auth Endpoint: Reset Password (used by the "Forgot Password" flow)
-// NOTE: the client verifies the security question/answer locally before
-// calling this route, since the security Q&A is not stored server-side.
-// This route only resets the password for an existing username.
-app.post('/api/auth/reset-password', async (req, res) => {
-    const { username, newPassword } = req.body;
-    if (!username || !newPassword) return res.status(400).json({ error: 'All fields are required.' });
+// Recovery Endpoint: Get a user's security question (step 1 of "forgot password")
+// Only returns the QUESTION, never the answer.
+app.post('/api/auth/recovery-question', async (req, res) => {
+    const { username } = req.body;
+    if (!username) return res.status(400).json({ error: 'Username is required.' });
 
     try {
         const user = await User.findOne({ username });
         if (!user) return res.status(400).json({ error: 'User not found.' });
+        if (!user.securityQuestion) return res.status(400).json({ error: 'No recovery question set for this account.' });
+
+        res.json({ question: user.securityQuestion });
+    } catch (e) {
+        res.status(500).json({ error: 'Server error fetching recovery question.' });
+    }
+});
+
+// Recovery Endpoint: Verify answer + reset password in one step (step 2)
+app.post('/api/auth/reset-password', async (req, res) => {
+    const { username, answer, newPassword } = req.body;
+    if (!username || !answer || !newPassword) return res.status(400).json({ error: 'All fields are required.' });
+
+    try {
+        const user = await User.findOne({ username });
+        if (!user) return res.status(400).json({ error: 'User not found.' });
+
+        if (user.securityAnswer !== answer.toLowerCase().trim()) {
+            return res.status(400).json({ error: 'Incorrect security answer.' });
+        }
 
         user.password = await bcrypt.hash(newPassword, 10);
         await user.save();
@@ -109,19 +130,26 @@ app.post('/api/auth/reset-password', async (req, res) => {
     }
 });
 
-// Profile Endpoint: Update password (and in the future, other profile fields)
+// Profile Endpoint: Update password (and optionally username)
 app.post('/api/profile/update', authenticateToken, async (req, res) => {
-    const { newPassword } = req.body;
+    const { newPassword, newUsername } = req.body;
     try {
         const user = await User.findById(req.user.id);
         if (!user) return res.status(404).json({ error: 'User not found.' });
 
+        if (newUsername && newUsername !== user.username) {
+            const taken = await User.findOne({ username: newUsername });
+            if (taken) return res.status(400).json({ error: 'Username already taken.' });
+            user.username = newUsername;
+        }
         if (newPassword) {
             user.password = await bcrypt.hash(newPassword, 10);
-            await user.save();
         }
+        await user.save();
 
-        res.json({ message: 'Profile updated successfully.' });
+        // Re-issue a token in case the username changed, so the client stays logged in correctly
+        const token = jwt.sign({ id: user._id, username: user.username }, JWT_SECRET, { expiresIn: '30d' });
+        res.json({ message: 'Profile updated successfully.', token, username: user.username });
     } catch (e) {
         res.status(500).json({ error: 'Server error updating profile.' });
     }
@@ -152,7 +180,6 @@ app.post('/api/tracker', authenticateToken, async (req, res) => {
     }
 });
 
-// Fallback to serving frontend layout
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });

@@ -479,12 +479,6 @@
             }
         });
 
-        // Security question/answer for forgot-password is stored locally
-        // (server.js User schema only has username+password; we store Q&A in localStorage)
-        if (!localStorage.getItem('tracker_users_db')) {
-            localStorage.setItem('tracker_users_db', JSON.stringify({}));
-        }
-
         if (token) showDashboard();
         else showAuth();
     });
@@ -614,44 +608,50 @@
                 const res = await fetch('/api/auth/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username: userVal, password: passVal })
+                    body: JSON.stringify({ username: userVal, password: passVal, securityQuestion: questVal, securityAnswer: ansVal })
                 });
-                const data = await res.json();
-                if (!res.ok) return alert(d.duplicateUser);
-                // Save security Q&A locally (server schema only stores username+password)
-                const db = JSON.parse(localStorage.getItem('tracker_users_db') || '{}');
-                db[userVal] = { question: questVal, answer: ansVal };
-                localStorage.setItem('tracker_users_db', JSON.stringify(db));
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    return alert(err.error || d.duplicateUser);
+                }
                 switchAuthMode('login');
             } catch(e) { alert('Network error. Please try again.'); }
 
         } else if (authMode === 'forgot') {
-            // Q&A for recovery is stored locally since server doesn't have it
-            const db = JSON.parse(localStorage.getItem('tracker_users_db') || '{}');
+            // Security question/answer now lives in MongoDB, so recovery works
+            // from any device or browser — not just the one used to register.
             if (recoveryStep === 1) {
                 if (!userVal) return alert(d.alertFillFields);
-                if (!db[userVal]) return alert(d.alertUserNotFound);
-                recoveryUsername = userVal;
-                recoveryStep = 2;
-                document.getElementById('auth-username').style.display = 'none';
-                const qEl = document.getElementById('recovery-question-display');
-                qEl.innerText = db[recoveryUsername].question;
-                qEl.style.display = 'block';
-                document.getElementById('wrapper-answer').style.display = 'flex';
-                document.getElementById('wrapper-password').style.display = 'block';
-                updateAuthTitles();
+                try {
+                    const res = await fetch('/api/auth/recovery-question', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username: userVal })
+                    });
+                    const data = await res.json();
+                    if (!res.ok) return alert(d.alertUserNotFound);
+                    recoveryUsername = userVal;
+                    recoveryStep = 2;
+                    document.getElementById('auth-username').style.display = 'none';
+                    const qEl = document.getElementById('recovery-question-display');
+                    qEl.innerText = data.question;
+                    qEl.style.display = 'block';
+                    document.getElementById('wrapper-answer').style.display = 'flex';
+                    document.getElementById('wrapper-password').style.display = 'block';
+                    updateAuthTitles();
+                } catch(e) { alert('Network error. Please try again.'); }
             } else {
                 if (!ansVal || !passVal) return alert(d.alertFillFields);
-                if (!db[recoveryUsername]) return alert(d.alertUserNotFound);
-                if (db[recoveryUsername].answer.toLowerCase() !== ansVal.toLowerCase()) return alert(d.alertWrongAnswer);
-                // Reset password on server
                 try {
                     const res = await fetch('/api/auth/reset-password', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ username: recoveryUsername, newPassword: passVal })
+                        body: JSON.stringify({ username: recoveryUsername, answer: ansVal, newPassword: passVal })
                     });
-                    if (!res.ok) throw new Error();
+                    if (!res.ok) {
+                        const err = await res.json().catch(() => ({}));
+                        return alert(err.error === 'Incorrect security answer.' ? d.alertWrongAnswer : (err.error || d.alertUserNotFound));
+                    }
                     alert(d.alertResetSuccess);
                     recoveryUsername = '';
                     switchAuthMode('login');
@@ -725,21 +725,26 @@
         if (!newUser) return alert(d.alertFillFields);
 
         try {
-            // Update password on server if provided
-            if (newPass) {
-                const res = await apiPost('/api/profile/update', { newPassword: newPass });
-                if (!res) return;
-            }
-            // Username change: update locally (server username change requires re-auth flow)
-            if (newUser !== oldUser) {
-                // Migrate local Q&A entry to new username
-                const db = JSON.parse(localStorage.getItem('tracker_users_db') || '{}');
-                if (db[oldUser]) { db[newUser] = db[oldUser]; delete db[oldUser]; }
-                localStorage.setItem('tracker_users_db', JSON.stringify(db));
-                localStorage.setItem('auth_username', newUser);
-            }
+            const body = {};
+            if (newPass) body.newPassword = newPass;
+            if (newUser !== oldUser) body.newUsername = newUser;
+
+            if (Object.keys(body).length === 0) { closeProfileMenu(); return; }
+
+            const res = await fetch('/api/profile/update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify(body)
+            });
+            const data = await res.json();
+            if (!res.ok) return alert(data.error || d.duplicateUser);
+
+            // Server may issue a fresh token (e.g. if username changed)
+            if (data.token) { token = data.token; localStorage.setItem('auth_token', token); }
+            if (data.username) { localStorage.setItem('auth_username', data.username); }
+
             document.getElementById('user-display').innerHTML =
-                `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ${newUser}`;
+                `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ${data.username || newUser}`;
             alert(d.alertProfileSuccess);
             closeProfileMenu();
         } catch(e) { alert('Network error. Please try again.'); }
