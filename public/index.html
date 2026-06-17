@@ -8,7 +8,6 @@
     <style>
         :root {
             --primary-color: #7b2cbf;
-            --primary-light: #e0aaff;
         }
 
         [data-theme="light"] {
@@ -28,7 +27,6 @@
             --menu-bg: #ffffff;
             --menu-shadow: 0 4px 24px rgba(123,44,191,0.13);
             --settings-bg: rgba(255,255,255,0.98);
-            --mode-icon-color: #7b2cbf;
         }
 
         [data-theme="dark"] {
@@ -48,7 +46,6 @@
             --menu-bg: #231f38;
             --menu-shadow: 0 4px 24px rgba(0,0,0,0.5);
             --settings-bg: rgba(30,27,46,0.98);
-            --mode-icon-color: #c89cff;
         }
 
         * { box-sizing: border-box; }
@@ -90,7 +87,6 @@
         }
         .auth-form input:focus { border-color: var(--primary-color); }
 
-        /* Input Container with Info Button Inline Placement */
         .input-with-info {
             display: flex;
             align-items: center;
@@ -145,7 +141,7 @@
         }
         .auth-form button:hover { opacity: 0.88; }
 
-        /* Override for info-btn inside auth-form — must come AFTER .auth-form button */
+        /* Override info-btn inside auth-form — must come AFTER .auth-form button */
         .auth-form .info-btn {
             width: 32px !important;
             height: 32px !important;
@@ -500,29 +496,29 @@
     <div class="auth-form" id="auth-form-body">
         <h3 id="auth-title" style="margin-bottom:15px; color:var(--primary-color);">Account Access</h3>
         
-        <input type="text" id="auth-username" placeholder="Username">
+        <input type="text" id="auth-username" placeholder="Username" autocomplete="username" maxlength="40">
         
         <div id="recovery-question-display" class="recovery-question-text" style="display:none;"></div>
         
         <div class="input-with-info" id="wrapper-question" style="display:none;">
-            <input type="text" id="auth-question" placeholder="Security Question (e.g., What is your father's name?)">
+            <input type="text" id="auth-question" placeholder="Security Question (e.g., What is your father's name?)" autocomplete="off" maxlength="120">
             <button class="info-btn" onclick="showInfoPopup('question')" type="button" title="Help">ⓘ</button>
         </div>
         
         <div class="input-with-info" id="wrapper-answer" style="display:none;">
-            <input type="text" id="auth-answer" placeholder="Security Answer (e.g., John)">
+            <input type="text" id="auth-answer" placeholder="Security Answer (e.g., John)" autocomplete="off" maxlength="80">
             <button class="info-btn" onclick="showInfoPopup('answer')" type="button" title="Help">ⓘ</button>
         </div>
         
         <div class="password-wrapper" id="wrapper-password">
-            <input type="password" id="auth-password" placeholder="Password">
+            <input type="password" id="auth-password" placeholder="Password" autocomplete="current-password" maxlength="64">
             <button class="eye-btn" type="button" onclick="toggleEye('auth-password','eye-main')" tabindex="-1">
-                <svg id="eye-main"><path id="eye-main-path" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg id="eye-main"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             </button>
         </div>
 
         <div class="password-wrapper" id="wrapper-confirm-password" style="display:none;">
-            <input type="password" id="auth-password-confirm" placeholder="Confirm Password">
+            <input type="password" id="auth-password-confirm" placeholder="Confirm Password" autocomplete="new-password" maxlength="64">
             <button class="eye-btn" type="button" onclick="toggleEye('auth-password-confirm','eye-confirm')" tabindex="-1">
                 <svg id="eye-confirm"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             </button>
@@ -537,7 +533,7 @@
 
 <div id="app-view" class="dashboard">
     <header>
-        <h1 id="tracker-title">Habit & Task Tracker</h1>
+        <h1 id="tracker-title">Habit &amp; Task Tracker</h1>
         <div class="controls-group">
             <span id="user-display" class="user-pill" onclick="openProfileMenu()" title="Edit Profile Settings"></span>
             
@@ -557,7 +553,7 @@
     </header>
 
     <div class="add-task-box">
-        <input type="text" id="new-task-input" placeholder="Enter new habit/task (e.g., Read 30 pages, Memorize Quran)...">
+        <input type="text" id="new-task-input" placeholder="Enter new habit/task (e.g., Read 30 pages, Memorize Quran)..." maxlength="80">
         <button id="add-task-btn" onclick="addTask()">+ Add Task</button>
     </div>
 
@@ -584,12 +580,12 @@
         
         <div class="settings-row" style="flex-direction: column; align-items: stretch; gap: 4px;">
             <label id="lbl-prof-username">Profile Username</label>
-            <input type="text" id="profile-username-input" class="task-edit-input" style="padding: 10px; font-size: 14px;">
+            <input type="text" id="profile-username-input" class="task-edit-input" style="padding: 10px; font-size: 14px;" maxlength="40" autocomplete="off">
         </div>
         
         <div class="settings-row" style="flex-direction: column; align-items: stretch; gap: 4px; margin-top: 12px;">
             <label id="lbl-prof-pass">New Account Password</label>
-            <input type="password" id="profile-password-input" class="task-edit-input" style="padding: 10px; font-size: 14px;" placeholder="••••••••">
+            <input type="password" id="profile-password-input" class="task-edit-input" style="padding: 10px; font-size: 14px;" placeholder="••••••••" maxlength="64" autocomplete="new-password">
         </div>
         
         <button class="settings-close-btn" id="btn-profile-save" onclick="saveProfileChanges()" style="margin-top: 20px;">Save Profile Info</button>
@@ -648,15 +644,22 @@
 </div>
 
 <script>
+    // ─── State ───────────────────────────────────────────────────────────────
     let currentPeriod = "";
     let habitData = {};
     let chartInstance = null;
-    let authMode = 'login'; 
+    let authMode = 'login';
     let recoveryStep = 1;
+    // FIX #1/2: No server — token is a simple flag stored in localStorage.
+    // We do NOT use a Bearer token to hit a backend. Auth is fully localStorage-based.
     let token = localStorage.getItem('auth_token');
     let activeMenu = null;
     let currentLang = localStorage.getItem('tracker_lang') || 'en';
+    // FIX #5: Store the recovery username separately so it's available at step 2
+    // even after hiding the input field.
+    let recoveryUsername = '';
 
+    // ─── Translations ─────────────────────────────────────────────────────────
     const translations = {
         en: {
             title: "Habit & Task Tracker",
@@ -683,6 +686,7 @@
             noEntries: "No active entries. Add one above!",
             confirmDelete: "Remove \"{task}\"?",
             duplicateTask: "A task with that name already exists.",
+            duplicateUser: "A user with that username already exists.",
             editOpt: "Edit",
             deleteOpt: "Delete",
             profileTitle: "👤 User Profile Settings",
@@ -704,7 +708,8 @@
             alertFillFields: "Please fill out all visible input configuration fields.",
             alertProfileSuccess: "Profile configurations saved and updated successfully!",
             alertWrongAnswer: "Incorrect security challenge answer verification!",
-            alertUserNotFound: "This username configuration parameters were not found.",
+            alertInvalidLogin: "Invalid username or password. Please try again.",
+            alertUserNotFound: "This username was not found.",
             alertResetSuccess: "Password reset complete. You can now securely log into your profile.",
             confirmPasswordPlaceholder: "Confirm Password",
             alertPasswordMismatch: "Passwords do not match. Please try again.",
@@ -736,6 +741,7 @@
             noEntries: "Нет активных записей. Добавьте выше!",
             confirmDelete: "Удалить \"{task}\"?",
             duplicateTask: "Задача с таким названием уже существует.",
+            duplicateUser: "Пользователь с таким именем уже существует.",
             editOpt: "Редактировать",
             deleteOpt: "Удалить",
             profileTitle: "👤 Настройки профиля",
@@ -757,7 +763,8 @@
             alertFillFields: "Пожалуйста, заполните все видимые поля ввода.",
             alertProfileSuccess: "Профиль успешно изменен и обновлен!",
             alertWrongAnswer: "Неверный ответ на секретный вопрос проверки безопасности!",
-            alertUserNotFound: "Данное имя пользователя не найдено в базе системы.",
+            alertInvalidLogin: "Неверное имя пользователя или пароль. Попробуйте снова.",
+            alertUserNotFound: "Данное имя пользователя не найдено в системе.",
             alertResetSuccess: "Пароль успешно обновлен. Теперь вы можете войти в систему.",
             confirmPasswordPlaceholder: "Подтвердите пароль",
             alertPasswordMismatch: "Пароли не совпадают. Пожалуйста, попробуйте ещё раз.",
@@ -789,6 +796,7 @@
             noEntries: "Faol yozuvlar yo'q. Yuqoridan qo'shing!",
             confirmDelete: "\"{task}\" olib tashlansinmi?",
             duplicateTask: "Bunday nomli vazifa allaqachon mavjud.",
+            duplicateUser: "Bunday nomli foydalanuvchi allaqachon mavjud.",
             editOpt: "Tahrirlash",
             deleteOpt: "O'chirish",
             profileTitle: "👤 Profil sozlamalari",
@@ -810,6 +818,7 @@
             alertFillFields: "Iltimos, barcha ko'rinadigan kataklarni to'ldiring.",
             alertProfileSuccess: "Profil ma'lumotlari muvaffaqiyatli yangilandi!",
             alertWrongAnswer: "Xavfsizlik savoliga noto'g'ri javob berildi!",
+            alertInvalidLogin: "Noto'g'ri foydalanuvchi nomi yoki parol. Qayta urinib ko'ring.",
             alertUserNotFound: "Bunday foydalanuvchi nomi tizimda topilmadi.",
             alertResetSuccess: "Parol muvaffaqiyatli tiklandi. Endi tizimga kirishingiz mumkin.",
             confirmPasswordPlaceholder: "Parolni tasdiqlang",
@@ -825,10 +834,37 @@
         uz: ['Yak', 'Dush', 'Sesh', 'Chor', 'Pay', 'Jum', 'Shan']
     };
 
+    // ─── Persistence helpers (localStorage only — no server) ─────────────────
+    // FIX #1/2/6/7/8: All data persisted to localStorage per user, no API calls.
+
+    function getStorageKey() {
+        const user = localStorage.getItem('auth_username') || '__guest__';
+        return 'tracker_data_' + user;
+    }
+
+    function saveHabitData() {
+        try {
+            localStorage.setItem(getStorageKey(), JSON.stringify(habitData));
+        } catch(e) {
+            console.error('Save failed:', e);
+        }
+    }
+
+    function loadHabitData() {
+        try {
+            const raw = localStorage.getItem(getStorageKey());
+            habitData = raw ? JSON.parse(raw) : {};
+        } catch(e) {
+            habitData = {};
+        }
+    }
+
+    // ─── Boot ─────────────────────────────────────────────────────────────────
+    // FIX #11: All DOM interaction inside DOMContentLoaded.
     document.addEventListener('DOMContentLoaded', () => {
         setupTheme();
         document.getElementById('lang-select').value = currentLang;
-        
+
         const savedDark = localStorage.getItem('tracker_dark') === 'true';
         if (savedDark) {
             document.documentElement.setAttribute('data-theme', 'dark');
@@ -837,14 +873,28 @@
             document.getElementById('theme-icon-sun').style.display = 'block';
         }
 
-        if(!localStorage.getItem('tracker_users_db')){
+        if (!localStorage.getItem('tracker_users_db')) {
             localStorage.setItem('tracker_users_db', JSON.stringify({
                 "admin": { password: "admin", question: "What is your father's name?", answer: "John" }
             }));
         }
 
-        if (token) showDashboard();
-        else showAuth();
+        // FIX #3: Initialize currentPeriod to current month immediately.
+        const now = new Date();
+        const y = now.getFullYear();
+        const m = String(now.getMonth() + 1).padStart(2, '0');
+        currentPeriod = `${y}-${m}`;
+        document.getElementById('month-select').value = currentPeriod;
+
+        // FIX #11: Attach event listeners here, inside DOMContentLoaded.
+        document.getElementById('month-select').addEventListener('change', (e) => {
+            currentPeriod = e.target.value;
+            initTracker();
+        });
+
+        document.getElementById('new-task-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addTask();
+        });
 
         document.addEventListener('click', (e) => {
             if (activeMenu && !activeMenu.contains(e.target) && !e.target.closest('.burger-btn')) {
@@ -853,8 +903,12 @@
                 activeMenu = null;
             }
         });
+
+        if (token) showDashboard();
+        else showAuth();
     });
 
+    // ─── Auth ─────────────────────────────────────────────────────────────────
     function applyTranslations() {
         const dict = translations[currentLang];
         document.getElementById('lbl-period').innerText = dict.period;
@@ -896,8 +950,9 @@
 
     function switchAuthMode(mode) {
         authMode = mode;
-        recoveryStep = 1; 
-        
+        recoveryStep = 1;
+        recoveryUsername = '';
+
         const tabsBar = document.getElementById('auth-tabs-bar');
         const wrapperQuestion = document.getElementById('wrapper-question');
         const wrapperAnswer = document.getElementById('wrapper-answer');
@@ -906,11 +961,10 @@
         const linkForgot = document.getElementById('link-forgot');
         const linkBackLogin = document.getElementById('link-back-login');
         const inputUsername = document.getElementById('auth-username');
+        const wrapperConfirm = document.getElementById('wrapper-confirm-password');
 
         displayQuestion.style.display = 'none';
         displayQuestion.innerText = '';
-
-        const wrapperConfirm = document.getElementById('wrapper-confirm-password');
 
         if (mode === 'register') {
             tabsBar.style.display = 'flex';
@@ -926,7 +980,7 @@
         } else if (mode === 'forgot') {
             tabsBar.style.display = 'none';
             inputUsername.style.display = 'block';
-            inputPassword.style.display = 'block';
+            inputPassword.style.display = 'none';
             wrapperConfirm.style.display = 'none';
             wrapperQuestion.style.display = 'none';
             wrapperAnswer.style.display = 'none';
@@ -970,7 +1024,6 @@
         if (!inp || !svg) return;
         const isHidden = inp.type === 'password';
         inp.type = isHidden ? 'text' : 'password';
-        // Switch between open-eye and crossed-eye SVG paths
         if (isHidden) {
             svg.innerHTML = `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>`;
         } else {
@@ -980,11 +1033,7 @@
 
     function showInfoPopup(type) {
         const dict = translations[currentLang];
-        if (type === 'question') {
-            alert(dict.questionInfo);
-        } else if (type === 'answer') {
-            alert(dict.answerInfo);
-        }
+        alert(type === 'question' ? dict.questionInfo : dict.answerInfo);
     }
 
     function handleAuthProcessing() {
@@ -997,47 +1046,90 @@
 
         if (authMode === 'login') {
             if (!userVal || !passVal) return alert(dict.alertFillFields);
+            // FIX #4: Correct message for invalid login credentials.
             if (db[userVal] && db[userVal].password === passVal) {
                 localStorage.setItem('auth_token', 'session_' + Date.now());
                 localStorage.setItem('auth_username', userVal);
                 token = localStorage.getItem('auth_token');
                 showDashboard();
             } else {
-                alert(dict.alertWrongAnswer || "Invalid details");
+                alert(dict.alertInvalidLogin);
             }
+
         } else if (authMode === 'register') {
             const confirmVal = document.getElementById('auth-password-confirm').value;
             if (!userVal || !passVal || !confirmVal || !questVal || !ansVal) return alert(dict.alertFillFields);
             if (passVal !== confirmVal) return alert(dict.alertPasswordMismatch);
-            if (db[userVal]) return alert(dict.duplicateTask);
+            // FIX #9: Correct message for duplicate username on register.
+            if (db[userVal]) return alert(dict.duplicateUser);
             db[userVal] = { password: passVal, question: questVal, answer: ansVal };
             localStorage.setItem('tracker_users_db', JSON.stringify(db));
             switchAuthMode('login');
+
         } else if (authMode === 'forgot') {
             if (recoveryStep === 1) {
                 if (!userVal) return alert(dict.alertFillFields);
                 if (!db[userVal]) return alert(dict.alertUserNotFound);
+                // FIX #5: Store the username for use in step 2 before hiding the input.
+                recoveryUsername = userVal;
                 recoveryStep = 2;
                 document.getElementById('auth-username').style.display = 'none';
                 const qDisplay = document.getElementById('recovery-question-display');
-                qDisplay.innerText = `${dict.questionPlaceholder.split(' (')[0]}: ${db[userVal].question}`;
+                // FIX #19: Use a safe label instead of splitting on ' ('.
+                qDisplay.innerText = db[recoveryUsername].question;
                 qDisplay.style.display = 'block';
                 document.getElementById('wrapper-answer').style.display = 'flex';
                 document.getElementById('wrapper-password').style.display = 'block';
                 updateAuthTitles();
             } else {
+                // FIX #5: Use recoveryUsername (stored), not the now-hidden input value.
                 if (!ansVal || !passVal) return alert(dict.alertFillFields);
-                if (db[userVal].answer.toLowerCase() !== ansVal.toLowerCase()) {
+                if (!db[recoveryUsername]) return alert(dict.alertUserNotFound);
+                if (db[recoveryUsername].answer.toLowerCase() !== ansVal.toLowerCase()) {
                     return alert(dict.alertWrongAnswer);
                 }
-                db[userVal].password = passVal;
+                db[recoveryUsername].password = passVal;
                 localStorage.setItem('tracker_users_db', JSON.stringify(db));
                 alert(dict.alertResetSuccess);
+                recoveryUsername = '';
                 switchAuthMode('login');
             }
         }
     }
 
+    // ─── Dashboard ────────────────────────────────────────────────────────────
+    function showAuth() {
+        document.getElementById('auth-view').style.display = 'block';
+        document.getElementById('app-view').style.display = 'none';
+        switchAuthMode('login');
+        applyTranslations();
+    }
+
+    function showDashboard() {
+        document.getElementById('auth-view').style.display = 'none';
+        document.getElementById('app-view').style.display = 'block';
+
+        // FIX #15: Set the user pill immediately on login.
+        const username = localStorage.getItem('auth_username') || '';
+        document.getElementById('user-display').innerHTML =
+            `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ${username}`;
+
+        // FIX #1/2: Load from localStorage, then render tracker immediately.
+        loadHabitData();
+        applyTranslations();
+        initTracker();
+    }
+
+    function handleLogout() {
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('auth_username');
+        token = null;
+        habitData = {};
+        if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
+        showAuth();
+    }
+
+    // ─── Profile ──────────────────────────────────────────────────────────────
     function openProfileMenu() {
         document.getElementById('profile-username-input').value = localStorage.getItem('auth_username') || '';
         document.getElementById('profile-password-input').value = '';
@@ -1056,12 +1148,21 @@
         const dict = translations[currentLang];
 
         if (!newUser) return alert(dict.alertFillFields);
-        if (newUser !== oldUser && db[newUser]) return alert(dict.duplicateTask);
+        // FIX #9: Use duplicateUser string (not duplicateTask) for username conflict.
+        if (newUser !== oldUser && db[newUser]) return alert(dict.duplicateUser);
 
         let userRecord = db[oldUser] || { question: "What is your father's name?", answer: "John" };
         if (newPass) userRecord.password = newPass;
 
         if (newUser !== oldUser) {
+            // FIX #10: Migrate saved habit data to new username key.
+            const oldKey = 'tracker_data_' + oldUser;
+            const newKey = 'tracker_data_' + newUser;
+            const existingData = localStorage.getItem(oldKey);
+            if (existingData) {
+                localStorage.setItem(newKey, existingData);
+                localStorage.removeItem(oldKey);
+            }
             db[newUser] = userRecord;
             delete db[oldUser];
             localStorage.setItem('auth_username', newUser);
@@ -1070,7 +1171,8 @@
         }
 
         localStorage.setItem('tracker_users_db', JSON.stringify(db));
-        document.getElementById('user-display').innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ${newUser}`;
+        document.getElementById('user-display').innerHTML =
+            `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ${newUser}`;
         alert(dict.alertProfileSuccess);
         closeProfileMenu();
     }
@@ -1081,90 +1183,11 @@
         }
     }
 
-    function setupTheme() {
-        const savedColor = localStorage.getItem('tracker_theme') || '#7b2cbf';
-        document.documentElement.style.setProperty('--primary-color', savedColor);
-        document.getElementById('color-picker').value = savedColor;
-        document.getElementById('color-hex-label').textContent = savedColor;
-        updateSwatchActive(savedColor);
-    }
-
-    function applyColor(color) {
-        document.documentElement.style.setProperty('--primary-color', color);
-        localStorage.setItem('tracker_theme', color);
-        document.getElementById('color-picker').value = color;
-        document.getElementById('color-hex-label').textContent = color;
-        updateSwatchActive(color);
-        if (chartInstance) updateChartStyles();
-    }
-
-    function updateSwatchActive(color) {
-        document.querySelectorAll('.color-swatch').forEach(s => {
-            s.classList.toggle('active', s.dataset.color === color);
-        });
-    }
-
-    function toggleDarkMode() {
-        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-        const newDark = !isDark;
-        document.documentElement.setAttribute('data-theme', newDark ? 'dark' : 'light');
-        localStorage.setItem('tracker_dark', newDark);
-        document.getElementById('dark-mode-toggle').checked = newDark;
-        document.getElementById('theme-icon-moon').style.display = newDark ? 'none' : 'block';
-        document.getElementById('theme-icon-sun').style.display = newDark ? 'block' : 'none';
-        if (chartInstance) updateChartStyles();
-    }
-
-    function toggleDarkModeFromSettings(el) {
-        const newDark = el.checked;
-        document.documentElement.setAttribute('data-theme', newDark ? 'dark' : 'light');
-        localStorage.setItem('tracker_dark', newDark);
-        document.getElementById('theme-icon-moon').style.display = newDark ? 'none' : 'block';
-        document.getElementById('theme-icon-sun').style.display = newDark ? 'block' : 'none';
-        if (chartInstance) updateChartStyles();
-    }
-
-    function openSettings() { document.getElementById('settings-overlay').classList.add('open'); }
-    function closeSettings() { document.getElementById('settings-overlay').classList.remove('open'); }
-
-    document.getElementById('month-select').addEventListener('change', (e) => {
-        currentPeriod = e.target.value;
-        initTracker();
-    });
-
-    document.getElementById('new-task-input').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') addTask();
-    });
-
-    function handleLogout() {
-        localStorage.removeItem('auth_token');
-        localStorage.removeItem('auth_username');
-        token = null;
-        showAuth();
-    }
-
-    function showAuth() {
-        document.getElementById('auth-view').style.display = 'block';
-        document.getElementById('app-view').style.display = 'none';
-        switchAuthMode('login');
-        applyTranslations();
-    }
-
-    function showDashboard() {
-        document.getElementById('auth-view').style.display = 'none';
-        document.getElementById('app-view').style.display = 'block';
-        const uName = localStorage.getItem('auth_username') || 'User';
-        document.getElementById('user-display').innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ${uName}`;
-        const today = new Date();
-        document.getElementById('month-select').value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
-        currentPeriod = document.getElementById('month-select').value;
-        applyTranslations();
-        initTracker();
-    }
-
+    // ─── Tracker ──────────────────────────────────────────────────────────────
     function initTracker() {
+        if (!currentPeriod) return;
         const [year, month] = currentPeriod.split('-');
-        const daysCount = new Date(year, month, 0).getDate();
+        const daysCount = new Date(parseInt(year), parseInt(month), 0).getDate();
         if (!habitData[currentPeriod]) habitData[currentPeriod] = { tasks: {} };
         renderHeaders(daysCount, year, month);
         renderRows(daysCount);
@@ -1175,12 +1198,21 @@
         const dayNames = localDayNames[currentLang] || localDayNames['en'];
         let html = `<th class="task-col">${translations[currentLang].dailyHabits}</th>`;
         for (let i = 1; i <= days; i++) {
-            const dayName = dayNames[new Date(year, month - 1, i).getDay()];
+            const dayName = dayNames[new Date(parseInt(year), parseInt(month) - 1, i).getDay()];
             html += `<th>${dayName}<br>${i}</th>`;
         }
         html += `<th class="days-complete-col">${translations[currentLang].daysDone}</th>`;
         document.getElementById('header-days-row').innerHTML = html;
-        const monthLabel = new Date(year, month - 1).toLocaleString(currentLang, { month: 'long' }).toUpperCase();
+
+        // FIX #16: Use a supported locale mapping instead of passing currentLang directly.
+        const localeMap = { en: 'en-US', ru: 'ru-RU', uz: 'uz-UZ' };
+        const safeLocale = localeMap[currentLang] || 'en-US';
+        let monthLabel;
+        try {
+            monthLabel = new Date(parseInt(year), parseInt(month) - 1).toLocaleString(safeLocale, { month: 'long' }).toUpperCase();
+        } catch(e) {
+            monthLabel = new Date(parseInt(year), parseInt(month) - 1).toLocaleString('en-US', { month: 'long' }).toUpperCase();
+        }
         document.getElementById('tracker-title').innerText = `${monthLabel} ${year} — ${translations[currentLang].title.toUpperCase()}`;
     }
 
@@ -1192,31 +1224,40 @@
             document.getElementById('tracker-body').innerHTML = html;
             return;
         }
-        
+
         let rowIndex = 0;
         for (const [taskName, checkedArray] of Object.entries(tasksObj)) {
-            if (checkedArray.length !== daysCount) habitData[currentPeriod].tasks[taskName] = Array(daysCount).fill(false);
+            // FIX #17: When resizing array, preserve existing checked values instead of wiping them.
+            if (checkedArray.length !== daysCount) {
+                const resized = Array(daysCount).fill(false);
+                for (let i = 0; i < Math.min(checkedArray.length, daysCount); i++) {
+                    resized[i] = checkedArray[i];
+                }
+                habitData[currentPeriod].tasks[taskName] = resized;
+            }
             const currentChecked = habitData[currentPeriod].tasks[taskName];
             const rowCount = currentChecked.filter(Boolean).length;
             const safeId = `row_${rowIndex}`;
             rowIndex++;
-            const escapedTaskNameForJs = taskName.replace(/'/g, "\\'").replace(/"/g, "&quot;");
-            const escapedTaskNameForAttr = taskName.replace(/"/g, "&quot;");
-            
+
+            // FIX #14: Sanitize task name safely for HTML attributes and inline event handlers.
+            const safeTaskNameHtml = taskName.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+            const safeTaskNameJs = taskName.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+
             html += `<tr>
                 <td class="task-col">
                   <div class="task-item-cell">
-                    <span class="task-name" id="taskname-${safeId}">${taskName.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</span>
+                    <span class="task-name" id="taskname-${safeId}">${safeTaskNameHtml}</span>
                     <div style="position:relative;flex-shrink:0">
                       <button class="burger-btn" onclick="toggleTaskMenu(event,'menu-${safeId}')" title="Options">
                         <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
                       </button>
                       <div class="task-menu" id="menu-${safeId}">
-                        <div class="task-menu-item" onclick="startEdit('${escapedTaskNameForJs}','${safeId}')">
+                        <div class="task-menu-item" onclick="startEdit('${safeTaskNameJs}','${safeId}')">
                           <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                           ${translations[currentLang].editOpt}
                         </div>
-                        <div class="task-menu-item danger" onclick="deleteTask('${escapedTaskNameForJs}')">
+                        <div class="task-menu-item danger" onclick="deleteTask('${safeTaskNameJs}')">
                           <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
                           ${translations[currentLang].deleteOpt}
                         </div>
@@ -1226,11 +1267,45 @@
                 </td>`;
             for (let d = 0; d < daysCount; d++) {
                 const isChecked = currentChecked[d] ? 'checked' : '';
-                html += `<td><label class="checkbox-container"><input type="checkbox" ${isChecked} data-task="${escapedTaskNameForAttr}" data-day="${d}" onchange="toggleCheckbox(this)"><span class="checkmark"></span></label></td>`;
+                html += `<td><label class="checkbox-container"><input type="checkbox" ${isChecked} data-task="${safeTaskNameHtml}" data-day="${d}" onchange="toggleCheckbox(this)"><span class="checkmark"></span></label></td>`;
             }
             html += `<td class="days-complete-col" id="count-${safeId}">${rowCount}</td></tr>`;
         }
         document.getElementById('tracker-body').innerHTML = html;
+    }
+
+    // ─── Task actions ─────────────────────────────────────────────────────────
+    function addTask() {
+        const input = document.getElementById('new-task-input');
+        const taskName = input.value.trim();
+        if (!taskName) return;
+        if (!habitData[currentPeriod]) habitData[currentPeriod] = { tasks: {} };
+        if (habitData[currentPeriod].tasks[taskName]) {
+            alert(translations[currentLang].duplicateTask);
+            return;
+        }
+        const [year, month] = currentPeriod.split('-');
+        const daysCount = new Date(parseInt(year), parseInt(month), 0).getDate();
+        // FIX #1/2: Save to localStorage, no server call.
+        habitData[currentPeriod].tasks[taskName] = Array(daysCount).fill(false);
+        saveHabitData();
+        input.value = '';
+        initTracker();
+    }
+
+    function deleteTask(taskName) {
+        const msg = translations[currentLang].confirmDelete.replace('{task}', taskName);
+        if (confirm(msg)) {
+            if (activeMenu) {
+                activeMenu.classList.remove('open');
+                if (activeMenu.closest('.task-col')) activeMenu.closest('.task-col').classList.remove('task-col-active');
+                activeMenu = null;
+            }
+            delete habitData[currentPeriod].tasks[taskName];
+            // FIX #7: Persist deletion to localStorage.
+            saveHabitData();
+            initTracker();
+        }
     }
 
     function toggleTaskMenu(e, menuId) {
@@ -1259,9 +1334,10 @@
         }
         const nameSpan = document.getElementById(`taskname-${safeId}`);
         if (!nameSpan) return;
-        const original = nameSpan.innerText;
-        const escapedTaskName = taskName.replace(/'/g, "\\'").replace(/"/g, "&quot;");
-        nameSpan.innerHTML = `<input class="task-edit-input" id="edit-input-${safeId}" value="${original.replace(/"/g, '&quot;')}" onkeydown="handleEditKey(event,'${escapedTaskName}', '${safeId}')">`;
+        const original = taskName;
+        const displaySafe = taskName.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        const jsSafe = taskName.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+        nameSpan.innerHTML = `<input class="task-edit-input" id="edit-input-${safeId}" value="${displaySafe}" onkeydown="handleEditKey(event,'${jsSafe}','${safeId}')">`;
         const inp = document.getElementById(`edit-input-${safeId}`);
         if (inp) { inp.focus(); inp.select(); }
     }
@@ -1270,7 +1346,10 @@
         if (e.key === 'Enter') commitEdit(oldName, safeId);
         if (e.key === 'Escape') {
             const nameSpan = document.getElementById(`taskname-${safeId}`);
-            if (nameSpan) nameSpan.innerText = oldName;
+            if (nameSpan) {
+                const safe = oldName.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                nameSpan.innerHTML = safe;
+            }
         }
     }
 
@@ -1279,7 +1358,10 @@
         const newName = inp ? inp.value.trim() : '';
         if (!newName || newName === oldName) {
             const nameSpan = document.getElementById(`taskname-${safeId}`);
-            if (nameSpan) nameSpan.innerText = oldName;
+            if (nameSpan) {
+                const safe = oldName.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                nameSpan.innerHTML = safe;
+            }
             return;
         }
         if (habitData[currentPeriod].tasks[newName]) {
@@ -1288,48 +1370,31 @@
         }
         habitData[currentPeriod].tasks[newName] = habitData[currentPeriod].tasks[oldName];
         delete habitData[currentPeriod].tasks[oldName];
+        // FIX #6: Persist rename to localStorage.
+        saveHabitData();
         initTracker();
-    }
-
-    function addTask() {
-        const taskName = document.getElementById('new-task-input').value.trim();
-        if (!taskName) return;
-        const [year, month] = currentPeriod.split('-');
-        const daysCount = new Date(year, month, 0).getDate();
-        if (habitData[currentPeriod].tasks[taskName]) return alert(translations[currentLang].duplicateTask);
-        habitData[currentPeriod].tasks[taskName] = Array(daysCount).fill(false);
-        document.getElementById('new-task-input').value = '';
-        initTracker();
-    }
-
-    function deleteTask(taskName) {
-        const msg = translations[currentLang].confirmDelete.replace('{task}', taskName);
-        if (confirm(msg)) {
-            if (activeMenu) {
-                activeMenu.classList.remove('open');
-                if (activeMenu.closest('.task-col')) activeMenu.closest('.task-col').classList.remove('task-col-active');
-                activeMenu = null;
-            }
-            delete habitData[currentPeriod].tasks[taskName];
-            initTracker();
-        }
     }
 
     function toggleCheckbox(element) {
         const taskName = element.getAttribute('data-task');
         const dayIdx = parseInt(element.getAttribute('data-day'));
+        // data-task is HTML-decoded when read from getAttribute, so it matches the key directly.
+        if (!habitData[currentPeriod] || !habitData[currentPeriod].tasks[taskName]) return;
         habitData[currentPeriod].tasks[taskName][dayIdx] = element.checked;
         const row = element.closest('tr');
         if (row) {
             const countEl = row.querySelector('.days-complete-col');
             if (countEl) countEl.innerText = habitData[currentPeriod].tasks[taskName].filter(Boolean).length;
         }
+        // FIX #8: Persist checkbox change to localStorage.
+        saveHabitData();
         updateCalculationsAndGraph();
     }
 
+    // ─── Calculations & Graph ─────────────────────────────────────────────────
     function updateCalculationsAndGraph() {
         const [year, month] = currentPeriod.split('-');
-        const daysCount = new Date(year, month, 0).getDate();
+        const daysCount = new Date(parseInt(year), parseInt(month), 0).getDate();
         const tasksObj = habitData[currentPeriod].tasks;
         const totalTasks = Object.keys(tasksObj).length;
 
@@ -1408,6 +1473,53 @@
             chartInstance.update();
         }
     }
+
+    // ─── Theme & Settings ─────────────────────────────────────────────────────
+    function setupTheme() {
+        const savedColor = localStorage.getItem('tracker_theme') || '#7b2cbf';
+        document.documentElement.style.setProperty('--primary-color', savedColor);
+        document.getElementById('color-picker').value = savedColor;
+        document.getElementById('color-hex-label').textContent = savedColor;
+        updateSwatchActive(savedColor);
+    }
+
+    function applyColor(color) {
+        document.documentElement.style.setProperty('--primary-color', color);
+        localStorage.setItem('tracker_theme', color);
+        document.getElementById('color-picker').value = color;
+        document.getElementById('color-hex-label').textContent = color;
+        updateSwatchActive(color);
+        if (chartInstance) updateChartStyles();
+    }
+
+    function updateSwatchActive(color) {
+        document.querySelectorAll('.color-swatch').forEach(s => {
+            s.classList.toggle('active', s.dataset.color === color);
+        });
+    }
+
+    function toggleDarkMode() {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const newDark = !isDark;
+        document.documentElement.setAttribute('data-theme', newDark ? 'dark' : 'light');
+        localStorage.setItem('tracker_dark', newDark);
+        document.getElementById('dark-mode-toggle').checked = newDark;
+        document.getElementById('theme-icon-moon').style.display = newDark ? 'none' : 'block';
+        document.getElementById('theme-icon-sun').style.display = newDark ? 'block' : 'none';
+        if (chartInstance) updateChartStyles();
+    }
+
+    function toggleDarkModeFromSettings(el) {
+        const newDark = el.checked;
+        document.documentElement.setAttribute('data-theme', newDark ? 'dark' : 'light');
+        localStorage.setItem('tracker_dark', newDark);
+        document.getElementById('theme-icon-moon').style.display = newDark ? 'none' : 'block';
+        document.getElementById('theme-icon-sun').style.display = newDark ? 'block' : 'none';
+        if (chartInstance) updateChartStyles();
+    }
+
+    function openSettings() { document.getElementById('settings-overlay').classList.add('open'); }
+    function closeSettings() { document.getElementById('settings-overlay').classList.remove('open'); }
 </script>
 </body>
 </html>
